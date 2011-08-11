@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <classPathEntry location="/svn-brzfdc/ref/ojdbc6.jar"/>
+
+    <!--信息-->
+    <context id="AllInfo" targetRuntime="MyBatis3">
+        <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+                        connectionURL="jdbc:oracle:thin:@localhost:1521:orcl"
+                        userId="brzfdc"
+                        password="brzfdc">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="fdc.repository.model" targetProject="main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="fdc.repository.mapper" targetProject="main/java">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="fdc.repository.dao" targetProject="main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+
+        <!--房地产资金监管银行接口类 -->
+        <!--
+        <table tableName="rs_plan_ctrl">
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        -->
+        <table tableName="rs_plan_ctrl">
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+
+    </context>
+
+</generatorConfiguration>
