@@ -1,6 +1,8 @@
 package fdc.xsocket.server;
 
 import fdc.xsocket.server.impl.ServerHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xsocket.connection.IConnection.FlushMode;
 import org.xsocket.connection.IServer;
 import org.xsocket.connection.Server;
@@ -16,7 +18,7 @@ import java.util.Map;
  */
 public class XSocketServer {
 
-//    private static final Logger logger = LoggerFactory.getLogger(XSocketServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(XSocketServer.class);
     private static final int PORT = PropertyManager.getIntProperty("socket_server_monitor_port");
     //private static final String IP = PropertyManager.getProperty("socket_server_monitor_ip");
     private IServer server;
@@ -36,24 +38,25 @@ public class XSocketServer {
 
     public void start() throws IOException {
         init();
-       // logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始启动...");
-        System.out.println("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始启动...");
+
+        logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始启动...");
         server.start();
-      //  logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  启动成功...");
-        System.out.println("服务器  " + server.getLocalAddress() + ":" + PORT + "  启动成功...");
+        logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  启动成功...");
+
         Map<String, Class> maps = server.getOptions();
         if (maps != null) {
             for (Map.Entry<String, Class> entry : maps.entrySet()) {
-                System.out.println("key=    " + entry.getKey() + " ,   value =    " + entry.getValue().getName());
+                System.out.println("     key=    " + entry.getKey() + " ,   value =    " + entry.getValue().getName());
             }
         }
     }
 
     public boolean stop() throws IOException {
-        //logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  关闭...");
-        System.out.println("服务器  " + server.getLocalAddress() + ":" + PORT + "  关闭...");
+        logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始关闭...");
         server.close();
         server = null;
+        logger.info("服务器关闭结束...");
+
         return true;
     }
 

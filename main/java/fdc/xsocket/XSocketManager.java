@@ -17,9 +17,9 @@ public class XSocketManager extends HttpServlet {
     private static final long serialVersionUID = -5534543207744847501L;
 
     static {
-        logger.info("////////////////////////////////////////");
-        logger.info("loading XSocketManager.class");
-        logger.info("////////////////////////////////////////");
+        logger.info("////===========================================////");
+        logger.info("Socket Server端开始初始化...");
+        logger.info("////===========================================////");
     }
 
     // 初始化
@@ -42,6 +42,7 @@ public class XSocketManager extends HttpServlet {
         try {
             XSocketServer server = XSocketServer.getInstance();
             server.stop();
+            server = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
