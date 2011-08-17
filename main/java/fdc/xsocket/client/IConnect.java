@@ -11,5 +11,6 @@ import java.io.IOException;
  */
 public interface IConnect {
     boolean sendData(String dataContent) throws IOException;
+
     boolean close() throws IOException;
 }

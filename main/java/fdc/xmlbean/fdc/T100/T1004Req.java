@@ -29,7 +29,7 @@ public class T1004Req extends BaseBean {
         public String SellerBankName = "";
         public String SellerIDType = "";
         public String SellerIDCode = "";
-        public String EndReason  = "";
+        public String EndReason = "";
         public String TransSellerAmt = "";
         public String TransBuyerAmt = "";
     }

@@ -13,7 +13,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public enum ClientFactory {
-    XSocket(PropertyManager.getProperty("socket_server_monitor_ip")==null?"127.0.0.1":PropertyManager.getProperty("socket_server_monitor_ip"),
+    XSocket(PropertyManager.getProperty("socket_server_monitor_ip") == null ? "127.0.0.1" : PropertyManager.getProperty("socket_server_monitor_ip"),
             PropertyManager.getIntProperty("socket_server_monitor_port"));
     private String serverIp;
     private int port;
@@ -24,11 +24,11 @@ public enum ClientFactory {
         this.port = port;
     }
 
-    public  IConnect getClient() throws IOException {
-         client =  null;
-         client =  new XSocketClient(serverIp, port);
+    public IConnect getClient() throws IOException {
+        client = null;
+        client = new XSocketClient(serverIp, port);
         // set default timeoutMills
         //  client.setTimeoutMills(PropertyManager.getLongProperty("socket_idle_timeout_millis"));
-          return client;
+        return client;
     }
 }

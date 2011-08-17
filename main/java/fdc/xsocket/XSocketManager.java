@@ -1,5 +1,6 @@
 package fdc.xsocket;
 
+import fdc.utils.DateUtil;
 import fdc.xsocket.server.XSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class XSocketManager extends HttpServlet {
     }
 
     private static void printLine() {
-        System.out.println("//////////////////////////" + new Date() + "//////////////////////////");
+        logger.info("//////////////////////////" + DateUtil.getDatetime18() + "//////////////////////////");
     }
 
 }

@@ -43,7 +43,7 @@ public class T2008Req extends BaseBean {
     }
 
     public static void main(String[] args) {
-       T2008Req tia = new T2008Req();
+        T2008Req tia = new T2008Req();
         tia.head.OpCode = "2008";
         tia.head.BankCode = "ssss";
         Param.Record record = new Param.Record();

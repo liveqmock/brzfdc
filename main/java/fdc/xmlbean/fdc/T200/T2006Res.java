@@ -12,7 +12,7 @@ import fdc.xmlbean.ResHead;
 public class T2006Res extends BaseBean {
     @XStreamAlias("Head")
     public ResHead head = new ResHead();
-     @XStreamAlias("Param")
+    @XStreamAlias("Param")
     public Param param = new Param();
 
     public static class Param {

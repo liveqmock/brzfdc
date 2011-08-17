@@ -56,7 +56,7 @@ public class ClientHandler implements IClientHandler {
 
     @Override
     public boolean onIdleTimeout(INonBlockingConnection iNonBlockingConnection) throws IOException {
-       logger.error("【本地客户端】与远程主机空闲连接超时。");
+        logger.error("【本地客户端】与远程主机空闲连接超时。");
         return false;
     }
 

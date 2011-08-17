@@ -10,5 +10,5 @@ import org.xsocket.connection.*;
  * To change this template use File | Settings | File Templates.
  */
 public interface IServerHandler extends IDataHandler, IConnectHandler, IIdleTimeoutHandler,
-        IConnectionTimeoutHandler, IDisconnectHandler,IConnectExceptionHandler {
+        IConnectionTimeoutHandler, IDisconnectHandler, IConnectExceptionHandler {
 }
