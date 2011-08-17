@@ -1,10 +1,7 @@
 package fdc.gateway.xsocket.server.impl;
 
-
-import fdc.utils.StringUtil;
-import fdc.xmlbean.BaseBean;
-import fdc.xmlbean.fdc.T200.T2008Req;
-import fdc.xmlbean.fdc.T200.T2008Res;
+import fdc.gateway.service.IMessageService;
+import fdc.gateway.service.impl.ServerMessageService;
 import fdc.gateway.xsocket.server.IServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +19,7 @@ public class ServerHandler implements IServerHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
     private boolean isConnected = false;
-    private MessageHandler messageHandler = new MessageHandler();
+    private IMessageService messageService = new ServerMessageService();
 
     /**
      * 连接的成功时的操作
@@ -55,25 +52,11 @@ public class ServerHandler implements IServerHandler {
         String dataContent = nbc.readStringByLength(dataLength);
         logger.info("【本地服务端】接收到报文: " + dataContent);
 
-        // 得到交易码，根据交易码将xml转换成相应的接口对象。
-        String opCode = StringUtil.getSubstrBetweenStrs(dataContent, "<OpCode>", "</OpCode>");
+        // 处理接收到的报文，并生成响应报文
+        String responseMsg = messageService.handleMessage(dataContent);
 
-        if("2008".equalsIgnoreCase(opCode)) {
-            try {
-            Object obj = BaseBean.toObject(T2008Req.class, dataContent);
-            T2008Req req = (T2008Req)obj;
-            }catch (Exception e) {
-                logger.error(e.getMessage());
-                // TODO JobLog
-            }
-
-            T2008Res res = new T2008Res();
-            // "0000"表示成功
-            res.head.RetCode = "0000";
-            String resContent = res.toFDCDatagram();
-            logger.info("【本地服务端】发送报文内容:" + resContent);
-            logger.info("【本地服务端】发送报文长度:" + nbc.write(resContent));
-        }
+        logger.info("【本地服务端】发送报文内容:" + responseMsg);
+        logger.info("【本地服务端】发送报文长度:" + nbc.write(responseMsg));
         nbc.flush();
         return true;
     }

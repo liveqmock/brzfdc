@@ -37,6 +37,7 @@ public class XSocketClient extends ConnectClient {
         if (nbc == null || !nbc.isOpen()) {
             throw new RuntimeException("链接未建立！");
         } else {
+            logger.info("【本地客户端】发送报文:"+dataContent);
             nbc.write(dataContent);
         }
         return true;

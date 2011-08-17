@@ -8,6 +8,6 @@ package fdc.gateway.xmlbean;
  * To change this template use File | Settings | File Templates.
  */
 public class ResHead {
-    public String RetCode = "";
+    public String RetCode = "0000";
     public String RetMsg = "";
 }

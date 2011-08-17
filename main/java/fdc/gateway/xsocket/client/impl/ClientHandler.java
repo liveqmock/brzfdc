@@ -1,5 +1,7 @@
 package fdc.gateway.xsocket.client.impl;
 
+import fdc.gateway.service.IMessageService;
+import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.xsocket.client.IClientHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,7 @@ import java.nio.BufferUnderflowException;
 public class ClientHandler implements IClientHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
-
+    private IMessageService messageService = new ClientMessageService();
     /**
      * 连接的成功时的操作
      */
@@ -35,7 +37,7 @@ public class ClientHandler implements IClientHandler {
         String dataContent = null;
         dataContent = nbc.readStringByLength(nbc.available());
         logger.info("【本地客户端】接收到报文:" + dataContent);
-        // TODO handle Data
+        messageService.handleMessage(dataContent);
         return true;
     }
 
