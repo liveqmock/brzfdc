@@ -1,4 +1,4 @@
-package fdc.xmlbean.fdc;
+package fdc.xmlbean.fdc.T200;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import fdc.xmlbean.BaseBean;
@@ -9,7 +9,7 @@ import fdc.xmlbean.ReqHead;
  * User: zhangxiaobo
  */
 @XStreamAlias("root")
-public class T2006Req extends BaseBean {
+public class T2001Req extends BaseBean {
     @XStreamAlias("Head")
     public ReqHead head = new ReqHead();
     @XStreamAlias("Param")
@@ -18,5 +18,6 @@ public class T2006Req extends BaseBean {
     public static class Param {
         public String Acct = "";
         public String AcctName = "";
+        public String AgrNum = "";
     }
 }

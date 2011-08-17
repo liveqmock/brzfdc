@@ -1,4 +1,4 @@
-package fdc.xmlbean.fdc;
+package fdc.xmlbean.fdc.T200;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
