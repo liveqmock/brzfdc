@@ -1,4 +1,4 @@
-package fdc.xsocket.server;
+package fdc.gateway.xsocket.server;
 
 import org.xsocket.connection.*;
 

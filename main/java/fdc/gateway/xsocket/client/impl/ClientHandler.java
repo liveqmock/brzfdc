@@ -1,6 +1,6 @@
-package fdc.xsocket.client.impl;
+package fdc.gateway.xsocket.client.impl;
 
-import fdc.xsocket.client.IClientHandler;
+import fdc.gateway.xsocket.client.IClientHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xsocket.connection.INonBlockingConnection;

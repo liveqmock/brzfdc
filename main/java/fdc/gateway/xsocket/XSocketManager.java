@@ -1,7 +1,7 @@
-package fdc.xsocket;
+package fdc.gateway.xsocket;
 
 import fdc.utils.DateUtil;
-import fdc.xsocket.server.XSocketServer;
+import fdc.gateway.xsocket.server.XSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 public class XSocketManager extends HttpServlet {
 

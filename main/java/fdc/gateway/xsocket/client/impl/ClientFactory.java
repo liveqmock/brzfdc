@@ -1,6 +1,6 @@
-package fdc.xsocket.client.impl;
+package fdc.gateway.xsocket.client.impl;
 
-import fdc.xsocket.client.IConnect;
+import fdc.gateway.xsocket.client.IConnect;
 import pub.platform.advance.utils.PropertyManager;
 
 import java.io.IOException;

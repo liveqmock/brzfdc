@@ -1,6 +1,6 @@
-package fdc.xsocket.server;
+package fdc.gateway.xsocket.server;
 
-import fdc.xsocket.server.impl.ServerHandler;
+import fdc.gateway.xsocket.server.impl.ServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xsocket.connection.IConnection.FlushMode;

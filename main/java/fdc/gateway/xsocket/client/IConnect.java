@@ -1,4 +1,4 @@
-package fdc.xsocket.client;
+package fdc.gateway.xsocket.client;
 
 import java.io.IOException;
 
