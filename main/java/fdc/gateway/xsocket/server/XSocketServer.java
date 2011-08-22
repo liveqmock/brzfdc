@@ -42,19 +42,14 @@ public class XSocketServer {
         logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始启动...");
         server.start();
         logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  启动成功...");
-
-        Map<String, Class> maps = server.getOptions();
-        if (maps != null) {
-            for (Map.Entry<String, Class> entry : maps.entrySet()) {
-                System.out.println("     key=    " + entry.getKey() + " ,   value =    " + entry.getValue().getName());
-            }
-        }
     }
 
     public boolean stop() throws IOException {
         logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始关闭...");
-        server.close();
-        server = null;
+        if (server != null) {
+            server.close();
+            server = null;
+        }
         logger.info("服务器关闭结束...");
 
         return true;

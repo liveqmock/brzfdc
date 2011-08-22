@@ -14,20 +14,26 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public enum ClientFactory {
-    XSocket(PropertyManager.getProperty("socket_server_monitor_ip") == null ? "127.0.0.1" : PropertyManager.getProperty("socket_server_monitor_ip"),
-            PropertyManager.getIntProperty("socket_server_monitor_port"));
+    XSocket(PropertyManager.getProperty("socket_server_monitor_ip"),
+            PropertyManager.getIntProperty("socket_server_monitor_port"),
+            PropertyManager.getIntProperty("socket_connection_timeout_millis"),
+            PropertyManager.getIntProperty("socket_idle_timeout_millis"));
     private String serverIp;
-    private int port;
+    private int serverPort;
+    private int cnctTimeoutMills;
+    private int idleTimeoutMills;
     private IBlockConnect client;
 
-    private ClientFactory(String serverIp, int port) {
+    private ClientFactory(String serverIp, int serverPort, int cnctTimeoutMills, int idleTimeoutMills) {
         this.serverIp = serverIp;
-        this.port = port;
+        this.serverPort = serverPort;
+        this.cnctTimeoutMills = cnctTimeoutMills;
+        this.idleTimeoutMills = idleTimeoutMills;
     }
 
-    public IBlockConnect getClient() throws IOException {
+    public IBlockConnect getBlockClient() throws IOException {
         client = null;
-        client = new XSocketClient(serverIp, port);
+        client = new XSocketBlockClient(serverIp, serverPort,cnctTimeoutMills,idleTimeoutMills);
         // set default timeoutMills
         //  client.setTimeoutMills(PropertyManager.getLongProperty("socket_idle_timeout_millis"));
         return client;

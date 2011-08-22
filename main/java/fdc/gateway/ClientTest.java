@@ -1,12 +1,9 @@
 package fdc.gateway;
 
-import fdc.gateway.xmlbean.fdc.T200.T2004Req;
+import fdc.gateway.domain.fdc.T200.T2004Req;
 import fdc.gateway.xsocket.client.IBlockConnect;
-import fdc.gateway.xsocket.client.IConnect;
 import fdc.gateway.xsocket.client.impl.ClientFactory;
 import fdc.utils.DateUtil;
-
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,14 +32,14 @@ public class ClientTest {
             req.param.ToAcctName = "Gates";
             req.param.ToBankName = "日照银行";
 
-            IBlockConnect client = ClientFactory.XSocket.getClient();
-            client.sendDataUntilRcv(req.toFDCDatagram());
-
-            //Thread.currentThread().sleep(10000);
-            client.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            IBlockConnect client = ClientFactory.XSocket.getBlockClient();
+            //Thread.currentThread().sleep(6000);
+             client.sendDataUntilRcv(req.toFDCDatagram());
+            //client.sendData(req.toFDCDatagram());
+             client.close();
+        }catch (Exception e) {
+            // 链接超时 SocketTimeoutException  Idle超时 ExtendedClosedChannelException
+            System.out.println("【网络超时！】");
         }
     }
 }

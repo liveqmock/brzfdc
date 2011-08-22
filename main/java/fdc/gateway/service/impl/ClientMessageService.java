@@ -1,10 +1,8 @@
 package fdc.gateway.service.impl;
 
 import fdc.gateway.service.IMessageService;
-import fdc.gateway.xmlbean.BaseBean;
-import fdc.gateway.xmlbean.fdc.T200.T2004Res;
-import fdc.gateway.xmlbean.fdc.T200.T2008Req;
-import fdc.gateway.xmlbean.fdc.T200.T2008Res;
+import fdc.gateway.domain.BaseBean;
+import fdc.gateway.domain.fdc.T200.T2004Res;
 import fdc.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +14,10 @@ import org.slf4j.LoggerFactory;
  * Time: 上午3:20
  * To change this template use File | Settings | File Templates.
  */
-public class ClientMessageService implements IMessageService{
+public class ClientMessageService implements IMessageService {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientMessageService.class);
+
     @Override
     public String handleMessage(String message) {
         String responseMsg = null;
@@ -30,14 +29,14 @@ public class ClientMessageService implements IMessageService{
                 try {
                     Object obj = BaseBean.toObject(T2004Res.class, message);
                     T2004Res req = (T2004Res) obj;
-                    logger.info("【处理报文】处理完成，返回码:"+req.head.RetCode+"- 返回信息:"+req.head.RetMsg);
+                    logger.info("【处理报文】处理完成，返回码:" + req.head.RetCode + "- 返回信息:" + req.head.RetMsg);
                 } catch (Exception e) {
                     logger.error(e.getMessage());
                     // TODO JobLog
                 }
                 break;
             default:
-                logger.error("【处理报文】未处理，交易码:"+opCode);
+                logger.error("【处理报文】未处理，交易码:" + opCode);
                 break;
         }
         return responseMsg;

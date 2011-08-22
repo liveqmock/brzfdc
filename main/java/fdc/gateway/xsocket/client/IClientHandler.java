@@ -9,6 +9,7 @@ import org.xsocket.connection.*;
  * Time: обнГ9:06
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 public interface IClientHandler extends IDataHandler, IConnectHandler,
         IDisconnectHandler, IIdleTimeoutHandler, IConnectionTimeoutHandler,
         IConnectExceptionHandler {

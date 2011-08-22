@@ -20,6 +20,7 @@ public class ClientHandler implements IClientHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
     private IMessageService messageService = new ClientMessageService();
+
     /**
      * 连接的成功时的操作
      */
@@ -36,8 +37,8 @@ public class ClientHandler implements IClientHandler {
     @Override
     public boolean onData(INonBlockingConnection nbc) throws IOException, BufferUnderflowException {
         String dataContent = null;
-        dataContent = nbc.readStringByLength(nbc.available());
-        logger.info("【本地客户端】接收到报文:" + dataContent);
+        dataContent = nbc.readStringByDelimiter("\r\n");
+        logger.info("【本地客户端】ClientHandler接收到报文:" + dataContent);
         messageService.handleMessage(dataContent);
         return true;
     }
@@ -51,13 +52,13 @@ public class ClientHandler implements IClientHandler {
 
         logger.info("【本地客户端】与远程主机断开了连接。");
 
-        return false;
+        return true;
     }
 
     @Override
     public boolean onIdleTimeout(INonBlockingConnection iNonBlockingConnection) throws IOException {
         logger.error("【本地客户端】与远程主机空闲连接超时。");
-        return false;
+        return true;
     }
 
     @Override

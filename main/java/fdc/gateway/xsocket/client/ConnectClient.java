@@ -10,7 +10,6 @@ package fdc.gateway.xsocket.client;
 public abstract class ConnectClient implements IBlockConnect {
     protected String serverIP;
     protected int serverPort;
-    protected long timeoutMills;
 
     public ConnectClient() {
     }
@@ -34,13 +33,5 @@ public abstract class ConnectClient implements IBlockConnect {
 
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
-    }
-
-    public long getTimeoutMills() {
-        return timeoutMills;
-    }
-
-    public void setTimeoutMills(long timeoutMills) {
-        this.timeoutMills = timeoutMills;
     }
 }

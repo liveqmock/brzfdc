@@ -9,6 +9,6 @@ import java.io.IOException;
  * Time: обнГ9:02
  * To change this template use File | Settings | File Templates.
  */
-public interface IBlockConnect extends IConnect{
-  boolean sendDataUntilRcv(String datagram) throws IOException;
+public interface IBlockConnect extends IConnect {
+    boolean sendDataUntilRcv(String datagram) throws IOException;
 }
