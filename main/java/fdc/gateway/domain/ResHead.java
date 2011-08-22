@@ -7,7 +7,7 @@ package fdc.gateway.domain;
  * Time: обнГ4:15
  * To change this template use File | Settings | File Templates.
  */
-public class ResHead {
+public class ResHead extends BaseBean{
     public String RetCode = "0000";
     public String RetMsg = "";
 }

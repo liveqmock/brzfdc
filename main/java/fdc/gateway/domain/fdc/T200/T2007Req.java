@@ -19,6 +19,7 @@ public class T2007Req extends BaseBean {
         public String Acct = "";
         public String AcctName = "";
         public String BuyerName = "";
+        public String BuyerAcct = "";
         public String BuyerBankName = "";
         public String BuyerIDType = "";
         public String BuyerIDCode = "";
@@ -28,4 +29,5 @@ public class T2007Req extends BaseBean {
         public String EndReason = "";
         public String TransBuyerAmt = "";
     }
+
 }

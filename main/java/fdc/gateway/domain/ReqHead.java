@@ -15,7 +15,7 @@ import fdc.utils.DateUtil;
 <OpTime>215515</OpTime>
 <BankCode>103</BankCode>
  */
-public class ReqHead {
+public class ReqHead extends BaseBean{
     public String OpCode = "";
     public String OpDate = DateUtil.getDate8();
     public String OpTime = DateUtil.getTime6();

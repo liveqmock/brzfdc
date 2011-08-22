@@ -39,4 +39,8 @@ public class T0002Res extends BaseBean {
             public String Purpose = "";
         }
     }
+
+    public static Param.Record getRecord() {
+        return new Param.Record();
+    }
 }

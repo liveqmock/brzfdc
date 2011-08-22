@@ -1,8 +1,6 @@
-package fdc.gateway;
+package fdc.gateway.test;
 
 import fdc.gateway.domain.fdc.T200.T2004Req;
-import fdc.gateway.xsocket.client.IBlockConnect;
-import fdc.gateway.xsocket.client.impl.ClientFactory;
 import fdc.utils.DateUtil;
 
 /**
@@ -12,9 +10,10 @@ import fdc.utils.DateUtil;
  * Time: 上午3:06
  * To change this template use File | Settings | File Templates.
  */
-public class ClientTest {
-    public static void main(String[] args) {
-        try {
+public class Client2004Test extends ClientBaseTest {
+
+         public static void main(String[] args) {
+
             T2004Req req = new T2004Req();
             req.head.OpCode = "2004";
             req.head.BankCode = "105";
@@ -31,15 +30,8 @@ public class ClientTest {
             req.param.Type = "02";
             req.param.ToAcctName = "Gates";
             req.param.ToBankName = "日照银行";
+            testClientService(req.toFDCDatagram());
 
-            IBlockConnect client = ClientFactory.XSocket.getBlockClient();
-            //Thread.currentThread().sleep(6000);
-             client.sendDataUntilRcv(req.toFDCDatagram());
-            //client.sendData(req.toFDCDatagram());
-             client.close();
-        }catch (Exception e) {
-            // 链接超时 SocketTimeoutException  Idle超时 ExtendedClosedChannelException
-            System.out.println("【网络超时！】");
-        }
     }
+
 }

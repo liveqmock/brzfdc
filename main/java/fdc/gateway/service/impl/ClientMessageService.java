@@ -1,5 +1,8 @@
 package fdc.gateway.service.impl;
 
+import fdc.gateway.domain.ResHead;
+import fdc.gateway.domain.fdc.T000.T0003Res;
+import fdc.gateway.domain.fdc.T200.T2003Res;
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.domain.BaseBean;
 import fdc.gateway.domain.fdc.T200.T2004Res;
@@ -21,23 +24,11 @@ public class ClientMessageService implements IMessageService {
     @Override
     public String handleMessage(String message) {
         String responseMsg = null;
-        // 得到交易码，根据交易码将xml转换成相应的接口对象。
-        String opCode = StringUtil.getSubstrBetweenStrs(message, "<OpCode>", "</OpCode>");
-        int nOpCode = Integer.parseInt(opCode);
-        switch (nOpCode) {
-            case 2004:
-                try {
-                    Object obj = BaseBean.toObject(T2004Res.class, message);
-                    T2004Res req = (T2004Res) obj;
-                    logger.info("【处理报文】处理完成，返回码:" + req.head.RetCode + "- 返回信息:" + req.head.RetMsg);
-                } catch (Exception e) {
-                    logger.error(e.getMessage());
-                    // TODO JobLog
-                }
-                break;
-            default:
-                logger.error("【处理报文】未处理，交易码:" + opCode);
-                break;
+        ResHead resHead = (ResHead)BaseBean.toObject(ResHead.class, message);
+        if("0000".equalsIgnoreCase(resHead.RetCode)) {
+            logger.info("【客户端】返回报文处理：发送成功");
+        }else {
+            logger.error("【客户端】返回报文处理："+resHead.RetCode+resHead.RetMsg);
         }
         return responseMsg;
     }

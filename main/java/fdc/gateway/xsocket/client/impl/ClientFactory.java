@@ -16,26 +16,21 @@ import java.io.IOException;
 public enum ClientFactory {
     XSocket(PropertyManager.getProperty("socket_server_monitor_ip"),
             PropertyManager.getIntProperty("socket_server_monitor_port"),
-            PropertyManager.getIntProperty("socket_connection_timeout_millis"),
-            PropertyManager.getIntProperty("socket_idle_timeout_millis"));
+            PropertyManager.getIntProperty("socket_timeout_millis"));
     private String serverIp;
     private int serverPort;
-    private int cnctTimeoutMills;
-    private int idleTimeoutMills;
+    private int timeoutMills;
     private IBlockConnect client;
 
-    private ClientFactory(String serverIp, int serverPort, int cnctTimeoutMills, int idleTimeoutMills) {
+    private ClientFactory(String serverIp, int serverPort, int timeoutMills) {
         this.serverIp = serverIp;
         this.serverPort = serverPort;
-        this.cnctTimeoutMills = cnctTimeoutMills;
-        this.idleTimeoutMills = idleTimeoutMills;
+        this.timeoutMills = timeoutMills;
     }
 
     public IBlockConnect getBlockClient() throws IOException {
         client = null;
-        client = new XSocketBlockClient(serverIp, serverPort,cnctTimeoutMills,idleTimeoutMills);
-        // set default timeoutMills
-        //  client.setTimeoutMills(PropertyManager.getLongProperty("socket_idle_timeout_millis"));
+        client = new XSocketBlockClient(serverIp, serverPort,timeoutMills);
         return client;
     }
 }

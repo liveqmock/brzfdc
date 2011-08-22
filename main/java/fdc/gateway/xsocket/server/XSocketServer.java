@@ -39,18 +39,18 @@ public class XSocketServer {
     public void start() throws IOException {
         init();
 
-        logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始启动...");
+        logger.info("【SocketServer】 " + server.getLocalAddress() + ":" + PORT + "  开始启动...");
         server.start();
-        logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  启动成功...");
+        logger.info("【SocketServer】  " + server.getLocalAddress() + ":" + PORT + "  启动成功...");
     }
 
     public boolean stop() throws IOException {
-        logger.info("服务器  " + server.getLocalAddress() + ":" + PORT + "  开始关闭...");
+        logger.info("【SocketServer】  " + server.getLocalAddress() + ":" + PORT + "  开始关闭...");
         if (server != null) {
             server.close();
             server = null;
         }
-        logger.info("服务器关闭结束...");
+        logger.info("【SocketServer】关闭结束...");
 
         return true;
     }

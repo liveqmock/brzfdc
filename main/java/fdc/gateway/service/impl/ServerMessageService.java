@@ -1,10 +1,16 @@
 package fdc.gateway.service.impl;
 
+import fdc.gateway.domain.fdc.T000.T0001Req;
+import fdc.gateway.domain.fdc.T000.T0001Res;
+import fdc.gateway.domain.fdc.T000.T0002Req;
+import fdc.gateway.domain.fdc.T000.T0002Res;
+import fdc.gateway.domain.fdc.T100.*;
+import fdc.gateway.domain.fdc.T200.*;
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.domain.BaseBean;
-import fdc.gateway.domain.fdc.T200.T2004Req;
-import fdc.gateway.domain.fdc.T200.T2008Res;
+import fdc.utils.DateUtil;
 import fdc.utils.StringUtil;
+import org.apache.ecs.html.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,37 +28,103 @@ public class ServerMessageService implements IMessageService {
     @Override
     public synchronized String handleMessage(String message) {
         String responseMsg = null;
-        String dataContent = message;
-        /* try {
-            dataContent = new String(message.getBytes(), "GBK");
-        } catch (UnsupportedEncodingException e) {
-            logger.error("报文字符集转换错误", e);
-        }*/
+
         // 得到交易码，根据交易码将xml转换成相应的接口对象。
         String opCode = StringUtil.getSubstrBetweenStrs(message, "<OpCode>", "</OpCode>");
         int nOpCode = Integer.parseInt(opCode);
         switch (nOpCode) {
-            case 2004:
-                T2004Req req = null;
-                try {
-                    req = (T2004Req) BaseBean.toObject(T2004Req.class, dataContent);
-                } catch (Exception e) {
-                    logger.error("转换错误", e);
-                    // TODO JobLog
-                }
-                if (req != null) {
-                    logger.info("【本地服务端】【报文中】" + req.param.ToBankName);
-                } else {
-                    logger.info("【本地服务端】报文转换错误。");
-                }
-                T2008Res res = new T2008Res();   //  默认返回成功响应码
-                res.head.RetMsg = req.param.ToBankName;
-                responseMsg = res.toFDCDatagram();
+            // 0001  0002  1001 1003 1004 2001 2002 2003 2006
+            case 1:
+                T0001Req t0001Req = (T0001Req) BaseBean.toObject(T0001Req.class, message);
+                logger.info(t0001Req.head.OpDate + t0001Req.head.OpTime + "==接收交易：" + t0001Req.head.OpCode);
+                T0001Res t0001Res = new T0001Res();
+                t0001Res.param.Balance = "80001";
+                t0001Res.param.UsableBalance = "80001";
+                responseMsg = t0001Res.toFDCDatagram();
+                break;
+            case 2:
+                T0002Req t0002Req = (T0002Req) BaseBean.toObject(T0002Req.class, message);
+                logger.info(t0002Req.head.OpDate + t0002Req.head.OpTime + "==接收交易：" + t0002Req.head.OpCode);
+                T0002Res t0002Res = new T0002Res();
+                t0002Res.param.DetailNum = "2";
+                T0002Res.Param.Record record = T0002Res.getRecord();
+                record.Date = DateUtil.getDate8();
+                record.Time = DateUtil.getTime6();
+                record.Flag = "1";
+                record.Type = "01";
+                record.Amt = "1000";
+                record.ContractNum = "100000000088";
+                record.ToAcct = "555555555";
+                record.ToAcctName = "张三";
+                record.ToBankName = "日照银行";
+                record.Purpose = "购房";
+
+                t0002Res.param.recordList.add(record);
+
+                record = T0002Res.getRecord();
+                record.Date = DateUtil.getDate8();
+                record.Time = DateUtil.getTime6();
+                record.Flag = "1";
+                record.Type = "01";
+                record.Amt = "2000";
+                record.ContractNum = "100000000089";
+                record.ToAcct = "55555666666";
+                record.ToAcctName = "张四";
+                record.ToBankName = "日照银行";
+                record.Purpose = "也购房";
+
+                t0002Res.param.recordList.add(record);
+                responseMsg = t0002Res.toFDCDatagram();
+                break;
+            case 1001:
+                T1001Req t1001Req = (T1001Req) BaseBean.toObject(T1001Req.class, message);
+                logger.info(t1001Req.head.OpDate + t1001Req.head.OpTime + "==接收交易：" + t1001Req.head.OpCode);
+                T1001Res t1001Res = new T1001Res();
+                responseMsg = t1001Res.toFDCDatagram();
+                break;
+            case 1003:
+                T1003Req t1003Req = (T1003Req) BaseBean.toObject(T1003Req.class, message);
+                logger.info(t1003Req.head.OpDate + t1003Req.head.OpTime + "==接收交易：" + t1003Req.head.OpCode);
+                T1003Res t1003Res = new T1003Res();
+                t1003Res.param.BankSerial = "1003";
+                responseMsg = t1003Res.toFDCDatagram();
+                break;
+            case 1004:
+                T1004Req t1004Req = (T1004Req) BaseBean.toObject(T1004Req.class, message);
+                logger.info(t1004Req.head.OpDate + t1004Req.head.OpTime + "==接收交易：" + t1004Req.head.OpCode);
+                T1004Res t1004Res = new T1004Res();
+                responseMsg = t1004Res.toFDCDatagram();
+                break;
+            case 2001:
+                T2001Req t2001Req = (T2001Req) BaseBean.toObject(T2001Req.class, message);
+                logger.info(t2001Req.head.OpDate + t2001Req.head.OpTime + "==接收交易：" + t2001Req.head.OpCode);
+                T2001Res t2001Res = new T2001Res();
+                responseMsg = t2001Res.toFDCDatagram();
+                break;
+            case 2002:
+                T2002Req t2002Req = (T2002Req) BaseBean.toObject(T2002Req.class, message);
+                logger.info(t2002Req.head.OpDate + t2002Req.head.OpTime + "==接收交易：" + t2002Req.head.OpCode);
+                T2002Res t2002Res = new T2002Res();
+                responseMsg = t2002Res.toFDCDatagram();
+                break;
+            case 2003:
+                T2003Req t2003Req = (T2003Req) BaseBean.toObject(T2003Req.class, message);
+                logger.info(t2003Req.head.OpDate + t2003Req.head.OpTime + "==接收交易：" + t2003Req.head.OpCode);
+                T2003Res t2003Res = new T2003Res();
+                responseMsg = t2003Res.toFDCDatagram();
+                break;
+            case 2006:
+                T2006Req t2006Req = (T2006Req) BaseBean.toObject(T2006Req.class, message);
+                logger.info(t2006Req.head.OpDate + t2006Req.head.OpTime + "==接收交易：" + t2006Req.head.OpCode);
+                T2006Res t2006Res = new T2006Res();
+                t2006Res.param.CancelDate = DateUtil.getDate8();
+                t2006Res.param.CancelTime = DateUtil.getTime6();
+                t2006Res.param.FinalBalance = "2006";
+                responseMsg = t2006Res.toFDCDatagram();
                 break;
             default:
-                T2008Res response = new T2008Res();   //  默认返回成功响应码
-                responseMsg = response.toFDCDatagram();
-                break;
+               logger.error("====接收到无法处理非法交易：【交易码："+opCode+"】");
+
         }
         return responseMsg;
     }

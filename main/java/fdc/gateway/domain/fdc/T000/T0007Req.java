@@ -41,4 +41,8 @@ public class T0007Req extends BaseBean {
             public String Purpose = "";
         }
     }
+
+    public static Param.Record getRecord() {
+        return new Param.Record();
+    }
 }

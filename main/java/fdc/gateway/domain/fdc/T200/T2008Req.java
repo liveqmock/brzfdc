@@ -42,18 +42,7 @@ public class T2008Req extends BaseBean {
         }
     }
 
-    public static void main(String[] args) {
-        T2008Req tia = new T2008Req();
-        tia.head.OpCode = "2008";
-        tia.head.BankCode = "ssss";
-        Param.Record record = new Param.Record();
-        record.Remark = "hello";
-        record.ToBankName = "建行";
-        tia.param.recordList.add(record);
-        record = new Param.Record();
-        record.Remark = "hi";
-        record.ToBankName = "农行";
-        tia.param.recordList.add(record);
-        System.out.println(tia.toXml());
+    public static Param.Record getRecord() {
+        return new Param.Record();
     }
 }
