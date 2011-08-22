@@ -28,6 +28,6 @@ public class BaseBean {
 
     public String toFDCDatagram() {
         String datagram = toXml();
-        return datagram.length() + "\r\n" + datagram;
+        return datagram.getBytes().length + "\r\n" + datagram;
     }
 }

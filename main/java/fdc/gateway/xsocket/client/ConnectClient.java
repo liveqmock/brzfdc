@@ -7,7 +7,7 @@ package fdc.gateway.xsocket.client;
  * Time: обнГ2:04
  * To change this template use File | Settings | File Templates.
  */
-public abstract class ConnectClient implements IConnect {
+public abstract class ConnectClient implements IBlockConnect {
     protected String serverIP;
     protected int serverPort;
     protected long timeoutMills;

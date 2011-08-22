@@ -18,7 +18,7 @@ public class XSocketManager extends HttpServlet {
 
     static {
         logger.info("////===========================================////");
-        logger.info("Socket Server端开始初始化...");
+        logger.info("Socket Server 开始初始化...");
         logger.info("////===========================================////");
     }
 

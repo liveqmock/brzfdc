@@ -2,11 +2,13 @@ package fdc.gateway.service.impl;
 
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.xmlbean.BaseBean;
-import fdc.gateway.xmlbean.fdc.T200.T2008Req;
+import fdc.gateway.xmlbean.fdc.T200.T2004Req;
 import fdc.gateway.xmlbean.fdc.T200.T2008Res;
 import fdc.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,20 +24,31 @@ public class ServerMessageService implements IMessageService {
     @Override
     public synchronized String handleMessage(String message) {
         String responseMsg = null;
+        String dataContent = message;
+       /* try {
+            dataContent = new String(message.getBytes(), "GBK");
+        } catch (UnsupportedEncodingException e) {
+            logger.error("报文字符集转换错误", e);
+        }*/
         // 得到交易码，根据交易码将xml转换成相应的接口对象。
         String opCode = StringUtil.getSubstrBetweenStrs(message, "<OpCode>", "</OpCode>");
         int nOpCode = Integer.parseInt(opCode);
         switch (nOpCode) {
-            case 2008:
+            case 2004:
+                T2004Req req = null;
                 try {
-                    Object obj = BaseBean.toObject(T2008Req.class, message);
-                    T2008Req req = (T2008Req) obj;
+                    req  = (T2004Req) BaseBean.toObject(T2004Req.class, dataContent);
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    logger.error("转换错误", e);
                     // TODO JobLog
                 }
-
+                if(req != null) {
+                    logger.info("【本地服务端】【报文中】"+req.param.ToBankName);
+                }else {
+                    logger.info("【本地服务端】报文转换错误。");
+                }
                 T2008Res res = new T2008Res();   //  默认返回成功响应码
+                res.head.RetMsg="中文信息";
                 responseMsg = res.toFDCDatagram();
                 break;
             default:

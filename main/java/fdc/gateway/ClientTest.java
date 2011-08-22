@@ -1,6 +1,7 @@
 package fdc.gateway;
 
 import fdc.gateway.xmlbean.fdc.T200.T2004Req;
+import fdc.gateway.xsocket.client.IBlockConnect;
 import fdc.gateway.xsocket.client.IConnect;
 import fdc.gateway.xsocket.client.impl.ClientFactory;
 import fdc.utils.DateUtil;
@@ -17,7 +18,6 @@ import java.io.IOException;
 public class ClientTest {
     public static void main(String[] args) {
         try {
-            IConnect client = ClientFactory.XSocket.getClient();
             T2004Req req = new T2004Req();
             req.head.OpCode = "2004";
             req.head.BankCode = "105";
@@ -34,12 +34,14 @@ public class ClientTest {
             req.param.Type = "02";
             req.param.ToAcctName = "Gates";
             req.param.ToBankName = "»’’’“¯––";
-            client.sendData(req.toFDCDatagram());
-            Thread.currentThread().sleep(10000);
+
+            IBlockConnect client = ClientFactory.XSocket.getClient();
+            client.sendDataUntilRcv(req.toFDCDatagram());
+
+            //Thread.currentThread().sleep(10000);
             client.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

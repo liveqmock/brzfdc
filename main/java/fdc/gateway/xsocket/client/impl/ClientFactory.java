@@ -1,5 +1,6 @@
 package fdc.gateway.xsocket.client.impl;
 
+import fdc.gateway.xsocket.client.IBlockConnect;
 import fdc.gateway.xsocket.client.IConnect;
 import pub.platform.advance.utils.PropertyManager;
 
@@ -17,14 +18,14 @@ public enum ClientFactory {
             PropertyManager.getIntProperty("socket_server_monitor_port"));
     private String serverIp;
     private int port;
-    private IConnect client;
+    private IBlockConnect client;
 
     private ClientFactory(String serverIp, int port) {
         this.serverIp = serverIp;
         this.port = port;
     }
 
-    public IConnect getClient() throws IOException {
+    public IBlockConnect getClient() throws IOException {
         client = null;
         client = new XSocketClient(serverIp, port);
         // set default timeoutMills

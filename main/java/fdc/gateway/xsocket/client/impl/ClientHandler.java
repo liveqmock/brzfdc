@@ -15,6 +15,7 @@ import java.nio.BufferUnderflowException;
  *
  * @author zxb
  */
+@Deprecated
 public class ClientHandler implements IClientHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
@@ -47,10 +48,7 @@ public class ClientHandler implements IClientHandler {
     @Override
     public boolean onDisconnect(INonBlockingConnection nbc) throws IOException {
         // TODO ----------------------------------
-        if (nbc == null || !nbc.isOpen()) {
-            logger.info("【本地客户端】NBC == null");
-        }
-        //-------------------------------------------
+
         logger.info("【本地客户端】与远程主机断开了连接。");
 
         return false;

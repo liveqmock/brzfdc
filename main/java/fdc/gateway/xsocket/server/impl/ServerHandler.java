@@ -48,15 +48,21 @@ public class ServerHandler implements IServerHandler {
      */
     @Override
     public boolean onData(INonBlockingConnection nbc) throws IOException, BufferUnderflowException {
-        int dataLength = nbc.available();
-        String dataContent = nbc.readStringByLength(dataLength);
-        logger.info("【本地服务端】接收到报文: " + dataContent);
+      //  int dataLength = nbc.available();
+      //  String dataContent = nbc.readStringByLength(dataLength);
+
+        String dataLength = nbc.readStringByDelimiter("\r\n");
+        logger.info("【本地服务端】接收到报文长度: " + dataLength);
+
+         String datagram = nbc.readStringByLength(Integer.parseInt(dataLength), "GBK");
+        //String datagram = nbc.readStringByLength(Integer.parseInt(dataLength));
+        logger.info("【本地服务端】接收到报文内容: " + datagram);
 
         // 处理接收到的报文，并生成响应报文
-        String responseMsg = messageService.handleMessage(dataContent);
+        String responseMsg = messageService.handleMessage(datagram);
 
         logger.info("【本地服务端】发送报文内容:" + responseMsg);
-        logger.info("【本地服务端】发送报文长度:" + nbc.write(responseMsg));
+        logger.info("【本地服务端】发送报文长度:" + nbc.write(responseMsg, "GBK"));
         nbc.flush();
         return true;
     }
