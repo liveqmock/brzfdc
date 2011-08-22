@@ -78,13 +78,13 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-<!--
-    <listener>
-        <listener-class>
-            org.springframework.web.context.request.RequestContextListener
-        </listener-class>
-    </listener>
--->
+    <!--
+        <listener>
+            <listener-class>
+                org.springframework.web.context.request.RequestContextListener
+            </listener-class>
+        </listener>
+    -->
 
     <servlet>
         <servlet-name>SchedulerManager</servlet-name>
@@ -128,7 +128,7 @@
         <servlet-name>SchedulerManager</servlet-name>
         <url-pattern>/SchedulerManager</url-pattern>
     </servlet-mapping>
-     <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>xSocketManager</servlet-name>
         <url-pattern>/xSocketManager</url-pattern>
     </servlet-mapping>
