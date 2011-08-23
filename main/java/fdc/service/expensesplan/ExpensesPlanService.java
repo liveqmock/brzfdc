@@ -22,9 +22,9 @@ public class ExpensesPlanService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private RsPlanCtrlMapper  rsPlanCtrlMapper;
+    private RsPlanCtrlMapper rsPlanCtrlMapper;
 
-    public List<RsPlanCtrl> selectPlanList(){
+    public List<RsPlanCtrl> selectPlanList() {
         RsPlanCtrlExample example = new RsPlanCtrlExample();
         example.createCriteria().andDeletedFlagEqualTo("0");
         return rsPlanCtrlMapper.selectByExample(example);

@@ -225,7 +225,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.PK_ID
      *
      * @return the value of RS_PLAN_CTRL.PK_ID
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getPkId() {
@@ -237,7 +236,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.PK_ID
      *
      * @param pkId the value for RS_PLAN_CTRL.PK_ID
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setPkId(String pkId) {
@@ -249,7 +247,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.COMPANY_ID
      *
      * @return the value of RS_PLAN_CTRL.COMPANY_ID
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getCompanyId() {
@@ -261,7 +258,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.COMPANY_ID
      *
      * @param companyId the value for RS_PLAN_CTRL.COMPANY_ID
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setCompanyId(String companyId) {
@@ -273,7 +269,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.COMPANY_CODE
      *
      * @return the value of RS_PLAN_CTRL.COMPANY_CODE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getCompanyCode() {
@@ -285,7 +280,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.COMPANY_CODE
      *
      * @param companyCode the value for RS_PLAN_CTRL.COMPANY_CODE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setCompanyCode(String companyCode) {
@@ -297,7 +291,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.COMPANY_NAME
      *
      * @return the value of RS_PLAN_CTRL.COMPANY_NAME
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getCompanyName() {
@@ -309,7 +302,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.COMPANY_NAME
      *
      * @param companyName the value for RS_PLAN_CTRL.COMPANY_NAME
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setCompanyName(String companyName) {
@@ -321,7 +313,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.ACCOUNT_ID
      *
      * @return the value of RS_PLAN_CTRL.ACCOUNT_ID
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getAccountId() {
@@ -333,7 +324,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.ACCOUNT_ID
      *
      * @param accountId the value for RS_PLAN_CTRL.ACCOUNT_ID
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setAccountId(String accountId) {
@@ -345,7 +335,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.ACCOUNT_CODE
      *
      * @return the value of RS_PLAN_CTRL.ACCOUNT_CODE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getAccountCode() {
@@ -357,7 +346,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.ACCOUNT_CODE
      *
      * @param accountCode the value for RS_PLAN_CTRL.ACCOUNT_CODE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setAccountCode(String accountCode) {
@@ -369,7 +357,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.PLAN_CTRL_NO
      *
      * @return the value of RS_PLAN_CTRL.PLAN_CTRL_NO
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getPlanCtrlNo() {
@@ -381,7 +368,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.PLAN_CTRL_NO
      *
      * @param planCtrlNo the value for RS_PLAN_CTRL.PLAN_CTRL_NO
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setPlanCtrlNo(String planCtrlNo) {
@@ -393,7 +379,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.CTRL_FLAG
      *
      * @return the value of RS_PLAN_CTRL.CTRL_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getCtrlFlag() {
@@ -405,7 +390,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.CTRL_FLAG
      *
      * @param ctrlFlag the value for RS_PLAN_CTRL.CTRL_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setCtrlFlag(String ctrlFlag) {
@@ -417,7 +401,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.TO_ACCOUNT_CODE
      *
      * @return the value of RS_PLAN_CTRL.TO_ACCOUNT_CODE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getToAccountCode() {
@@ -429,7 +412,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.TO_ACCOUNT_CODE
      *
      * @param toAccountCode the value for RS_PLAN_CTRL.TO_ACCOUNT_CODE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setToAccountCode(String toAccountCode) {
@@ -441,7 +423,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.TO_ACCOUNT_NAME
      *
      * @return the value of RS_PLAN_CTRL.TO_ACCOUNT_NAME
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getToAccountName() {
@@ -453,7 +434,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.TO_ACCOUNT_NAME
      *
      * @param toAccountName the value for RS_PLAN_CTRL.TO_ACCOUNT_NAME
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setToAccountName(String toAccountName) {
@@ -465,7 +445,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.TO_HS_BANK_NAME
      *
      * @return the value of RS_PLAN_CTRL.TO_HS_BANK_NAME
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getToHsBankName() {
@@ -477,7 +456,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.TO_HS_BANK_NAME
      *
      * @param toHsBankName the value for RS_PLAN_CTRL.TO_HS_BANK_NAME
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setToHsBankName(String toHsBankName) {
@@ -489,7 +467,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.PAY_CONTRACT_NO
      *
      * @return the value of RS_PLAN_CTRL.PAY_CONTRACT_NO
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getPayContractNo() {
@@ -501,7 +478,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.PAY_CONTRACT_NO
      *
      * @param payContractNo the value for RS_PLAN_CTRL.PAY_CONTRACT_NO
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setPayContractNo(String payContractNo) {
@@ -513,7 +489,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.PLAN_DATE
      *
      * @return the value of RS_PLAN_CTRL.PLAN_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public Date getPlanDate() {
@@ -525,7 +500,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.PLAN_DATE
      *
      * @param planDate the value for RS_PLAN_CTRL.PLAN_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setPlanDate(Date planDate) {
@@ -537,7 +511,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.PLAN_DESC
      *
      * @return the value of RS_PLAN_CTRL.PLAN_DESC
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getPlanDesc() {
@@ -549,7 +522,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.PLAN_DESC
      *
      * @param planDesc the value for RS_PLAN_CTRL.PLAN_DESC
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setPlanDesc(String planDesc) {
@@ -561,7 +533,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.PL_AMOUNT
      *
      * @return the value of RS_PLAN_CTRL.PL_AMOUNT
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public BigDecimal getPlAmount() {
@@ -573,7 +544,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.PL_AMOUNT
      *
      * @param plAmount the value for RS_PLAN_CTRL.PL_AMOUNT
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setPlAmount(BigDecimal plAmount) {
@@ -585,7 +555,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.AV_AMOUNT
      *
      * @return the value of RS_PLAN_CTRL.AV_AMOUNT
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public BigDecimal getAvAmount() {
@@ -597,7 +566,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.AV_AMOUNT
      *
      * @param avAmount the value for RS_PLAN_CTRL.AV_AMOUNT
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setAvAmount(BigDecimal avAmount) {
@@ -609,7 +577,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.ADJUST_FLAG
      *
      * @return the value of RS_PLAN_CTRL.ADJUST_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getAdjustFlag() {
@@ -621,7 +588,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.ADJUST_FLAG
      *
      * @param adjustFlag the value for RS_PLAN_CTRL.ADJUST_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setAdjustFlag(String adjustFlag) {
@@ -633,7 +599,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.ACCEPT_DATE
      *
      * @return the value of RS_PLAN_CTRL.ACCEPT_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public Date getAcceptDate() {
@@ -645,7 +610,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.ACCEPT_DATE
      *
      * @param acceptDate the value for RS_PLAN_CTRL.ACCEPT_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setAcceptDate(Date acceptDate) {
@@ -657,7 +621,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.REMARK
      *
      * @return the value of RS_PLAN_CTRL.REMARK
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getRemark() {
@@ -669,7 +632,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.REMARK
      *
      * @param remark the value for RS_PLAN_CTRL.REMARK
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setRemark(String remark) {
@@ -681,7 +643,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.DELETED_FLAG
      *
      * @return the value of RS_PLAN_CTRL.DELETED_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getDeletedFlag() {
@@ -693,7 +654,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.DELETED_FLAG
      *
      * @param deletedFlag the value for RS_PLAN_CTRL.DELETED_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setDeletedFlag(String deletedFlag) {
@@ -705,7 +665,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.ORIGIN_FLAG
      *
      * @return the value of RS_PLAN_CTRL.ORIGIN_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getOriginFlag() {
@@ -717,7 +676,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.ORIGIN_FLAG
      *
      * @param originFlag the value for RS_PLAN_CTRL.ORIGIN_FLAG
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setOriginFlag(String originFlag) {
@@ -729,7 +687,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.ORIGIN_APP
      *
      * @return the value of RS_PLAN_CTRL.ORIGIN_APP
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getOriginApp() {
@@ -741,7 +698,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.ORIGIN_APP
      *
      * @param originApp the value for RS_PLAN_CTRL.ORIGIN_APP
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setOriginApp(String originApp) {
@@ -753,7 +709,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.CREATED_BY
      *
      * @return the value of RS_PLAN_CTRL.CREATED_BY
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getCreatedBy() {
@@ -765,7 +720,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.CREATED_BY
      *
      * @param createdBy the value for RS_PLAN_CTRL.CREATED_BY
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setCreatedBy(String createdBy) {
@@ -777,7 +731,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.CREATED_DATE
      *
      * @return the value of RS_PLAN_CTRL.CREATED_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public Date getCreatedDate() {
@@ -789,7 +742,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.CREATED_DATE
      *
      * @param createdDate the value for RS_PLAN_CTRL.CREATED_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setCreatedDate(Date createdDate) {
@@ -801,7 +753,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.LAST_UPD_BY
      *
      * @return the value of RS_PLAN_CTRL.LAST_UPD_BY
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public String getLastUpdBy() {
@@ -813,7 +764,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.LAST_UPD_BY
      *
      * @param lastUpdBy the value for RS_PLAN_CTRL.LAST_UPD_BY
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setLastUpdBy(String lastUpdBy) {
@@ -825,7 +775,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.LAST_UPD_DATE
      *
      * @return the value of RS_PLAN_CTRL.LAST_UPD_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public Date getLastUpdDate() {
@@ -837,7 +786,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.LAST_UPD_DATE
      *
      * @param lastUpdDate the value for RS_PLAN_CTRL.LAST_UPD_DATE
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setLastUpdDate(Date lastUpdDate) {
@@ -849,7 +797,6 @@ public class RsPlanCtrl {
      * This method returns the value of the database column RS_PLAN_CTRL.MODIFICATION_NUM
      *
      * @return the value of RS_PLAN_CTRL.MODIFICATION_NUM
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public Integer getModificationNum() {
@@ -861,7 +808,6 @@ public class RsPlanCtrl {
      * This method sets the value of the database column RS_PLAN_CTRL.MODIFICATION_NUM
      *
      * @param modificationNum the value for RS_PLAN_CTRL.MODIFICATION_NUM
-     *
      * @mbggenerated Wed Aug 10 14:26:58 CST 2011
      */
     public void setModificationNum(Integer modificationNum) {

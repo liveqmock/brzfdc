@@ -34,11 +34,13 @@ public class ExpensesPlanQryAction implements Serializable {
 //         rsPlanCtrlList = expensesPlanService.selectPlanList();
         platformService.selectBranchTellers("9999");
     }
+
     public void onQuery() {
-         rsPlanCtrlList = expensesPlanService.selectPlanList();
+        rsPlanCtrlList = expensesPlanService.selectPlanList();
     }
+
     public void onPrint() {
-         rsPlanCtrlList = expensesPlanService.selectPlanList();
+        rsPlanCtrlList = expensesPlanService.selectPlanList();
     }
 
     //======================================================================
