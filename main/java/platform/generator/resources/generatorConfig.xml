@@ -34,22 +34,23 @@
 
         <!--房地产资金监管银行接口类 -->
         <!--
-        <table tableName="rs_plan_ctrl">
+        <table schema="brzfdc"  tableName="rs_plan_ctrl">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+         <table schema="brzfdc"  tableName="rs_account">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="brzfdc"  tableName="rs_acc_detail">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="brzfdc"  schema="brzfdc" tableName="rs_fdccompany">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
         -->
-       <!-- <table tableName="rs_plan_ctrl">
-            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>-->
-       <!--  <table tableName="rs_account">
-            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>
-         <table tableName="rs_acc_detail">
-            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>-->
-         <table tableName="RS_FDCCOMPANY">
-            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
-        </table>
 
     </context>
 
