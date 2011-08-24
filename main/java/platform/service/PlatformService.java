@@ -6,7 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pub.platform.form.config.SystemAttributeNames;
+import pub.platform.security.OperatorManager;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -114,5 +119,19 @@ public class PlatformService {
         example.createCriteria();
         List<SysSchedulerLog> sysSchedulerLogs = sysSchedulerLogMapper.selectByExample(example);
         return sysSchedulerLogs;
+    }
+
+    /**
+     * 获取当前登录用户信息
+     * @return
+     */
+     public static OperatorManager getOperatorManager(){
+        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        HttpSession session = (HttpSession) extContext.getSession(true);
+        OperatorManager om = (OperatorManager) session.getAttribute(SystemAttributeNames.USER_INFO_NAME);
+        if (om == null) {
+            throw new RuntimeException("用户未登录！");
+        }
+        return om;
     }
 }
