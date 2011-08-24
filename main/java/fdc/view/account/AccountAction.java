@@ -34,7 +34,7 @@ public class AccountAction {
         this.account = new RsAccount();
         accountList = new ArrayList<RsAccount>();
     }
-
+    // Ôö
     public String insertRecord(RsAccount account) {
         try {
             accountService.insertRecord(account);
