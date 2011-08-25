@@ -96,28 +96,28 @@
                             <h:outputLabel value="房屋总价:"/>
                             <h:inputText value="#{contractDetlAction.selectedRecord.totalAmt}" size="30"
                                          disabled="true">
-                                <f:convertNumber pattern="###,###.00"/>
+                                <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
                             <h:outputLabel value="定金:"/>
                             <h:inputText value="#{contractDetlAction.selectedRecord.earnestAmt}" size="30"
                                          disabled="true">
-                                <f:convertNumber pattern="###,###.00"/>
+                                <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
                             <h:outputLabel value="首付款:"/>
                             <h:inputText value="#{contractDetlAction.selectedRecord.firstAmt}" size="30"
                                          disabled="true">
-                                <f:convertNumber pattern="###,###.00"/>
+                                <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
                             <h:outputLabel value="贷款:"/>
                             <h:inputText value="#{contractDetlAction.selectedRecord.loanAmt}" size="30" disabled="true">
-                                <f:convertNumber pattern="###,###.00"/>
+                                <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
                         </h:panelGrid>
                         <h:panelGrid columns="4" cellpadding="2"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="超标金额:"/>
                             <h:inputText value="#{contractDetlAction.selectedRecord.overAmt}" size="30" disabled="true">
-                                <f:convertNumber pattern="###,###.00"/>
+                                <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
                             <h:outputLabel value="财政专户账号:"/>
                             <h:inputText value="#{contractDetlAction.selectedRecord.treAccCode}" size="30"
