@@ -1,7 +1,7 @@
 package fdc.view.company;
 
 import fdc.repository.model.RsFdccompany;
-import fdc.service.company.FdccompanyService;
+import fdc.service.company.CompanyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -21,10 +21,10 @@ import java.util.List;
  */
 @ManagedBean(name = "fdcCompanyAction")
 @ViewScoped
-public class FDCCompanyAction {
-    private Logger logger = LoggerFactory.getLogger(FDCCompanyAction.class);
+public class CompanyAction {
+    private Logger logger = LoggerFactory.getLogger(CompanyAction.class);
     @ManagedProperty(value = "#{fdccompanyService}")
-    private FdccompanyService fdccompanyService;
+    private CompanyService fdccompanyService;
     private RsFdccompany fdccompany;
     private String companyName;
     private List<RsFdccompany> fdccompanyList;
@@ -88,11 +88,11 @@ public class FDCCompanyAction {
         this.fdccompany = fdccompany;
     }
 
-    public FdccompanyService getFdccompanyService() {
+    public CompanyService getFdccompanyService() {
         return fdccompanyService;
     }
 
-    public void setFdccompanyService(FdccompanyService fdccompanyService) {
+    public void setFdccompanyService(CompanyService fdccompanyService) {
         this.fdccompanyService = fdccompanyService;
     }
 

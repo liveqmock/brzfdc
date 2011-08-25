@@ -19,8 +19,8 @@ import java.util.List;
  * Time: ионГ11:11
  * To change this template use File | Settings | File Templates.
  */
-@Service("fdccompanyService")
-public class FdccompanyService {
+@Service
+public class CompanyService {
     @Autowired
     private RsFdccompanyMapper fdccompanyMapper;
 
