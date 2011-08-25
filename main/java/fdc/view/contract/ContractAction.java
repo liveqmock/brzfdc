@@ -1,5 +1,9 @@
 package fdc.view.contract;
 
+import fdc.common.constant.ContractStatus;
+import fdc.common.constant.HouseType;
+import fdc.common.constant.LoanType;
+import fdc.common.constant.PayupType;
 import fdc.repository.model.RsContract;
 import fdc.service.contract.ContractService;
 import org.slf4j.Logger;
@@ -39,11 +43,22 @@ public class ContractAction implements Serializable{
     private RsContract[] selectedRecords;
     private RsContract selectedRecord;
 
-    private List<SelectItem> contractStatusList;
+    private List<SelectItem> contractStatusOptions;
+    private List<SelectItem> houseTypeOptions;
+    private List<SelectItem> loanTypeOptions;
+    private List<SelectItem> payupTypeOptions;
+
+    private ContractStatus contractStatus = ContractStatus.NORMAL;
+    private HouseType houseType = HouseType.NORMAL;
+    private LoanType loanType = LoanType.SHANG_YE;
+    private PayupType payupType = PayupType.PEND_PAYUP;
 
     @PostConstruct
     public void init() {
-
+        this.contractStatusOptions = toolsService.getEnuSelectItemList("CONTRACT_STATUS", false, false);
+        this.houseTypeOptions = toolsService.getEnuSelectItemList("HOUSE_TYPE", false, false);
+        this.loanTypeOptions = toolsService.getEnuSelectItemList("LOAN_TYPE", false, false);
+        this.payupTypeOptions = toolsService.getEnuSelectItemList("PAYUP_TYPE", false, false);
         initList();
     }
 
@@ -111,11 +126,67 @@ public class ContractAction implements Serializable{
         this.toolsService = toolsService;
     }
 
-    public List<SelectItem> getContractStatusList() {
-        return contractStatusList;
+    public List<SelectItem> getContractStatusOptions() {
+        return contractStatusOptions;
     }
 
-    public void setContractStatusList(List<SelectItem> contractStatusList) {
-        this.contractStatusList = contractStatusList;
+    public void setContractStatusOptions(List<SelectItem> contractStatusOptions) {
+        this.contractStatusOptions = contractStatusOptions;
+    }
+
+    public ContractStatus getContractStatus() {
+        return contractStatus;
+    }
+
+    public void setContractStatus(ContractStatus contractStatus) {
+        this.contractStatus = contractStatus;
+    }
+
+    public List<SelectItem> getHouseTypeOptions() {
+        return houseTypeOptions;
+    }
+
+    public void setHouseTypeOptions(List<SelectItem> houseTypeOptions) {
+        this.houseTypeOptions = houseTypeOptions;
+    }
+
+    public HouseType getHouseType() {
+        return houseType;
+    }
+
+    public void setHouseType(HouseType houseType) {
+        this.houseType = houseType;
+    }
+
+    public LoanType getLoanType() {
+        return loanType;
+    }
+
+    public void setLoanType(LoanType loanType) {
+        this.loanType = loanType;
+    }
+
+    public PayupType getPayupType() {
+        return payupType;
+    }
+
+    public void setPayupType(PayupType payupType) {
+        this.payupType = payupType;
+    }
+
+    public List<SelectItem> getLoanTypeOptions() {
+        return loanTypeOptions;
+    }
+
+    public void setLoanTypeOptions(List<SelectItem> loanTypeOptions) {
+        this.loanTypeOptions = loanTypeOptions;
+    }
+
+    public List<SelectItem> getPayupTypeOptions() {
+        return payupTypeOptions;
+    }
+
+    public void setPayupTypeOptions(List<SelectItem> payupTypeOptions) {
+        this.payupTypeOptions = payupTypeOptions;
     }
 }

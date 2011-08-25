@@ -40,55 +40,77 @@
     <ui:define name="content">
         <div style="margin:5px;">
             <p:tabView style="font-weight:normal;font-style:normal">
-            <p:tab title="建行直连批量代扣记录清单">
-                <p:messages id="msgs" showDetail="false"/>
-                <h:form id="form">
-                    <p:dataTable id="pdt" style="width:100%;"
-                                 dynamic="true" selectionMode="single"
-                                 value="#{contractAction.detlList}" var="record"
-                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 paginator="true" rows="15" paginatorPosition="bottom"
-                                 rowsPerPageTemplate="100,50,30,15,5"
-                                 emptyMessage="数据记录为空...">
+                <p:tab title="合同记录清单">
+                    <p:messages id="msgs" showDetail="false"/>
+                    <h:form id="form">
+                        <p:menubar>
+                            <p:menuitem type="push" value="导出EXCEL" icon="ui-icon ui-icon-document"
+                                        action="#{contractAction.onPrint}" update="msgs, pdt" ajax="true"/>
+                        </p:menubar>
+                        <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
+                        <p:dataTable id="pdt" style="width:100%;"
+                                     dynamic="true" selectionMode="single"
+                                     value="#{contractAction.detlList}" var="record"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="15" paginatorPosition="bottom"
+                                     rowsPerPageTemplate="100,50,30,15,5"
+                                     emptyMessage="数据记录为空...">
 
-                        <p:column headerText="合同号" filterBy="#{record.contractNo}"
-                                  filterMatchMode="contains">
-                            <h:outputText value="#{record.contractNo}"/>
-                        </p:column>
-                        <p:column headerText="房产商" filterBy="#{record.companyName}"
-                                  filterMatchMode="contains">
-                            <h:outputText value="#{record.companyName}"/>
-                        </p:column>
-                        <p:column headerText="监管帐号" filterBy="#{record.accountCode}"
-                                  filterMatchMode="contains">
-                            <h:outputText value="#{record.accountCode}"/>
-                        </p:column>
-                        <p:column headerText="买方姓名" filterBy="#{record.buyerName}"
-                                  filterMatchMode="contains">
-                            <h:outputText value="#{record.buyerName}"/>
-                        </p:column>
-                        <p:column headerText="房屋类型" filterBy="#{record.houseType}"
-                                  filterMatchMode="contains">
-                            <h:outputText value="#{record.houseType}"/>
-                        </p:column>
-                        <p:column headerText="房款总价" >
-                            <h:outputText value="#{record.totalAmt}" style="float: right">
-                                <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="交易状态" filterBy="#{record.statusFlag}"
-                                  filterMatchMode="contains">
-                            <h:outputText value="#{record.statusFlag}"/>
-                        </p:column>
-                    </p:dataTable>
-                </h:form>
-            </p:tab>
+                            <p:column headerText="合同号" style="text-align:center" filterBy="#{record.contractNo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.contractNo}"/>
+                            </p:column>
+                            <p:column headerText="房产商" style="text-align:center" filterBy="#{record.companyName}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.companyName}"/>
+                            </p:column>
+                            <p:column headerText="监管帐号" style="text-align:center" filterBy="#{record.accountCode}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.accountCode}"/>
+                            </p:column>
+                            <p:column headerText="买方姓名" style="text-align:center" filterBy="#{record.buyerName}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.buyerName}"/>
+                            </p:column>
+                            <p:column headerText="房屋类型" style="text-align:center" filterBy="#{record.houseType}"
+                                      filterOptions="#{contractAction.houseTypeOptions}"
+                                      filterMatchMode="exact">
+                                <h:outputText value="#{contractAction.houseType.valueOfAlias(record.houseType).title}"/>
+                            </p:column>
+                            <p:column headerText="房款总价">
+                                <h:outputText value="#{record.totalAmt}" style="float: right">
+                                    <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
+                                      filterOptions="#{contractAction.contractStatusOptions}"
+                                      filterMatchMode="exact">
+                                <h:outputText
+                                        value="#{contractAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
+                            </p:column>
+                            <p:column headerText="操作" style="width:50px;text-align:center">
+                                <p:commandLink style="color:blue;" value="详细" update="popupwindow"
+                                               oncomplete="doPopupWindow(this);return false;">
+                                    <f:setPropertyActionListener value="#{record}"
+                                                                 target="#{contractAction.selectedRecord}"/>
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
             </p:tabView>
         </div>
         <h:form id="hidden" target="popupwindow">
             <h:commandLink id="go" actionListener="#{contractAction.showDetailListener}"
                            action="#{contractAction.onShowDetail}">
-                <f:attribute name="pkid" value="#{contractAction.selectedRecord.pkid}"/>
+                <f:attribute name="pkId" value="#{contractAction.selectedRecord.pkId}"/>
             </h:commandLink>
         </h:form>
     </ui:define>

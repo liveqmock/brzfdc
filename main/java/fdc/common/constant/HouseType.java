@@ -9,16 +9,16 @@ import java.util.Hashtable;
  * Time: 下午3:30
  * To change this template use File | Settings | File Templates.
  */
-public enum ContractStatus implements EnumApp {
-    NORMAL("1", "正常进行"),
-    END("8", "交易完成"),
-    CANCEL("9", "撤销终止");
+public enum HouseType implements EnumApp {
+    NORMAL("01", "普通商品房"),
+    JING_JI("02", "经济适用房"),
+    XIAN_JIA("03", "限价商品房");
 
     private String code = null;
     private String title = null;
-    private static Hashtable<String, ContractStatus> aliasEnums;
+    private static Hashtable<String, HouseType> aliasEnums;
 
-    ContractStatus(String code, String title) {
+    HouseType(String code, String title) {
         this.init(code, title);
     }
 
@@ -35,7 +35,7 @@ public enum ContractStatus implements EnumApp {
         aliasEnums.put(title, this);
     }
 
-    public static ContractStatus valueOfAlias(String alias) {
+    public static HouseType valueOfAlias(String alias) {
         return aliasEnums.get(alias);
     }
 
