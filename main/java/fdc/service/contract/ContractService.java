@@ -24,6 +24,6 @@ public class ContractService {
     public List<RsContract> selectContractList(){
         RsContractExample example = new RsContractExample();
         example.createCriteria().andDeletedFlagEqualTo("0");
-        return  null;
+        return  contractMapper.selectByExample(example);
     }
 }
