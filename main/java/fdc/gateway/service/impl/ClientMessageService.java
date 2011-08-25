@@ -1,13 +1,6 @@
 package fdc.gateway.service.impl;
 
-import fdc.gateway.domain.ResHead;
-import fdc.gateway.domain.fdc.CommonRes;
-import fdc.gateway.domain.fdc.T000.T0003Res;
-import fdc.gateway.domain.fdc.T200.T2003Res;
 import fdc.gateway.service.IMessageService;
-import fdc.gateway.domain.BaseBean;
-import fdc.gateway.domain.fdc.T200.T2004Res;
-import fdc.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

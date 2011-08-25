@@ -1,7 +1,7 @@
 package fdc.gateway.test;
 
 import fdc.gateway.domain.BaseBean;
-import fdc.gateway.domain.fdc.T200.T2003Req;
+import fdc.gateway.domain.T200.T2003Req;
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.service.XSocketService;
 import fdc.gateway.service.impl.ClientMessageService;
