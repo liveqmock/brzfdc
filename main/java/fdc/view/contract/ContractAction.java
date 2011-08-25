@@ -74,7 +74,7 @@ public class ContractAction implements Serializable{
     }
 
         public String onShowDetail() {
-        return "common/contractDetlForm.xhtml";
+        return "contractDetlForm";
     }
 
     public void showDetailListener(ActionEvent event) {

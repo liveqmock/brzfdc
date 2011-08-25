@@ -26,4 +26,7 @@ public class ContractService {
         example.createCriteria().andDeletedFlagEqualTo("0");
         return  contractMapper.selectByExample(example);
     }
+    public RsContract selectRecordContract(String pkid) {
+        return contractMapper.selectByPrimaryKey(pkid);
+    }
 }
