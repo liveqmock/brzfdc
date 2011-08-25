@@ -47,41 +47,41 @@
             <h:form id="form">
 
                 <p:panel id="input" header="【房地产开发商基本信息】新增表单">
-                    <h:panelGrid columns="2" cellspacing="7">
-                        <h:panelGrid columns="2" cellspacing="7" columnClasses="col-95,col-5">
+                    <h:panelGrid columns="2" cellspacing="3" style="width: 100%">
+                        <h:panelGrid columns="2" cellspacing="3" style="width: 80%" columnClasses="col-95,col-5">
 
                             <h:outputLabel value="* 房产商名称:" for="companyName"/>
-                            <h:inputText autocomplete="off" id="companyName" style="width:322px;" required="true"
-                                         requiredMessage="必须输入房产商名称！" value="#{fdcCompanyAction.fdccompany.companyName}"
+                            <h:inputText autocomplete="off" id="companyName" style="width:260px;" required="true"
+                                         requiredMessage="必须输入房产商名称！" value="#{companyAction.fdccompany.companyName}"
                                          onfocus="this.select()">
                             </h:inputText>
 
                             <h:outputLabel value="房产商简称:" for="shortName"/>
-                            <p:inputText autocomplete="off" id="shortName" style="width:162px;"
-                                         value="#{fdcCompanyAction.fdccompany.companyShrtName}">
+                            <p:inputText autocomplete="off" id="shortName" style="width:260px;"
+                                         value="#{companyAction.fdccompany.companyShrtName}">
                             </p:inputText>
 
                             <h:outputLabel value="* 法定代表人:" for="mngrName"/>
-                            <h:inputText autocomplete="off" id="mngrName" style="width:162px;" required="true"
-                                         requiredMessage="必须输入法定代表人！" value="#{fdcCompanyAction.fdccompany.mngrName}">
+                            <h:inputText autocomplete="off" id="mngrName" style="width:260px;" required="true"
+                                         requiredMessage="必须输入法定代表人！" value="#{companyAction.fdccompany.mngrName}">
                             </h:inputText>
 
                             <h:outputLabel value="营业执照:"/>
-                            <p:inputText id="tradLicenceNo" value="#{fdcCompanyAction.fdccompany.tradLicenceNo}"
-                                         style="width:162px;"/>
+                            <p:inputText id="tradLicenceNo" value="#{companyAction.fdccompany.tradLicenceNo}"
+                                         style="width:260px;"/>
 
                             <h:outputLabel value="公司地址:"/>
-                            <p:inputText id="address" value="#{fdcCompanyAction.fdccompany.address}"
-                                         style="width:322px;"/>
+                            <p:inputText id="address" value="#{companyAction.fdccompany.address}"
+                                         style="width:260px;"/>
 
                         </h:panelGrid>
-                        <h:panelGrid>
+                        <h:panelGrid style="width: 20%">
                             <p:commandButton id="saveBtn" ajax="true" value="保存"
-                                             action="#{fdcCompanyAction.insertNewFdccompany}"
+                                             action="#{companyAction.insertNewFdccompany}"
                                              style="margin-left:15px;width:90px"
                                              update="input,pdt,msgs">
                             </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{fdcCompanyAction.reset}"
+                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{companyAction.reset}"
                                              style="width:90px;margin-left:15px" update="input,msgs"/>
                         </h:panelGrid>
                     </h:panelGrid>
@@ -97,29 +97,29 @@
 
                 <p:dataTable id="pdt" style="width:100%;"
                              dynamic="true" selectionMode="single"
-                             value="#{fdcCompanyAction.fdccompanyList}" var="record"
+                             value="#{companyAction.fdccompanyList}" var="record"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             paginator="true" rows="30" paginatorPosition="bottom"
-                             rowsPerPageTemplate="100,50,30,10,5"
+                             paginator="true" rows="15" paginatorPosition="bottom"
+                             rowsPerPageTemplate="100,50,30,15,5"
                              emptyMessage="数据记录为空...">
 
-                    <p:column headerText="房产商名称" style="text-align:right">
+                    <p:column headerText="房产商名称" style="text-align:left">
                         <h:outputText value="#{record.companyName}"/>
                     </p:column>
 
-                    <p:column headerText="简称" style="text-align:right">
+                    <p:column headerText="简称" style="text-align:left">
                         <h:outputText value="#{record.companyShrtName}"/>
                     </p:column>
 
-                    <p:column headerText="法定代表人" style="text-align:right">
+                    <p:column headerText="法定代表人" style="text-align:left">
                         <h:outputText value="#{record.mngrName}"/>
                     </p:column>
 
-                    <p:column headerText="营业执照" style="text-align:right">
+                    <p:column headerText="营业执照" style="text-align:left">
                         <h:outputText value="#{record.tradLicenceNo}"/>
                     </p:column>
 
-                    <p:column headerText="公司地址" style="text-align:right">
+                    <p:column headerText="公司地址" style="text-align:left">
                         <h:outputText value="#{record.address}"/>
                     </p:column>
 

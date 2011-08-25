@@ -52,7 +52,7 @@
 
                             <h:outputLabel value="* 房产商名称:" for="companyName"/>
                             <h:inputText autocomplete="off" id="companyName" style="width:262px;" required="true"
-                                         requiredMessage="必须输入房产商名称！" value="#{fdcCompanyAction.companyName}"
+                                         requiredMessage="必须输入房产商名称！" value="#{companyAction.companyName}"
                                          onfocus="this.select()">
                             </h:inputText>
 
@@ -60,11 +60,11 @@
                         <h:panelGrid columns="1" style="width:100%;margin-left: 215px">
                             <h:panelGroup>
                             <p:commandButton id="qryBtn" ajax="true" value="查询"
-                                             action="#{fdcCompanyAction.qryFdccompanys}"
+                                             action="#{companyAction.qryFdccompanys}"
                                              style="margin-left:15px;width:80px"
                                              update="input,pdt,msgs">
                             </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{fdcCompanyAction.reset}"
+                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{companyAction.reset}"
                                              style="width:80px;margin-left:15px" update="query,msgs"/>
                             </h:panelGroup>
                         </h:panelGrid>
@@ -81,7 +81,7 @@
 
                 <p:dataTable id="pdt" style="width:100%;"
                              dynamic="true" selectionMode="single"
-                             value="#{fdcCompanyAction.fdccompanyList}" var="record"
+                             value="#{companyAction.fdccompanyList}" var="record"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              paginator="true" rows="15" paginatorPosition="bottom"
                              rowsPerPageTemplate="100,50,30,15,5"

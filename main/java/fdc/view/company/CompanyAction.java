@@ -19,12 +19,12 @@ import java.util.List;
  * Time: 上午10:58
  * To change this template use File | Settings | File Templates.
  */
-@ManagedBean(name = "fdcCompanyAction")
+@ManagedBean
 @ViewScoped
 public class CompanyAction {
     private Logger logger = LoggerFactory.getLogger(CompanyAction.class);
-    @ManagedProperty(value = "#{fdccompanyService}")
-    private CompanyService fdccompanyService;
+    @ManagedProperty(value = "#{companyService}")
+    private CompanyService companyService;
     private RsFdccompany fdccompany;
     private String companyName;
     private List<RsFdccompany> fdccompanyList;
@@ -32,13 +32,13 @@ public class CompanyAction {
     @PostConstruct
     public void init() {
         this.fdccompany = new RsFdccompany();
-        this.fdccompanyList = fdccompanyService.qryAllRecords();
+        this.fdccompanyList = companyService.qryAllRecords();
     }
 
     // 增
     public String insertNewFdccompany() {
         try {
-            fdccompanyService.insertRsFdccompany(fdccompany);
+            companyService.insertRsFdccompany(fdccompany);
             fdccompanyList.add(fdccompany);
         } catch (Exception e) {
             logger.error("新增数据失败，", e);
@@ -53,7 +53,7 @@ public class CompanyAction {
     // 改
     public String updateNewFdccompany() {
         try {
-            fdccompanyService.updateRsFdccompany(fdccompany);
+            companyService.updateRsFdccompany(fdccompany);
         } catch (Exception e) {
             logger.error("更新异常", e);
             MessageUtil.addError(e.getMessage());
@@ -66,7 +66,7 @@ public class CompanyAction {
     //  查
     public String qryFdccompanys() {
         try {
-            fdccompanyList = fdccompanyService.qryRsFdccompanyByName(companyName);
+            fdccompanyList = companyService.qryRsFdccompanyByName(companyName);
         } catch (Exception e) {
             logger.error("查询异常", e);
             MessageUtil.addError(e.getMessage());
@@ -88,12 +88,12 @@ public class CompanyAction {
         this.fdccompany = fdccompany;
     }
 
-    public CompanyService getFdccompanyService() {
-        return fdccompanyService;
+    public CompanyService getCompanyService() {
+        return companyService;
     }
 
-    public void setFdccompanyService(CompanyService fdccompanyService) {
-        this.fdccompanyService = fdccompanyService;
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
     }
 
     public List<RsFdccompany> getFdccompanyList() {
