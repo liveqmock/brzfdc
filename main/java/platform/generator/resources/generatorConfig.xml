@@ -71,9 +71,11 @@
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
+        <table schema="brzfdc" tableName="rs_contract">
+            <property name="ignoreQualifiersAtRuntime" value="true"/>
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
         -->
-
-
 
 
         <!--BI-->
