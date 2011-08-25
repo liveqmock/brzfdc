@@ -30,4 +30,11 @@ public class ExpensesPlanService {
         return rsPlanCtrlMapper.selectByExample(example);
     }
 
+    public List<RsPlanCtrl> selectPlanListByFields(String companyName, String accountCode, String payContractNo) {
+        RsPlanCtrlExample example = new RsPlanCtrlExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andCompanyNameLike("%"+companyName+"%")
+        .andAccountCodeLike("%"+accountCode+"%").andPayContractNoLike("%"+payContractNo+"%");
+        return rsPlanCtrlMapper.selectByExample(example);
+    }
+
 }

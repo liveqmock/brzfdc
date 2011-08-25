@@ -35,16 +35,21 @@
             <p:messages id="msgs" showDetail="false"/>
             <h:form id="form">
                 <div id="header">
-                    <p:panel header="aaa">
+                    <p:panel header="【用款计划】查询条件">
                         <h:panelGrid columns="2" cellspacing="5" columnClasses="col-80,col-20">
-<!--
-<h:panelGrid columns="4" cellspacing="5"
+                            <h:panelGrid columns="6" cellspacing="5"
                                          columnClasses="input-col-m,input-col-l,input-col-m,input-col-l">
                                 <h:outputLabel value="单位名称:" for="companyName"/>
                                 <h:inputText id="companyName" size="30" required="true" requiredMessage="请输入单位名称。"
                                              value="#{expensesPlanQryAction.rsPlanCtrl.companyName}"/>
+                                 <h:outputLabel value="监管账号:" for="accountCode"/>
+                                <h:inputText id="accountCode" size="30"
+                                             value="#{expensesPlanQryAction.rsPlanCtrl.accountCode}"/>
+                                <h:outputLabel value="付款合同号:" for="payContractNo"/>
+                                <h:inputText id="payContractNo" size="30"
+                                             value="#{expensesPlanQryAction.rsPlanCtrl.payContractNo}"/>
                             </h:panelGrid>
-                            -->
+
                             <h:panelGrid>
                                 <p:commandButton id="qrybtn" style="width:80px;" value="查询"
                                                  action="#{expensesPlanQryAction.onQuery}"
@@ -71,13 +76,50 @@
                              dynamic="true" selectionMode="single"
                              value="#{expensesPlanQryAction.rsPlanCtrlList}" var="record"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             paginator="true" rows="30" paginatorPosition="bottom"
+                             paginator="true" rows="20" paginatorPosition="bottom"
                              rowsPerPageTemplate="100,50,30,10,5"
                              emptyMessage="数据记录为空...">
 
-                    <p:column headerText="单位名称" sortBy="#{record.companyName}" filterBy="#{record.companyName}"
-                              filterMatchMode="contains">
+                    <p:column headerText="单位名称">
                         <h:outputText value="#{record.companyName}"/>
+                    </p:column>
+
+                    <p:column headerText="监管账号" style="text-align:center">
+                        <h:outputText value="#{record.accountCode}"/>
+                    </p:column>
+
+                    <p:column headerText="计划控制编号" style="text-align:center">
+                        <h:outputText value="#{record.planCtrlNo}"/>
+                    </p:column>
+
+                    <p:column headerText="付款合同号" style="text-align:center">
+                        <h:outputText value="#{record.payContractNo}"/>
+                    </p:column>
+
+                    <p:column headerText="计划日期" style="text-align:center">
+                        <h:outputText value="#{record.planDate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="用款说明">
+                        <h:outputText value="#{record.planDesc}"/>
+                    </p:column>
+
+                    <p:column headerText="计划金额">
+                        <h:outputText value="#{record.plAmount}" style="float: right">
+                            <f:convertNumber pattern="#,###,###,###.00"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="可用金额">
+                        <h:outputText value="#{record.avAmount}" style="float: right">
+                            <f:convertNumber pattern="#,###,###,###.00"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="操作" style="text-align:center">
+                        <p:commandLink value="详细" style="color:blue"/>
                     </p:column>
                 </p:dataTable>
             </h:form>

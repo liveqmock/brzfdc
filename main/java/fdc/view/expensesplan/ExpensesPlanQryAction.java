@@ -2,7 +2,7 @@ package fdc.view.expensesplan;
 
 import fdc.repository.model.RsPlanCtrl;
 import fdc.service.expensesplan.ExpensesPlanService;
-import platform.service.PlatformService;
+import platform.common.utils.MessageUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -24,19 +24,25 @@ public class ExpensesPlanQryAction implements Serializable {
     private RsPlanCtrl rsPlanCtrl;
     private List<RsPlanCtrl> rsPlanCtrlList;
 
-    @ManagedProperty(value = "#{platformService}")
-    private PlatformService platformService;
+   // @ManagedProperty(value = "#{platformService}")
+    //private PlatformService platformService;
     @ManagedProperty(value = "#{expensesPlanService}")
     private ExpensesPlanService expensesPlanService;
 
     @PostConstruct
     public void init() {
-//         rsPlanCtrlList = expensesPlanService.selectPlanList();
-        platformService.selectBranchTellers("9999");
+        rsPlanCtrl = new RsPlanCtrl();
+         rsPlanCtrlList = expensesPlanService.selectPlanList();
+      //  platformService.selectBranchTellers("9999");
     }
 
-    public void onQuery() {
-        rsPlanCtrlList = expensesPlanService.selectPlanList();
+    public String onQuery() {
+        rsPlanCtrlList = expensesPlanService.selectPlanListByFields(rsPlanCtrl.getCompanyName(),
+                rsPlanCtrl.getAccountCode(), rsPlanCtrl.getPayContractNo());
+        if(rsPlanCtrlList.isEmpty()) {
+            MessageUtil.addWarn("没有查询到符合条件的数据记录！");
+        }
+        return null;
     }
 
     public void onPrint() {
@@ -62,9 +68,9 @@ public class ExpensesPlanQryAction implements Serializable {
         this.rsPlanCtrlList = rsPlanCtrlList;
     }
 
-    public void setPlatformService(PlatformService platformService) {
+   /* public void setPlatformService(PlatformService platformService) {
         this.platformService = platformService;
-    }
+    } */
 
     public void setExpensesPlanService(ExpensesPlanService expensesPlanService) {
         this.expensesPlanService = expensesPlanService;
