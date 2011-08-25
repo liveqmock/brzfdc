@@ -1,5 +1,6 @@
 package fdc.service;
 
+import fdc.common.constant.ContractRecvStatus;
 import fdc.repository.dao.RsContractMapper;
 import fdc.repository.dao.RsReceiveMapper;
 import fdc.repository.model.RsReceive;
@@ -24,9 +25,19 @@ public class ContractRecvService {
     @Autowired
     private RsReceiveMapper receiveMapper;
 
-    public List<RsReceive> selectContractRecvList(){
+    public List<RsReceive> selectContractRecvList() {
         RsReceiveExample example = new RsReceiveExample();
         example.createCriteria().andDeletedFlagEqualTo("0");
-        return  receiveMapper.selectByExample(example);
+        return receiveMapper.selectByExample(example);
+    }
+
+    public List<RsReceive> selectContractList(ContractRecvStatus recvStatus) {
+        RsReceiveExample example = new RsReceiveExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(recvStatus.getCode());
+        return receiveMapper.selectByExample(example);
+    }
+
+    public RsReceive selectContractRecv(String pkId) {
+        return receiveMapper.selectByPrimaryKey(pkId);
     }
 }

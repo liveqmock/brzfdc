@@ -1,5 +1,6 @@
 package fdc.service.contract;
 
+import fdc.common.constant.ContractRecvStatus;
 import fdc.repository.dao.RsContractMapper;
 import fdc.repository.model.RsContract;
 import fdc.repository.model.RsContractExample;
@@ -24,6 +25,11 @@ public class ContractService {
     public List<RsContract> selectContractList(){
         RsContractExample example = new RsContractExample();
         example.createCriteria().andDeletedFlagEqualTo("0");
+        return  contractMapper.selectByExample(example);
+    }
+    public List<RsContract> selectContractList(ContractRecvStatus recvStatus){
+        RsContractExample example = new RsContractExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(recvStatus.getCode());
         return  contractMapper.selectByExample(example);
     }
     public RsContract selectRecordContract(String pkid) {

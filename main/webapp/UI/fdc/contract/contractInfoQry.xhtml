@@ -109,7 +109,7 @@
         </div>
         <h:form id="hidden" target="popupwindow">
             <h:commandLink id="go" actionListener="#{contractAction.showDetailListener}"
-                           action="#{contractAction.onShowDetail}">
+                           action="contractDetlForm">
                 <f:attribute name="pkId" value="#{contractAction.selectedRecord.pkId}"/>
             </h:commandLink>
         </h:form>

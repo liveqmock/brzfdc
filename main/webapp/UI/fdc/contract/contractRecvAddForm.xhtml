@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/templates/ui.xhtml">
+
+    <ui:define name="head">
+        <style type="text/css">
+            .col-label {
+                width: 100px;
+                text-align: right;
+            }
+
+            .col-label2 {
+                width: 200px;
+                text-align: right;
+            }
+
+            .col-input {
+                width: 30px;
+            }
+
+            .col_remark {
+                width: 100px;
+                text-align: right;
+            }
+
+        </style>
+        <script type="text/javascript">
+            function reback() {
+                window.location.replace("contractInfoQry.xhtml");
+//                document.location.href = "contractInfoQry.xhtml";
+            }
+        </script>
+    </ui:define>
+    <ui:define name="content">
+        <div style="margin:5px;">
+            <h:form id="form">
+                <p:fieldset legend="缴款信息">
+                    <h:panelGrid id="detailPanel1" columns="1" cellpadding="8" border="0" style="margin-top: 15px;">
+                        <h:panelGrid columns="4" cellpadding="2" border="0"
+                                     columnClasses="col-label,col-input,col-label2,col-input">
+                            <h:outputLabel value="单据号:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.docNo}"
+                                         size="30" disabled="false"/>
+                            <h:outputLabel value="合同号:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.businessNo}"
+                                         size="30" disabled="false"/>
+                            <h:outputLabel value="缴款金额:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.plAmount}" size="30"
+                                         disabled="false">
+                                <f:convertNumber pattern="###,##0.00"/>
+                            </h:inputText>
+                            <h:outputLabel value="缴款类型:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.receiveType}" size="30"
+                                         disabled="false"/>
+                            <h:outputLabel value="缴款时间:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.tradeDate}" size="30"
+                                         disabled="false"/>
+                            <h:outputLabel value="买方户名:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.buyerAccName}" size="30"
+                                         disabled="false"/>
+                            <h:outputLabel value="买方账号:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.buyerAccCode}" size="30"
+                                         disabled="false"/>
+                            <h:outputLabel value="买方开户行:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.buyerBankName}" size="30"
+                                         disabled="false"/>
+
+                        </h:panelGrid>
+
+                    </h:panelGrid>
+                </p:fieldset>
+                        <p:fieldset legend="操作">
+
+                        <h:panelGrid columns="2" cellpadding="5" border="0"
+                                     columnClasses="col-label,col-input,col-label2,col-input">
+
+                            <h:commandButton id="saveBtn" ajax="true" value="保存"
+                                             action="aaa"
+                                             style="margin-left:300px;width:90px">
+                            </h:commandButton>
+                            <h:commandButton ajax="true" id="resetBtn" value="关闭" action="aaa"
+                                             style="width:90px;margin-left:15px" />
+                        </h:panelGrid>
+                        </p:fieldset>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

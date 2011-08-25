@@ -8,12 +8,12 @@
     <ui:define name="head">
         <style type="text/css">
             .col-label {
-                width: 90px;
+                width: 100px;
                 text-align: right;
             }
 
             .col-label2 {
-                width: 90px;
+                width: 200px;
                 text-align: right;
             }
 
@@ -22,7 +22,7 @@
             }
 
             .col_remark {
-                width: 90px;
+                width: 100px;
                 text-align: right;
             }
 
@@ -37,15 +37,15 @@
     <ui:define name="content">
         <div style="margin:5px;">
             <h:form id="form">
-                <p:fieldset legend="预售房合同查询明细">
-                    <h:panelGrid id="detailPanel1" columns="1" cellpadding="3" border="0"
-                                 style="font-family: Gill Sans,Arial,sans-serif; font-size: 1.2em">
+                <p:fieldset legend="合同明细信息">
+                    <h:panelGrid id="detailPanel1" columns="1" cellpadding="3" border="0" style="margin-top: 15px;">
                         <h:panelGrid columns="4" cellpadding="2" border="0"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="合同号:"/>
                             <h:inputText value="#{contractDetlAction.selectedRecord.contractNo}"
                                          size="30" disabled="true"/>
                         </h:panelGrid>
+                        <p:separator/>
                         <h:panelGrid columns="4" cellpadding="2"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="房产商:"/>
@@ -79,6 +79,8 @@
                             <h:inputText value="#{contractDetlAction.selectedRecord.buyerBankName}" size="30"
                                          disabled="true"/>
                         </h:panelGrid>
+                        <p:separator/>
+
                         <h:panelGrid columns="4" cellpadding="2"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="房屋地址:"/>
@@ -91,6 +93,8 @@
                             <h:inputText valu..e="#{contractDetlAction.selectedRecord.houseNo}" size="30"
                                          disabled="true"/>
                         </h:panelGrid>
+                        <p:separator/>
+
                         <h:panelGrid columns="4" cellpadding="2"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="房屋总价:"/>

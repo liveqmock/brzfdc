@@ -45,6 +45,8 @@ public class ContractRecvAction implements Serializable {
     private RsContract selectedRecord;
 
     private List<RsReceive> detlRecvList;
+    private List<RsReceive> pendChkList;
+    private List<RsReceive> pendActList;
     private RsReceive[] selectedRecvRecords;
     private RsReceive selectedRecvRecord;
 
@@ -78,6 +80,8 @@ public class ContractRecvAction implements Serializable {
 
     private void initList() {
         this.detlList = contractService.selectContractList();
+        this.pendChkList = contractRecvService.selectContractList(ContractRecvStatus.INIT);
+        this.pendActList = contractRecvService.selectContractList(ContractRecvStatus.CHECKED);
         this.detlRecvList = contractRecvService.selectContractRecvList();
     }
 
@@ -268,5 +272,38 @@ public class ContractRecvAction implements Serializable {
 
     public void setWorkResult(WorkResult workResult) {
         this.workResult = workResult;
+    }
+
+
+    public List<SelectItem> getReceiveTypeOptions() {
+        return receiveTypeOptions;
+    }
+
+    public void setReceiveTypeOptions(List<SelectItem> receiveTypeOptions) {
+        this.receiveTypeOptions = receiveTypeOptions;
+    }
+
+    public ReceiveType getReceiveType() {
+        return receiveType;
+    }
+
+    public void setReceiveType(ReceiveType receiveType) {
+        this.receiveType = receiveType;
+    }
+
+    public List<RsReceive> getPendChkList() {
+        return pendChkList;
+    }
+
+    public void setPendChkList(List<RsReceive> pendChkList) {
+        this.pendChkList = pendChkList;
+    }
+
+    public List<RsReceive> getPendActList() {
+        return pendActList;
+    }
+
+    public void setPendActList(List<RsReceive> pendActList) {
+        this.pendActList = pendActList;
     }
 }
