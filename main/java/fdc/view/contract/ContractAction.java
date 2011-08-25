@@ -34,6 +34,10 @@ public class ContractAction {
 
     }
 
+    private void initList(){
+
+    }
+
     public  String onQuery(){
          return null;
     }

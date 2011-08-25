@@ -34,38 +34,6 @@
         <div style="margin:5px;">
             <p:messages id="msgs" showDetail="false"/>
             <h:form id="form">
-                <div id="header">
-                    <p:panel header="aaa">
-                        <h:panelGrid columns="2" cellspacing="5" columnClasses="col-80,col-20">
-                            <!--
-<h:panelGrid columns="4" cellspacing="5"
-                                         columnClasses="input-col-m,input-col-l,input-col-m,input-col-l">
-                                <h:outputLabel value="单位名称:" for="companyName"/>
-                                <h:inputText id="companyName" size="30" required="true" requiredMessage="请输入单位名称。"
-                                             value="#{contractAction.rsPlanCtrl.companyName}"/>
-                            </h:panelGrid>
-                            -->
-                            <h:panelGrid>
-                                <p:commandButton id="qrybtn" style="width:80px;" value="查询"
-                                                 action="#{contractAction.onQuery}"
-                                                 update="pdt,msgs">
-                                </p:commandButton>
-                                <p:commandButton ajax="false" id="btnprt" value="导出"
-                                                 action="#{contractAction.onPrint}"
-                                                 style="width:80px;"/>
-                            </h:panelGrid>
-                        </h:panelGrid>
-                    </p:panel>
-                </div>
-
-                <p:ajaxStatus style="height:20px;text-align:center">
-                    <f:facet name="start">
-                        <h:graphicImage value="/images/ajaxloadingbar.gif"/>
-                    </f:facet>
-                    <f:facet name="complete">
-                        <h:outputText value=""/>
-                    </f:facet>
-                </p:ajaxStatus>
 
                 <p:dataTable id="pdt" style="width:100%;"
                              dynamic="true" selectionMode="single"

@@ -1,6 +1,12 @@
 package fdc.service.contract;
 
+import fdc.repository.dao.RsContractMapper;
+import fdc.repository.model.RsContract;
+import fdc.repository.model.RsContractExample;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,4 +18,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContractService {
 
+    @Autowired
+    private RsContractMapper contractMapper;
+
+    public List<RsContract> selectContractList(){
+        RsContractExample example = new RsContractExample();
+        example.createCriteria().andDeletedFlagEqualTo("0");
+        return  null;
+    }
 }
