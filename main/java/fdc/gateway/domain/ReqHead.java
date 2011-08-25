@@ -19,5 +19,5 @@ public class ReqHead extends BaseBean{
     public String OpCode = "";
     public String OpDate = DateUtil.getDate8();
     public String OpTime = DateUtil.getTime6();
-    public String BankCode = "";
+    public String BankCode = "313";
 }

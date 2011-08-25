@@ -14,11 +14,11 @@ import fdc.utils.DateUtil;
  */
 public class Client2005Test extends ClientBaseTest {
 
-    public static void main(String[] args) {
+    public static void test() throws Exception {
 
         T2005Req req = new T2005Req();
         req.head.OpCode = "2005";
-        req.head.BankCode = "105";
+        req.head.BankCode = "313";
 
         T0007Req.Param.Record record = T0007Req.getRecord();
         record.Date = DateUtil.getDate8();

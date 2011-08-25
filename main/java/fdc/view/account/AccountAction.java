@@ -35,7 +35,7 @@ public class AccountAction {
         accountList = new ArrayList<RsAccount>();
     }
     // 增
-    public String insertRecord(RsAccount account) {
+    public String insertRecord() {
         try {
             accountService.insertRecord(account);
             accountList.add(account);
@@ -45,6 +45,39 @@ public class AccountAction {
             return null;
         }
         MessageUtil.addInfo("新增数据完成。");
+        account = new RsAccount();
         return null;
+    }
+
+    public String reset() {
+        this.account = new RsAccount();
+        if(!accountList.isEmpty()){
+            accountList.clear();
+        }
+        return null;
+    }
+
+    public AccountService getAccountService() {
+        return accountService;
+    }
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    public RsAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(RsAccount account) {
+        this.account = account;
+    }
+
+    public List<RsAccount> getAccountList() {
+        return accountList;
+    }
+
+    public void setAccountList(List<RsAccount> accountList) {
+        this.accountList = accountList;
     }
 }

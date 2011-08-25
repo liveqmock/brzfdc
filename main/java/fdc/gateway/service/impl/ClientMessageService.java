@@ -1,6 +1,7 @@
 package fdc.gateway.service.impl;
 
 import fdc.gateway.domain.ResHead;
+import fdc.gateway.domain.fdc.CommonRes;
 import fdc.gateway.domain.fdc.T000.T0003Res;
 import fdc.gateway.domain.fdc.T200.T2003Res;
 import fdc.gateway.service.IMessageService;
@@ -24,12 +25,13 @@ public class ClientMessageService implements IMessageService {
     @Override
     public String handleMessage(String message) {
         String responseMsg = null;
-        ResHead resHead = (ResHead)BaseBean.toObject(ResHead.class, message);
-        if("0000".equalsIgnoreCase(resHead.RetCode)) {
+        /*if (responseMsg != null) return
+        CommonRes resHead = (CommonRes)BaseBean.toObject(CommonRes.class, message);
+        if("0000".equalsIgnoreCase(resHead.head.RetCode)) {
             logger.info("【客户端】返回报文处理：发送成功");
         }else {
-            logger.error("【客户端】返回报文处理："+resHead.RetCode+resHead.RetMsg);
-        }
+            logger.error("【客户端】返回报文处理："+resHead.head.RetCode+resHead.head.RetMsg);
+        }*/
         return responseMsg;
     }
 }

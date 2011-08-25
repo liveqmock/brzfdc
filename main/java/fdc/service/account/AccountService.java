@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
+import javax.management.RuntimeErrorException;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,17 @@ import java.util.List;
 public class AccountService {
     @Autowired
     private RsAccountMapper accountMapper;
+
+    /**
+     * 判断账号是否已存在
+     * @param account
+     * @return
+     */
+    public boolean isExistInDb(RsAccount account) {
+        RsAccountExample example = new RsAccountExample();
+        example.createCriteria().andAccountCodeEqualTo(account.getAccountCode());
+        return accountMapper.countByExample(example) >= 1;
+    }
 
     /**
      * 查询所有未删除监管账户记录
@@ -42,6 +54,9 @@ public class AccountService {
      */
     @Transactional
     public void insertRecord(RsAccount account) {
+        if(isExistInDb(account)) {
+            throw new RuntimeException("该账号已存在，请重新录入！");
+        }
         OperatorManager om = SystemService.getOperatorManager();
         account.setCreatedBy(om.getOperatorId());
         account.setCreatedDate(new Date());

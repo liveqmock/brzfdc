@@ -32,6 +32,7 @@ public class T2003Req extends BaseBean {
         public String HouseAddress = "";
         public String HouseType = "";
         public String HouseNO = "";
+        public String OverAmt = "";
         public String TreasuryName = "";
         public String TreasuryAcct = "";
         public String TreasuryBankName = "";

@@ -13,11 +13,11 @@ import fdc.utils.DateUtil;
  */
 public class Client0006Test extends ClientBaseTest{
 
-    public static void main(String[] args) {
+    public static void test() throws Exception {
 
         T0006Req req = new T0006Req();
         req.head.OpCode = "0006";
-        req.head.BankCode = "105";
+        req.head.BankCode = "313";
         req.param.Acct = "123456789";
         req.param.AcctName = "Bill";
         req.param.Status = "1";

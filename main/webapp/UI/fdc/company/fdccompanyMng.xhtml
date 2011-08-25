@@ -47,25 +47,25 @@
             <h:form id="form">
 
                 <p:panel id="query" header="【房地产开发商基本信息】查询条件">
-                    <h:panelGrid columns="2">
-                        <h:panelGrid columns="2" cellspacing="7" columnClasses="col-95,col-5">
+                    <h:panelGrid columns="2" style="width:100%">
+                        <h:panelGrid columns="2" cellspacing="3" style="width:90%" columnClasses="col-95,col-5">
 
                             <h:outputLabel value="* 房产商名称:" for="companyName"/>
-                            <h:inputText autocomplete="off" id="companyName" style="width:322px;" required="true"
+                            <h:inputText autocomplete="off" id="companyName" style="width:262px;" required="true"
                                          requiredMessage="必须输入房产商名称！" value="#{fdcCompanyAction.companyName}"
                                          onfocus="this.select()">
                             </h:inputText>
 
                         </h:panelGrid>
-                        <h:panelGrid columns="1">
+                        <h:panelGrid columns="1" style="width:100%;margin-left: 215px">
                             <h:panelGroup>
                             <p:commandButton id="qryBtn" ajax="true" value="查询"
                                              action="#{fdcCompanyAction.qryFdccompanys}"
-                                             style="margin-left:15px;width:90px"
+                                             style="margin-left:15px;width:80px"
                                              update="input,pdt,msgs">
                             </p:commandButton>
                             <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{fdcCompanyAction.reset}"
-                                             style="width:90px;margin-left:15px" update="query,msgs"/>
+                                             style="width:80px;margin-left:15px" update="query,msgs"/>
                             </h:panelGroup>
                         </h:panelGrid>
                     </h:panelGrid>
@@ -83,33 +83,33 @@
                              dynamic="true" selectionMode="single"
                              value="#{fdcCompanyAction.fdccompanyList}" var="record"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             paginator="true" rows="30" paginatorPosition="bottom"
-                             rowsPerPageTemplate="100,50,30,10,5"
+                             paginator="true" rows="15" paginatorPosition="bottom"
+                             rowsPerPageTemplate="100,50,30,15,5"
                              emptyMessage="数据记录为空...">
 
-                    <p:column headerText="房产商名称" style="text-align:right">
+                    <p:column headerText="房产商名称" style="text-align:left">
                         <h:outputText value="#{record.companyName}"/>
                     </p:column>
 
-                    <p:column headerText="简称" style="text-align:right">
+                    <p:column headerText="简称" style="text-align:left">
                         <h:outputText value="#{record.companyShrtName}"/>
                     </p:column>
 
-                    <p:column headerText="法定代表人" style="text-align:right">
+                    <p:column headerText="法定代表人" style="text-align:left">
                         <h:outputText value="#{record.mngrName}"/>
                     </p:column>
 
-                    <p:column headerText="营业执照" style="text-align:right">
+                    <p:column headerText="营业执照" style="text-align:left">
                         <h:outputText value="#{record.tradLicenceNo}"/>
                     </p:column>
 
-                    <p:column headerText="公司地址" style="text-align:right">
+                    <p:column headerText="公司地址" style="text-align:left">
                         <h:outputText value="#{record.address}"/>
                     </p:column>
 
                     <p:column headerText="操作" style="text-align:center">
-                        <h:commandLink value="修改"/>
-                        <h:commandLink value="删除" style="margin-left: 5px"/>
+                        <h:commandLink value="修改" style="color: blue"/>
+                        <h:commandLink value="删除" style="margin-left: 5px;color:blue"/>
                     </p:column>
 
                 </p:dataTable>
