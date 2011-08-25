@@ -1,6 +1,6 @@
 package fdc.gateway.test;
 
-import fdc.gateway.domain.fdc.T200.T2004Req;
+import fdc.gateway.domain.T200.T2004Req;
 import platform.service.SystemService;
 
 /**

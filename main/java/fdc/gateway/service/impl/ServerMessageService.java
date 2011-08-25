@@ -1,12 +1,12 @@
 package fdc.gateway.service.impl;
 
 import fdc.gateway.domain.ResHead;
-import fdc.gateway.domain.fdc.CommonRes;
-import fdc.gateway.domain.fdc.T000.T0001Req;
-import fdc.gateway.domain.fdc.T000.T0001Res;
-import fdc.gateway.domain.fdc.T000.T0002Req;
-import fdc.gateway.domain.fdc.T000.T0002Res;
-import fdc.gateway.domain.fdc.T200.*;
+import fdc.gateway.domain.CommonRes;
+import fdc.gateway.domain.T000.T0001Req;
+import fdc.gateway.domain.T000.T0001Res;
+import fdc.gateway.domain.T000.T0002Req;
+import fdc.gateway.domain.T000.T0002Res;
+import fdc.gateway.domain.T200.*;
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.domain.BaseBean;
 import fdc.utils.StringUtil;
