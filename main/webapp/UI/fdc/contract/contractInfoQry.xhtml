@@ -37,7 +37,7 @@
                 <div id="header">
                     <p:panel header="aaa">
                         <h:panelGrid columns="2" cellspacing="5" columnClasses="col-80,col-20">
-<!--
+                            <!--
 <h:panelGrid columns="4" cellspacing="5"
                                          columnClasses="input-col-m,input-col-l,input-col-m,input-col-l">
                                 <h:outputLabel value="单位名称:" for="companyName"/>
@@ -75,9 +75,39 @@
                              rowsPerPageTemplate="100,50,30,10,5"
                              emptyMessage="数据记录为空...">
 
-                    <p:column headerText="合同号" sortBy="#{record.companyName}" filterBy="#{record.companyName}"
+                    <p:column headerText="合同号" filterBy="#{record.contractNo}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{record.contractNo}"/>
+                    </p:column>
+                    <p:column headerText="房产商" filterBy="#{record.companyName}"
                               filterMatchMode="contains">
                         <h:outputText value="#{record.companyName}"/>
+                    </p:column>
+                    <p:column headerText="监管帐号" filterBy="#{record.accountCode}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{record.accountCode}"/>
+                    </p:column>
+                    <p:column headerText="买方姓名" filterBy="#{record.buyerName}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{record.buyerName}"/>
+                    </p:column>
+                    <p:column headerText="买方证件号" filterBy="#{record.buyerCertNo}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{record.accountCode}"/>
+                    </p:column>
+                    <p:column headerText="房屋类型" filterBy="#{record.houseType}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{record.houseType}"/>
+                    </p:column>
+                    <p:column headerText="房款总价" filterBy="#{record.totalAmt}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{record.totalAmt}" style="text-align: right">
+                            <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="交易状态" filterBy="#{record.statusFlag}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{record.statusFlag}"/>
                     </p:column>
                 </p:dataTable>
             </h:form>

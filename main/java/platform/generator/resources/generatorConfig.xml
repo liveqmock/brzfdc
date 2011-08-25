@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-    <classPathEntry location="/fbi-brzfdc/ref/ojdbc6.jar"/>
+    <classPathEntry location="/svn-brzfdc/ref/ojdbc6.jar"/>
 
     <!--信息-->
     <context id="AllInfo" targetRuntime="MyBatis3">
@@ -46,7 +46,16 @@
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
-        <table schema="brzfdc"  schema="brzfdc" tableName="rs_fdccompany">
+        <table schema="brzfdc"   tableName="rs_fdccompany">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+
+        <table schema="brzfdc"  tableName="bi_plan">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="brzfdc"  tableName="bi_plan_detail">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
