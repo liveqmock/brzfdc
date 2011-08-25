@@ -33,6 +33,7 @@
 
 
         <!--房地产资金监管银行接口类 -->
+        <!--RS -->
         <!--
         <table schema="brzfdc"  tableName="rs_plan_ctrl">
             <property name="ignoreQualifiersAtRuntime" value="true" />
@@ -50,7 +51,33 @@
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
         </table>
+        <table schema="brzfdc"   tableName="rs_check">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="brzfdc"   tableName="rs_payout">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="brzfdc"   tableName="rs_payup">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="brzfdc"   tableName="rs_receive">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        <table schema="brzfdc"   tableName="rs_refund">
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
+        </table>
+        -->
 
+
+
+
+        <!--BI-->
+        <!--
         <table schema="brzfdc"  tableName="bi_plan">
             <property name="ignoreQualifiersAtRuntime" value="true" />
             <generatedKey column="pk_id" sqlStatement="select sys_guid() from dual" identity="false"/>
