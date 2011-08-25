@@ -1,10 +1,9 @@
 package fdc.view.contract;
 
-import fdc.common.constant.ContractStatus;
-import fdc.common.constant.HouseType;
-import fdc.common.constant.LoanType;
-import fdc.common.constant.PayupFlag;
+import fdc.common.constant.*;
 import fdc.repository.model.RsContract;
+import fdc.repository.model.RsReceive;
+import fdc.service.ContractRecvService;
 import fdc.service.contract.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +29,13 @@ import java.util.Map;
  */
 @ManagedBean
 @ViewScoped
-public class ContractAction implements Serializable{
-    private static final Logger logger = LoggerFactory.getLogger(ContractAction.class);
+public class ContractRecvAction implements Serializable {
+    private static final Logger logger = LoggerFactory.getLogger(ContractRecvAction.class);
 
     @ManagedProperty(value = "#{contractService}")
     private ContractService contractService;
+    @ManagedProperty(value = "#{contractRecvService}")
+    private ContractRecvService contractRecvService;
 
     @ManagedProperty(value = "#{toolsService}")
     private ToolsService toolsService;
@@ -43,37 +44,52 @@ public class ContractAction implements Serializable{
     private RsContract[] selectedRecords;
     private RsContract selectedRecord;
 
+    private List<RsReceive> detlRecvList;
+    private RsReceive[] selectedRecvRecords;
+    private RsReceive selectedRecvRecord;
+
     private List<SelectItem> contractStatusOptions;
+    private List<SelectItem> recvStatusOptions;
+    private List<SelectItem> workResultOptions;
     private List<SelectItem> houseTypeOptions;
     private List<SelectItem> loanTypeOptions;
-    private List<SelectItem> payupTypeOptions;
+    private List<SelectItem> payupFlagOptions;
+    private List<SelectItem> receiveTypeOptions;
 
     private ContractStatus contractStatus = ContractStatus.NORMAL;
+    private ContractRecvStatus recvStatus = ContractRecvStatus.BACK;
+    private WorkResult workResult = WorkResult.NOTPASS;
     private HouseType houseType = HouseType.NORMAL;
     private LoanType loanType = LoanType.SHANG_YE;
     private PayupFlag payupType = PayupFlag.PEND_PAYUP;
+    private ReceiveType receiveType = ReceiveType.DEPOSIT;
 
     @PostConstruct
     public void init() {
         this.contractStatusOptions = toolsService.getEnuSelectItemList("CONTRACT_STATUS", false, false);
         this.houseTypeOptions = toolsService.getEnuSelectItemList("HOUSE_TYPE", false, false);
         this.loanTypeOptions = toolsService.getEnuSelectItemList("LOAN_TYPE", false, false);
-        this.payupTypeOptions = toolsService.getEnuSelectItemList("PAYUP_TYPE", false, false);
+        this.payupFlagOptions = toolsService.getEnuSelectItemList("PAYUP_FLAG", false, false);
+        this.workResultOptions = toolsService.getEnuSelectItemList("WORK_RESULT", false, false);
+        this.recvStatusOptions = toolsService.getEnuSelectItemList("CONTRACT_RECV_STATUS", false, false);
+        this.receiveTypeOptions = toolsService.getEnuSelectItemList("RECEIVE_TYPE", false, false);
         initList();
     }
 
-    private void initList(){
-       this.detlList = contractService.selectContractList();
+    private void initList() {
+        this.detlList = contractService.selectContractList();
+        this.detlRecvList = contractRecvService.selectContractRecvList();
     }
 
-    public  String onQuery(){
-         return null;
-    }
-    public  String onPrint(){
-         return null;
+    public String onQuery() {
+        return null;
     }
 
-        public String onShowDetail() {
+    public String onPrint() {
+        return null;
+    }
+
+    public String onShowDetail() {
         return "common/contractDetlForm.xhtml";
     }
 
@@ -182,11 +198,75 @@ public class ContractAction implements Serializable{
         this.loanTypeOptions = loanTypeOptions;
     }
 
-    public List<SelectItem> getPayupTypeOptions() {
-        return payupTypeOptions;
+    public List<SelectItem> getPayupFlagOptions() {
+        return payupFlagOptions;
     }
 
-    public void setPayupTypeOptions(List<SelectItem> payupTypeOptions) {
-        this.payupTypeOptions = payupTypeOptions;
+    public void setPayupFlagOptions(List<SelectItem> payupFlagOptions) {
+        this.payupFlagOptions = payupFlagOptions;
+    }
+
+    public ContractRecvService getContractRecvService() {
+        return contractRecvService;
+    }
+
+    public void setContractRecvService(ContractRecvService contractRecvService) {
+        this.contractRecvService = contractRecvService;
+    }
+
+    public List<RsReceive> getDetlRecvList() {
+        return detlRecvList;
+    }
+
+    public void setDetlRecvList(List<RsReceive> detlRecvList) {
+        this.detlRecvList = detlRecvList;
+    }
+
+    public RsReceive[] getSelectedRecvRecords() {
+        return selectedRecvRecords;
+    }
+
+    public void setSelectedRecvRecords(RsReceive[] selectedRecvRecords) {
+        this.selectedRecvRecords = selectedRecvRecords;
+    }
+
+    public RsReceive getSelectedRecvRecord() {
+        return selectedRecvRecord;
+    }
+
+    public void setSelectedRecvRecord(RsReceive selectedRecvRecord) {
+        this.selectedRecvRecord = selectedRecvRecord;
+    }
+
+    public List<SelectItem> getRecvStatusOptions() {
+        return recvStatusOptions;
+    }
+
+    public void setRecvStatusOptions(List<SelectItem> recvStatusOptions) {
+        this.recvStatusOptions = recvStatusOptions;
+    }
+
+    public List<SelectItem> getWorkResultOptions() {
+        return workResultOptions;
+    }
+
+    public void setWorkResultOptions(List<SelectItem> workResultOptions) {
+        this.workResultOptions = workResultOptions;
+    }
+
+    public ContractRecvStatus getRecvStatus() {
+        return recvStatus;
+    }
+
+    public void setRecvStatus(ContractRecvStatus recvStatus) {
+        this.recvStatus = recvStatus;
+    }
+
+    public WorkResult getWorkResult() {
+        return workResult;
+    }
+
+    public void setWorkResult(WorkResult workResult) {
+        this.workResult = workResult;
     }
 }

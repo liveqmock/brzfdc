@@ -3,21 +3,25 @@ package fdc.common.constant;
 import java.util.Hashtable;
 
 /**
- * Created by IntelliJ IDEA.
+ * 合同缴款状态标志，[0]-退回;[1]-初始;[2]-审核中;[3]-已审核;[7]-记账中;[9]-记账完成
  * User: zhanrui
  * Date: 11-7-23
  * Time: 下午3:30
  * To change this template use File | Settings | File Templates.
  */
-public enum PayupType implements EnumApp {
-    PEND_PAYUP("01", "未上缴"),
-    PAYUP_OVER("02", "已上缴");
+public enum ContractRecvStatus implements EnumApp {
+    BACK("0", "退回"),
+    INIT("1", "初始"),
+    CHECKING("2", "审核中"),
+    CHECKED("3", "已审核"),
+    ACCOUNT("7", "记账中"),
+    ACCOUNTOVER("9", "记账完成");
 
     private String code = null;
     private String title = null;
-    private static Hashtable<String, PayupType> aliasEnums;
+    private static Hashtable<String, ContractRecvStatus> aliasEnums;
 
-    PayupType(String code, String title) {
+    ContractRecvStatus(String code, String title) {
         this.init(code, title);
     }
 
@@ -34,7 +38,7 @@ public enum PayupType implements EnumApp {
         aliasEnums.put(title, this);
     }
 
-    public static PayupType valueOfAlias(String alias) {
+    public static ContractRecvStatus valueOfAlias(String alias) {
         return aliasEnums.get(alias);
     }
 
