@@ -110,13 +110,13 @@
 
                     <p:column headerText="计划金额">
                         <h:outputText value="#{record.plAmount}" style="float: right">
-                            <f:convertNumber pattern="#,###,###,###.00"/>
+                            <f:convertNumber pattern="#,###,###,##0.00"/>
                         </h:outputText>
                     </p:column>
 
                     <p:column headerText="可用金额">
                         <h:outputText value="#{record.avAmount}" style="float: right">
-                            <f:convertNumber pattern="#,###,###,###.00"/>
+                            <f:convertNumber pattern="#,###,###,##0.00"/>
                         </h:outputText>
                     </p:column>
 
