@@ -9,11 +9,10 @@ import fdc.gateway.domain.fdc.T000.T0002Res;
 import fdc.gateway.domain.fdc.T200.*;
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.domain.BaseBean;
-import fdc.utils.DateUtil;
 import fdc.utils.StringUtil;
-import org.apache.ecs.html.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import platform.service.SystemService;
 import pub.platform.db.ConnectionManager;
 import pub.platform.db.DatabaseConnection;
 
@@ -54,8 +53,8 @@ public class ServerMessageService implements IMessageService {
                 T0002Res t0002Res = new T0002Res();
                 t0002Res.param.DetailNum = "2";
                 T0002Res.Param.Record record = T0002Res.getRecord();
-                record.Date = DateUtil.getDate8();
-                record.Time = DateUtil.getTime6();
+                record.Date = SystemService.getSdfdate8();
+                record.Time = SystemService.getSdftime6();
                 record.Flag = "1";
                 record.Type = "01";
                 record.Amt = "1000";
@@ -68,8 +67,8 @@ public class ServerMessageService implements IMessageService {
                 t0002Res.param.recordList.add(record);
 
                 record = T0002Res.getRecord();
-                record.Date = DateUtil.getDate8();
-                record.Time = DateUtil.getTime6();
+                record.Date = SystemService.getSdfdate8();
+                record.Time = SystemService.getSdftime6();
                 record.Flag = "1";
                 record.Type = "01";
                 record.Amt = "2000";
@@ -105,8 +104,8 @@ public class ServerMessageService implements IMessageService {
                 T2006Req t2006Req = (T2006Req) BaseBean.toObject(T2006Req.class, message);
                 logger.info(t2006Req.head.OpDate + t2006Req.head.OpTime + "==接收交易：" + t2006Req.head.OpCode);
                 T2006Res t2006Res = new T2006Res();
-                t2006Res.param.CancelDate = DateUtil.getDate8();
-                t2006Res.param.CancelTime = DateUtil.getTime6();
+                t2006Res.param.CancelDate = SystemService.getSdfdate8();
+                t2006Res.param.CancelTime = SystemService.getSdftime6();
                 t2006Res.param.FinalBalance = "2006";
                 responseMsg = t2006Res.toFDCDatagram();
                 break;

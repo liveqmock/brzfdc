@@ -2,17 +2,11 @@ package fdc.gateway.test;
 
 import fdc.gateway.domain.BaseBean;
 import fdc.gateway.domain.fdc.T200.T2003Req;
-import fdc.gateway.domain.fdc.T200.T2004Req;
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.service.XSocketService;
 import fdc.gateway.service.impl.ClientMessageService;
-import fdc.gateway.xsocket.client.IBlockConnect;
-import fdc.gateway.xsocket.client.impl.ClientFactory;
-import fdc.utils.DateUtil;
 import pub.platform.db.ConnectionManager;
 import pub.platform.db.DatabaseConnection;
-
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.

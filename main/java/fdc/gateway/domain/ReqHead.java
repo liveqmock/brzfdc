@@ -1,6 +1,6 @@
 package fdc.gateway.domain;
 
-import fdc.utils.DateUtil;
+import platform.service.SystemService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,9 +15,9 @@ import fdc.utils.DateUtil;
 <OpTime>215515</OpTime>
 <BankCode>103</BankCode>
  */
-public class ReqHead extends BaseBean{
+public class ReqHead {
     public String OpCode = "";
-    public String OpDate = DateUtil.getDate8();
-    public String OpTime = DateUtil.getTime6();
+    public String OpDate = SystemService.getSdfdate8();
+    public String OpTime = SystemService.getSdftime6();
     public String BankCode = "313";
 }

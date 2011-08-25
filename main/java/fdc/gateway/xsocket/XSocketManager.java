@@ -1,9 +1,9 @@
 package fdc.gateway.xsocket;
 
-import fdc.utils.DateUtil;
 import fdc.gateway.xsocket.server.XSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import platform.service.SystemService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -68,7 +68,7 @@ public class XSocketManager extends HttpServlet {
     }
 
     private static void printLine() {
-        logger.info("//////////////////////////" + DateUtil.getDatetime18() + "//////////////////////////");
+        logger.info("//////////////////////////" + SystemService.getDatetime18() + "//////////////////////////");
     }
 
 }

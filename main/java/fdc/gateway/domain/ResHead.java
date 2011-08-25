@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * To change this template use File | Settings | File Templates.
  */
 @XStreamAlias("root")
-public class ResHead extends BaseBean{
+public class ResHead {
     public String RetCode = "0000";
     public String RetMsg = "";
 }

@@ -2,7 +2,7 @@ package fdc.gateway.test;
 
 import fdc.gateway.domain.fdc.T000.T0003Req;
 import fdc.gateway.domain.fdc.T000.T0007Req;
-import fdc.utils.DateUtil;
+import platform.service.SystemService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,14 +20,14 @@ public class Client0007Test extends ClientBaseTest {
         req.head.BankCode = "313";
 
         T0007Req.Param.Record record = T0007Req.getRecord();
-        record.Date = DateUtil.getDate8();
-        record.Time = DateUtil.getTime6();
+        record.Date = SystemService.getSdfdate8();
+        record.Time = SystemService.getSdftime6();
         record.Flag = "1";
         record.Type = "01";
         record.Amt = "1000";
         record.ContractNum = "100000000088";
         record.ToAcct = "555555555";
-        record.BankSerial = DateUtil.getDatetime14();
+        record.BankSerial = SystemService.getDatetime14();
         record.ToBankName = "日照银行";
         record.Purpose = "购房";
         testClientService(req.toFDCDatagram());
