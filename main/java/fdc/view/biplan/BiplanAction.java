@@ -19,7 +19,7 @@ import java.util.List;
 @ManagedBean
 @ViewScoped
 public class BiplanAction {
-    private List<BiPlan> biPlanList;
+    private List<ParamPlan> biPlanList;
     private ParamPlan paramPlan;
     @ManagedProperty(value = "#{biplanService}")
     private BiplanService biplanService;
@@ -29,12 +29,22 @@ public class BiplanAction {
         paramPlan = new ParamPlan();
     }
 
+    public String onQuery() {
+        return null;
+    }
+
+    public String onPrint() {
+        return null;
+    }
+
     // ====================================
-    public List<BiPlan> getBiPlanList() {
+
+
+    public List<ParamPlan> getBiPlanList() {
         return biPlanList;
     }
 
-    public void setBiPlanList(List<BiPlan> biPlanList) {
+    public void setBiPlanList(List<ParamPlan> biPlanList) {
         this.biPlanList = biPlanList;
     }
 

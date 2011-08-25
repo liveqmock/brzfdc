@@ -8,6 +8,7 @@ package fdc.view.biplan;
  * To change this template use File | Settings | File Templates.
  */
 public class ParamPlan {
+    // -------------查询条件用字段-----------
     private String companyName;
     private String accountCode;
     private String toAccountName;
@@ -18,6 +19,10 @@ public class ParamPlan {
     private String applyEndDate;
     private String applyStartAmt;
     private String applyEndAmt;
+    //----------Datatable List用字段------
+    private String applyAmt;
+    private String applyDate;
+    private String applyOperName;
 
     public String getCompanyName() {
         return companyName;
@@ -97,5 +102,29 @@ public class ParamPlan {
 
     public void setApplyEndAmt(String applyEndAmt) {
         this.applyEndAmt = applyEndAmt;
+    }
+
+    public String getApplyAmt() {
+        return applyAmt;
+    }
+
+    public void setApplyAmt(String applyAmt) {
+        this.applyAmt = applyAmt;
+    }
+
+    public String getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(String applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    public String getApplyOperName() {
+        return applyOperName;
+    }
+
+    public void setApplyOperName(String applyOperName) {
+        this.applyOperName = applyOperName;
     }
 }

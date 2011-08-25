@@ -7,17 +7,12 @@
 
     <ui:define name="head">
         <style type="text/css">
-            .input-col-m {
-                width: 60px;
-            }
-
-            .input-col-l {
-                width: 80px;
-            }
-
-            .input-col-xxl {
-                width: 1%;
+             .col-95 {
                 text-align: right;
+            }
+
+            .col-5 {
+                text-align: left;
             }
 
             .col-80 {
@@ -37,10 +32,10 @@
                 <div id="header">
                     <p:panel header="【用款计划】查询条件">
                         <h:panelGrid columns="2" cellspacing="5" columnClasses="col-80,col-20">
-                            <h:panelGrid columns="6" cellspacing="5"
-                                         columnClasses="input-col-m,input-col-l,input-col-m,input-col-l">
-                                <h:outputLabel value="单位名称:" for="companyName"/>
-                                <h:inputText id="companyName" size="30" required="true" requiredMessage="请输入单位名称。"
+                            <h:panelGrid columns="4" cellspacing="5"
+                                         columnClasses="col-95,col-5,col-95,col-5">
+                                <h:outputLabel value="房产商名称:" for="companyName"/>
+                                <h:inputText id="companyName" size="30" required="true" requiredMessage="请输入房产商名称。"
                                              value="#{expensesPlanQryAction.rsPlanCtrl.companyName}"/>
                                  <h:outputLabel value="监管账号:" for="accountCode"/>
                                 <h:inputText id="accountCode" size="30"
@@ -48,6 +43,13 @@
                                 <h:outputLabel value="付款合同号:" for="payContractNo"/>
                                 <h:inputText id="payContractNo" size="30"
                                              value="#{expensesPlanQryAction.rsPlanCtrl.payContractNo}"/>
+                                 <h:outputLabel value="计划日期:" for="planDate"/>
+                                <h:inputText id="planDate" size="30"
+                                             value="#{expensesPlanQryAction.rsPlanCtrl.planDate}"/>
+                                 <h:outputLabel value="用款说明:" for="planDesc"/>
+                                <h:inputText id="planDesc" size="30"
+                                             value="#{expensesPlanQryAction.rsPlanCtrl.planDesc}"/>
+                                 <h:outputLabel/><h:outputLabel/>
                             </h:panelGrid>
 
                             <h:panelGrid>
