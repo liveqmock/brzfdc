@@ -6,6 +6,7 @@ import fdc.repository.model.RsContract;
 import fdc.repository.model.RsContractExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,5 +35,10 @@ public class ContractService {
     }
     public RsContract selectRecordContract(String pkid) {
         return contractMapper.selectByPrimaryKey(pkid);
+    }
+
+    @Transactional
+    public int insertContract(RsContract contract) {
+         return contractMapper.insertSelective(contract);
     }
 }

@@ -26,6 +26,31 @@ public class AccountService {
     private RsAccountMapper accountMapper;
 
     /**
+     * 更新账户状态
+     * @param account
+     * @param status
+     * @return
+     */
+    @Transactional
+    public int updateAccountToStatus(RsAccount account, String status) {
+       account.setStatusFlag(status);
+       account.setModificationNum(account.getModificationNum() + 1);
+       return accountMapper.updateByPrimaryKey(account);
+    }
+
+    /**
+     * 根据户名和账户号查找账户
+     * @param accountCode
+     * @param accountName
+     * @return
+     */
+    public List<RsAccount> selectAccountByCodeName(String accountCode, String accountName) {
+       RsAccountExample example = new RsAccountExample();
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andAccountCodeEqualTo(accountCode).andAccountNameEqualTo(accountName);
+        return accountMapper.selectByExample(example);
+    }
+    /**
      * 判断账号是否已存在
      * @param account
      * @return

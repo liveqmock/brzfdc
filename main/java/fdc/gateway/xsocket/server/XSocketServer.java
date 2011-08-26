@@ -3,6 +3,9 @@ package fdc.gateway.xsocket.server;
 import fdc.gateway.xsocket.server.impl.ServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.xsocket.connection.IConnection.FlushMode;
 import org.xsocket.connection.IServer;
 import org.xsocket.connection.Server;
@@ -16,20 +19,12 @@ import java.util.Map;
  *
  * @author zxb
  */
+@Component
 public class XSocketServer {
 
     private static final Logger logger = LoggerFactory.getLogger(XSocketServer.class);
     private static final int PORT = PropertyManager.getIntProperty("socket_server_monitor_port");
-    //private static final String IP = PropertyManager.getProperty("socket_server_monitor_ip");
     private IServer server;
-    private static XSocketServer xSocketServer = new XSocketServer();
-
-    private XSocketServer() {
-    }
-
-    public static XSocketServer getInstance() {
-        return xSocketServer;
-    }
 
     private void init() throws IOException {
         this.server = new Server(PORT, new ServerHandler());

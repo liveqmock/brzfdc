@@ -3,6 +3,9 @@ package fdc.gateway.xsocket;
 import fdc.gateway.xsocket.server.XSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import platform.service.SystemService;
 
 import javax.servlet.ServletException;
@@ -11,20 +14,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class XSocketManager extends HttpServlet {
+@Component
+public class XSocketManager {
 
     private static final Logger logger = LoggerFactory.getLogger(XSocketManager.class);
     private static final long serialVersionUID = -5534543207744847501L;
+    @Autowired
+    private XSocketServer server;
 
     static {
         logger.info("////================Socket Server 开始初始化====================////");
     }
 
+    public XSocketManager() {
+        init();
+    }
+
     // 初始化
-    public void init() throws ServletException {
+    public void init() {
         printLine();
         try {
-            XSocketServer server = XSocketServer.getInstance();
             server.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,33 +47,12 @@ public class XSocketManager extends HttpServlet {
     public void destroy() {
         printLine();
         try {
-            XSocketServer server = XSocketServer.getInstance();
             server.stop();
             server = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
         printLine();
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
-    }
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        if ("restart".equals(request.getParameter("action"))) {
-            destroy();
-            init();
-        }
-        if ("start".equals(request.getParameter("action"))) {
-            destroy();
-            init();
-        }
-        if ("stop".equals(request.getParameter("action"))) {
-            destroy();
-        }
     }
 
     private static void printLine() {

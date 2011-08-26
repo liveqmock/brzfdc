@@ -5,6 +5,8 @@ import fdc.gateway.service.impl.ServerMessageService;
 import fdc.gateway.xsocket.server.IServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.xsocket.connection.INonBlockingConnection;
 
 import java.io.IOException;
@@ -15,10 +17,12 @@ import java.nio.BufferUnderflowException;
  *
  * @author zxb
  */
+@Service
 public class ServerHandler implements IServerHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
-    private IMessageService messageService = new ServerMessageService();
+    @Autowired
+    private IMessageService messageService;
 
     /**
      * 连接的成功时的操作

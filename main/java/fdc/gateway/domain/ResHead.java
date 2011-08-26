@@ -1,6 +1,7 @@
 package fdc.gateway.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import fdc.gateway.utils.BiRtnCode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,6 +12,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 @XStreamAlias("root")
 public class ResHead {
-    public String RetCode = "0000";
+    public String RetCode = BiRtnCode.BI_RTN_CODE_SUCCESS.getCode();
     public String RetMsg = "";
 }
