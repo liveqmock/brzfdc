@@ -1,5 +1,6 @@
 package fdc.gateway.service;
 
+import fdc.gateway.xsocket.XSocketManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -16,6 +17,8 @@ public class ContainerService {
     public static void init() {
         logger.info("...XSocket Container Service 初始化开始.......");
         context = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml"});
+        XSocketManager manager = (XSocketManager)getBean("xSocketManager");
+        manager.init();
     }
 
     public static Object getBean(String key) {

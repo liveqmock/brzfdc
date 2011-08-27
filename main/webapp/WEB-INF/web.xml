@@ -94,12 +94,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>xSocketManager</servlet-name>
-        <servlet-class>fdc.gateway.xsocket.XSocketManager</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet>
         <servlet-name>ImgServlet</servlet-name>
         <servlet-class>pub.platform.security.ImgServlet</servlet-class>
     </servlet>
@@ -128,10 +122,6 @@
     <servlet-mapping>
         <servlet-name>SchedulerManager</servlet-name>
         <url-pattern>/SchedulerManager</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>xSocketManager</servlet-name>
-        <url-pattern>/xSocketManager</url-pattern>
     </servlet-mapping>
 
     <!-- Action Servlet Mapping -->

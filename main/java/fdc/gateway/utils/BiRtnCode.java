@@ -9,7 +9,8 @@ package fdc.gateway.utils;
  */
 public enum BiRtnCode {
 
-     BI_RTN_CODE_SUCCESS("0000"),
+    BI_RTN_CODE_SUCCESS("0000"),
+    BI_RTN_CODE_FAILED("4000"),
     BI_RTN_CODE_FORMAT_ERROR("5000"),
     BI_RTN_CODE_NO_ACCOUNT("6000");
     private String code;

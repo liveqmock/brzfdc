@@ -30,5 +30,12 @@ public class Client2005Test extends ClientBaseTest {
         testClientService(req.toFDCDatagram());
 
     }
+    public static void main(String[] args) {
+        try {
+            test();
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 }

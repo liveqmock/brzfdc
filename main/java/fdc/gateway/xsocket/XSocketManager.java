@@ -14,27 +14,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
+@Component("xSocketManager")
 public class XSocketManager {
 
     private static final Logger logger = LoggerFactory.getLogger(XSocketManager.class);
     private static final long serialVersionUID = -5534543207744847501L;
     @Autowired
-    private XSocketServer server;
+    private XSocketServer xSocketServer;
 
     static {
-        logger.info("////================Socket Server 开始初始化====================////");
+        logger.info("////================ XSocketManager 开始初始化====================////");
     }
 
     public XSocketManager() {
-        init();
     }
 
     // 初始化
     public void init() {
         printLine();
         try {
-            server.start();
+            xSocketServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,12 +46,20 @@ public class XSocketManager {
     public void destroy() {
         printLine();
         try {
-            server.stop();
-            server = null;
+            xSocketServer.stop();
+            xSocketServer = null;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Socket Server 销毁时发生异常 !");
         }
         printLine();
+    }
+
+    public XSocketServer getxSocketServer() {
+        return xSocketServer;
+    }
+
+    public void setxSocketServer(XSocketServer xSocketServer) {
+        this.xSocketServer = xSocketServer;
     }
 
     private static void printLine() {

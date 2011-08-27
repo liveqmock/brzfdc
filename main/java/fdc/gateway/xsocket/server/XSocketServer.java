@@ -5,12 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.xsocket.connection.IConnection.FlushMode;
 import org.xsocket.connection.IServer;
 import org.xsocket.connection.Server;
 import pub.platform.advance.utils.PropertyManager;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 
@@ -24,16 +24,20 @@ public class XSocketServer {
 
     private static final Logger logger = LoggerFactory.getLogger(XSocketServer.class);
     private static final int PORT = PropertyManager.getIntProperty("socket_server_monitor_port");
-    private IServer server;
 
+    private IServer server;
+    @Autowired
+    private ServerHandler serverHandler;
+
+    public XSocketServer() {
+    }
     private void init() throws IOException {
-        this.server = new Server(PORT, new ServerHandler());
+        this.server = new Server(PORT, serverHandler);
         this.server.setFlushmode(FlushMode.ASYNC);   // 异步
     }
 
     public void start() throws IOException {
         init();
-
         logger.info("【SocketServer】 " + server.getLocalAddress() + ":" + PORT + "  开始启动...");
         server.start();
         logger.info("【SocketServer】  " + server.getLocalAddress() + ":" + PORT + "  启动成功...");

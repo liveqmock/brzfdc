@@ -21,10 +21,10 @@ public class ClientBaseTest {
             XSocketService xSocketService = new XSocketService();
             String datagram = xSocketService.sendAndRecvByBlockConn(data);
             // insert  into db
-            ConnectionManager cm = ConnectionManager.getInstance();
+            /*ConnectionManager cm = ConnectionManager.getInstance();
             DatabaseConnection dc = cm.getConnection();
             dc.executeUpdate("insert into T_INTERFACE_LOG values('" + datagram + "',sysdate)");
-            cm.releaseConnection(dc);
+            cm.releaseConnection(dc);*/
             IMessageService messageService = new ClientMessageService();
             messageService.handleMessage(datagram);
     }

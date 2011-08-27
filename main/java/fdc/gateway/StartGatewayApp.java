@@ -19,6 +19,6 @@ public class StartGatewayApp {
      */
     public static void main(String[] args) {
         ContainerService.init();
-        logger.info("====== Socket Server 初始化成功==========");
+        logger.info("====== Socket Server 初始化结束==========");
     }
 }

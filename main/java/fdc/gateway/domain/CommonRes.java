@@ -9,6 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Time: ионГ11:30
  * To change this template use File | Settings | File Templates.
  */
+@XStreamAlias("root")
 public class CommonRes extends BaseBean {
     @XStreamAlias("Head")
     public ResHead head = new ResHead();

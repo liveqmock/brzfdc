@@ -6,6 +6,7 @@ import fdc.gateway.xsocket.server.IServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.xsocket.connection.INonBlockingConnection;
 
@@ -17,12 +18,12 @@ import java.nio.BufferUnderflowException;
  *
  * @author zxb
  */
-@Service
+@Component
 public class ServerHandler implements IServerHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
     @Autowired
-    private IMessageService messageService;
+    private ServerMessageService serverMessageService;
 
     /**
      * 连接的成功时的操作
@@ -57,7 +58,7 @@ public class ServerHandler implements IServerHandler {
         logger.info("【本地服务端】接收到报文内容: " + datagram);
 
         // 处理接收到的报文，并生成响应报文
-        String responseMsg = messageService.handleMessage(datagram);
+        String responseMsg = serverMessageService.handleMessage(datagram);
 
         int sendDatagramLength = nbc.write(responseMsg, "GBK");
         logger.info("【本地服务端】发送报文内容:" + responseMsg);
@@ -88,5 +89,13 @@ public class ServerHandler implements IServerHandler {
     public boolean onConnectException(INonBlockingConnection iNonBlockingConnection, IOException e) throws IOException {
         logger.error("【本地客户端】与远程主机连接发生异常。");
         return true;
+    }
+
+    public ServerMessageService getServerMessageService() {
+        return serverMessageService;
+    }
+
+    public void setServerMessageService(ServerMessageService serverMessageService) {
+        this.serverMessageService = serverMessageService;
     }
 }
