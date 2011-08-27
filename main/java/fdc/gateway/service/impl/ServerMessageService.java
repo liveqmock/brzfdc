@@ -95,7 +95,7 @@ public class ServerMessageService implements IMessageService {
                         for (RsAccDetail accDetail : accDetailList) {
                             T0002Res.Param.Record record = T0002Res.getRecord();
                             record.Date = sdfdate.format(accDetail.getTradeDate());
-                            record.Time = accDetail.getTradeTime();
+                            record.Time = sdftime.format(accDetail.getTradeDate());
                             record.Flag = accDetail.getInoutFlag();
                             record.Type = accDetail.getTradeType();
                             record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
