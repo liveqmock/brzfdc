@@ -13,7 +13,7 @@ import java.io.IOException;
  * Time: ионГ11:19
  * To change this template use File | Settings | File Templates.
  */
-@Service("xSocketService")
+@Service
 public class XSocketService {
 
     public String sendAndRecvByBlockConn(String datagram) throws IOException {

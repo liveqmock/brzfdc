@@ -1,6 +1,7 @@
 package fdc.service.company;
 
 import fdc.repository.dao.RsFdccompanyMapper;
+import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsFdccompany;
 import fdc.repository.model.RsFdccompanyExample;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import java.util.List;
 public class CompanyService {
     @Autowired
     private RsFdccompanyMapper fdccompanyMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
     /**
      * 判断房产商ID是否存在
@@ -58,7 +61,7 @@ public class CompanyService {
      */
     @Transactional
     public void insertRsFdccompany(RsFdccompany fdccompany) {
-        String newId = fdccompanyMapper.selectNewCompanyId();
+        String newId = commonMapper.selectNewCompanyId();
         fdccompany.setCompanyId(newId);
         OperatorManager om = SystemService.getOperatorManager();
         fdccompany.setCreatedBy(om.getOperatorId());
