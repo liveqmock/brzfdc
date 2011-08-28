@@ -22,6 +22,7 @@ import platform.service.SystemService;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,14 +49,11 @@ public class ServerMessageService implements IMessageService {
         String opCode = StringUtil.getSubstrBetweenStrs(message, "<OpCode>", "</OpCode>");
         int nOpCode = Integer.parseInt(opCode);
 
-        /**  TODO 暂时只将接口数据保存到接口表 、需插入业务表：BI_CONTRACT -> RS_CONTRACT，
-         *    TODO BI_CONTRACT_CLOSE -> 更新 RS_CONTRACT状态
-         *    TODO 计划主子表是否保存到业务表？
+        /*
+        *      TODO 退款金额应与累计收款金额一致？是否立即付款到购房者账户？——> 肖
          *    TODO 交易表中交易时间字段改为6位长度
-         *    TODO 字段待确定 暂定交易明细备注字段，【用途】
-         *    TODO 确定计划表与实际用款表的关系及字段对应
-         *   [0001] [0002] [2001] [2002] [2003] [2006] [2007] [2008]
-         */
+        *    TODO 字段待确定 暂定交易明细备注字段，【用途】
+        */
         switch (nOpCode) {
             case 1:
                 T0001Req t0001Req = (T0001Req) BaseBean.toObject(T0001Req.class, message);
@@ -119,7 +117,7 @@ public class ServerMessageService implements IMessageService {
                 responseMsg = t0002Res.toFDCDatagram();
                 break;
 
-            case 2001:   // TODO 是否保存监管证号
+            case 2001:
                 T2001Req t2001Req = (T2001Req) BaseBean.toObject(T2001Req.class, message);
                 logger.info(t2001Req.head.OpDate + t2001Req.head.OpTime + "==接收交易：" + t2001Req.head.OpCode);
 
@@ -129,7 +127,9 @@ public class ServerMessageService implements IMessageService {
 
                 if (!initAccountList.isEmpty()) {
                     RsAccount account = initAccountList.get(0);
-                    if (biDbService.updateAccountToStatus(account, AccountStatus.WATCH.getCode()) != 1) {
+                    account.setStatusFlag(AccountStatus.WATCH.getCode());
+                    account.setAgrnum(t2001Req.param.AgrNum);
+                    if (biDbService.updateAccount(account) != 1) {
                         t2001Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
                         t2001Res.head.RetMsg = "撤销失败，请重试。";
                     }
@@ -149,7 +149,8 @@ public class ServerMessageService implements IMessageService {
 
                 if (!limitAccountList.isEmpty()) {
                     RsAccount account = limitAccountList.get(0);
-                    if (biDbService.updateAccountToStatus(account, t2002Req.param.LockFlag) != 1) {
+                    account.setLimitFlag(t2002Req.param.LockFlag);
+                    if (biDbService.updateAccount(account) != 1) {
                         t2002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
                         t2002Res.head.RetMsg = "操作失败，请重试。";
                     }
@@ -187,7 +188,7 @@ public class ServerMessageService implements IMessageService {
 
                 T2003Res t2003Res = new T2003Res();
 
-                if (biDbService.insertBiContact(contract) != 1) {
+                if (biDbService.updateDBContractByBiContract(contract) != 1) {
                     t2003Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
                     t2003Res.head.RetMsg = "操作失败，请重试。";
                 }
@@ -203,7 +204,8 @@ public class ServerMessageService implements IMessageService {
 
                 if (!overAccountList.isEmpty()) {
                     RsAccount account = overAccountList.get(0);
-                    if (biDbService.updateAccountToStatus(account, AccountStatus.CLOSE.getCode()) == 1) {
+                    account.setStatusFlag(AccountStatus.CLOSE.getCode());
+                    if (biDbService.updateAccount(account) == 1) {
                         t2006Res.param.CancelDate = SystemService.getSdfdate8();
                         t2006Res.param.CancelTime = SystemService.getSdftime6();
                         t2006Res.param.FinalBalance = StringUtil.toBiformatAmt(account.getBalance());
@@ -237,8 +239,8 @@ public class ServerMessageService implements IMessageService {
                 contractClose.setTransAmt(new BigDecimal(t2007Req.param.TransBuyerAmt).divide(new BigDecimal(100)));
 
                 T2007Res t2007Res = new T2007Res();
-
-                if (biDbService.insertBiContactClose(contractClose) != 1) {
+                // TODO 退款金额应与累计收款金额一致？是否立即付款到购房者账户？——> 肖
+                if (biDbService.recvCloseContractInfo(contractClose) != 1) {
                     t2007Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
                     t2007Res.head.RetMsg = "操作失败，请重试。";
                 }
@@ -275,25 +277,30 @@ public class ServerMessageService implements IMessageService {
                     break;
                 }
                 String wrngRecordNo = null;
+                List<BiPlanDetail> biPlanDetailList = null;
                 try {
-                    if (biDbService.insertBiPlan(biPlan) == 1) {
-                        if (planDetailCnt >= 1) {
-                            for (T2008Req.Param.Record record : t2008Req.param.recordList) {
-                                BiPlanDetail planDetail = new BiPlanDetail();
-                                // TODO 确定计划表与实际用款表的关系及字段对应
-                                wrngRecordNo = record.PlanDetailNO;
-                                planDetail.setPlanCtrlNo(record.PlanDetailNO);
-                                planDetail.setToAccountName(record.ToAcctName);
-                                planDetail.setToAccountCode(record.ToAcct);
-                                planDetail.setToHsBankName(record.ToBankName);
-                                planDetail.setPlAmount(new BigDecimal(record.Amt).divide(new BigDecimal(100)));
-                                planDetail.setPlanDate(sdfdate.parse(record.PlanDate));
-                                planDetail.setPlanDesc(record.Purpose);
-                                planDetail.setRemark(record.Remark);
-                                biDbService.insertBiPlanDetail(planDetail);
-                            }
+                    if (planDetailCnt >= 1) {
+                        biPlanDetailList = new ArrayList<BiPlanDetail>();
+                        BiPlanDetail planDetail = null;
+                        for (T2008Req.Param.Record record : t2008Req.param.recordList) {
+                            planDetail = new BiPlanDetail();
+                            wrngRecordNo = record.PlanDetailNO;
+                            planDetail.setPlanId(t2008Req.param.PlanNo);
+                            planDetail.setPlanCtrlNo(record.PlanDetailNO);
+                            planDetail.setToAccountName(record.ToAcctName);
+                            planDetail.setToAccountCode(record.ToAcct);
+                            planDetail.setToHsBankName(record.ToBankName);
+                            planDetail.setPlAmount(new BigDecimal(record.Amt).divide(new BigDecimal(100)));
+                            planDetail.setPlanDate(sdfdate.parse(record.PlanDate));
+                            planDetail.setPlanDesc(record.Purpose);
+                            planDetail.setRemark(record.Remark);
+                            biPlanDetailList.add(planDetail);
                         }
-                    }
+                        if (biDbService.storeFdcAllPlanInfos(biPlan, biPlanDetailList) == -1) {
+                            throw new RuntimeException("数据库保存数据操作失败！");
+                        }
+                    } else throw new RuntimeException("计划明细为空！");
+
                 } catch (ParseException e) {
                     t2008Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FORMAT_ERROR.getCode();
                     t2008Res.head.RetMsg = wrngRecordNo + "计划明细日期格式错误。";
@@ -302,7 +309,7 @@ public class ServerMessageService implements IMessageService {
                     break;
                 } catch (Exception e) {
                     t2008Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
-                    t2008Res.head.RetMsg = "操作失败，请重试。";
+                    t2008Res.head.RetMsg = e.getMessage() + "操作失败，请重试。";
                     logger.error("2008数据新增操作失败！", e);
                     responseMsg = t2008Res.toFDCDatagram();
                     break;
