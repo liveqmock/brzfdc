@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.util.List;
 
 /**
@@ -53,7 +54,14 @@ public class CompanyAction {
     // 改
     public String updateNewFdccompany() {
         try {
-            companyService.updateRsFdccompany(fdccompany);
+            FacesContext context = FacesContext.getCurrentInstance();
+            String pkid = context.getExternalContext().getRequestParameterMap().get("pkid").toString();
+            String modno = context.getExternalContext().getRequestParameterMap().get("modno").toString();
+            RsFdccompany up = new RsFdccompany();
+            up.setPkId(pkid);
+            up.setModificationNum(Integer.parseInt(modno));
+            up.setAddress("1234567");
+            companyService.updateRsFdccompany(up);
         } catch (Exception e) {
             logger.error("更新异常", e);
             MessageUtil.addError(e.getMessage());

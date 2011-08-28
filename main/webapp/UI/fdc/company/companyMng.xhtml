@@ -30,13 +30,21 @@
         </style>
         <script type="text/javascript" src="#{request.contextPath}/UI/support/pub.js"/>
         <script type="text/javascript" language="javascript">
+
+
             document.onkeydown = function TabReplace() {
                 if (event.keyCode == 13) {
-                    if (event.srcElement.tagName != 'BUTTON')
+                    if (event.srcElement.id != 'BUTTON')
                         event.keyCode = 9;
-                    else
-                        event.srcElement.click();
                 }
+            }
+            function recordEdit(obj) {
+                var pkid = obj.parentNode.parentNode.children[0].innerHTML;
+                var sfeature = "dialogwidth:800px; dialogheight:520px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
+                var arg = new Object();
+                arg.doType = "edit";
+                dialog("companyEdit.xhtml?cmpnyPKID=" + pkid + "&amp;doType=eidt", arg, sfeature);
+
             }
         </script>
 
@@ -60,13 +68,13 @@
                         </h:panelGrid>
                         <h:panelGrid columns="1" style="width:100%;margin-left: 215px">
                             <h:panelGroup>
-                            <p:commandButton id="qryBtn" ajax="true" value="查询"
-                                             action="#{companyAction.qryFdccompanys}"
-                                             style="margin-left:15px;width:80px"
-                                             update="input,pdt,msgs">
-                            </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{companyAction.reset}"
-                                             style="width:80px;margin-left:15px" update="query,msgs"/>
+                                <h:commandButton id="qryBtn"  value="查询"
+                                                 action="#{companyAction.qryFdccompanys}"
+                                                 style="margin-left:15px;width:80px"
+                                                 update="input,pdt,msgs">
+                                </h:commandButton>
+                                <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{companyAction.reset}"
+                                                 style="width:80px;margin-left:15px" update="query,msgs"/>
                             </h:panelGroup>
                         </h:panelGrid>
                     </h:panelGrid>
@@ -87,7 +95,9 @@
                              paginator="true" rows="15" paginatorPosition="bottom"
                              rowsPerPageTemplate="100,50,30,15,5"
                              emptyMessage="数据记录为空...">
-
+                    <p:column headerText="pkid" style="display:none;">
+                        <h:outputText value="#{record.pkId}"/>
+                    </p:column>
                     <p:column headerText="房产商名称" style="text-align:left">
                         <h:outputText value="#{record.companyName}"/>
                     </p:column>
@@ -109,8 +119,11 @@
                     </p:column>
 
                     <p:column headerText="操作" style="text-align:center">
-                        <h:commandLink onclick="" value="修改" style="color: blue"/>
-                        <h:commandLink value="删除" style="margin-left: 5px;color:blue"/>
+                        <h:commandLink onclick="recordEdit(this)" immediate="true" value="修改" style="color: blue"/>
+                        <h:commandLink action="#{companyAction.updateNewFdccompany}" value="删除" style="margin-left: 5px;color:blue">
+                            <f:param name="pkid" value="#{record.pkId}"/>
+                            <f:param name="modno" value="#{record.modificationNum}"/>
+                        </h:commandLink>
                     </p:column>
 
                 </p:dataTable>

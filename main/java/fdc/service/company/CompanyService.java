@@ -83,7 +83,9 @@ public class CompanyService {
             OperatorManager om = SystemService.getOperatorManager();
             fdccompany.setLastUpdBy(om.getOperatorId());
             fdccompany.setLastUpdDate(new Date());
-            fdccompanyMapper.updateByPrimaryKey(fdccompany);
+//            RsFdccompanyExample example = new RsFdccompanyExample();
+//            example.createCriteria().andPkIdEqualTo(fdccompany.getPkId());
+            fdccompanyMapper.updateByPrimaryKeySelective(fdccompany);
         } else {
             throw new RuntimeException("并发更新冲突！UUID=" + fdccompany.getPkId());
         }
@@ -110,5 +112,14 @@ public class CompanyService {
         RsFdccompanyExample example = new RsFdccompanyExample();
         example.createCriteria().andCompanyNameLike("%" + companyName + "%");
         return fdccompanyMapper.selectByExample(example);
+    }
+    /**
+     * 单笔查询
+     *
+     * @param pkid
+     * @return RsFdccompany
+     */
+    public RsFdccompany selectedReocrdByPK(String pkid) {
+        return fdccompanyMapper.selectByPrimaryKey(pkid);
     }
 }

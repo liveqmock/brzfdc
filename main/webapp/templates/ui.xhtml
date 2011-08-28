@@ -50,7 +50,7 @@
         <ui:insert name="head"> </ui:insert>
     </h:head>
 
-    <h:body>
+    <h:body onload="document.forms[0].setAttribute('action',location.href);">
         <!--<h:outputScript library="js/My97DatePicker" name="WdatePicker.js" target="head"/>-->
         <!--<div id="wrapper">-->
         <div id="page">
