@@ -28,6 +28,7 @@
                 text-align: left;
             }
         </style>
+        <script type="text/javascript" src="#{request.contextPath}/UI/support/pub.js"/>
         <script type="text/javascript" language="javascript">
             document.onkeydown = function TabReplace() {
                 if (event.keyCode == 13) {
@@ -108,7 +109,7 @@
                     </p:column>
 
                     <p:column headerText="操作" style="text-align:center">
-                        <h:commandLink value="修改" style="color: blue"/>
+                        <h:commandLink onclick="" value="修改" style="color: blue"/>
                         <h:commandLink value="删除" style="margin-left: 5px;color:blue"/>
                     </p:column>
 
