@@ -50,7 +50,7 @@
 
                             <h:outputLabel value="* 房产商名称:" for="companyName"/>
                             <h:inputText autocomplete="off" id="companyName" style="width:260px;" required="true"
-                                         requiredMessage="必须输入房产商名称！" value="#{companyAction.fdccompany.companyName}"
+                                         requiredMessage="房产商名称不能为空！" value="#{companyAction.fdccompany.companyName}"
                                          onfocus="this.select()">
                             </h:inputText>
 
@@ -61,7 +61,7 @@
 
                             <h:outputLabel value="* 法定代表人:" for="mngrName"/>
                             <h:inputText autocomplete="off" id="mngrName" style="width:260px;" required="true"
-                                         requiredMessage="必须输入法定代表人！" value="#{companyAction.fdccompany.mngrName}">
+                                         requiredMessage="法定代表人不能为空！" value="#{companyAction.fdccompany.mngrName}">
                             </h:inputText>
 
                             <h:outputLabel value="营业执照:"/>
@@ -79,7 +79,7 @@
                                              style="margin-left:15px;width:90px"
                                              update="input,pdt,msgs">
                             </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{companyAction.reset}"
+                            <p:commandButton ajax="true" id="resetBtn" type="reset" value="重置"
                                              style="width:90px;margin-left:15px" update="input,msgs"/>
                         </h:panelGrid>
                     </h:panelGrid>
