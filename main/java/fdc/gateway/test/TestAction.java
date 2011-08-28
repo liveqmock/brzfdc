@@ -1,8 +1,14 @@
 package fdc.gateway.test;
 
+import fdc.gateway.domain.CommonRes;
+import fdc.gateway.domain.T000.T0003Req;
+import fdc.gateway.service.impl.ClientMessageService;
+import fdc.gateway.xsocket.client.XSocketComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import platform.common.utils.MessageUtil;
+import platform.service.SystemService;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -18,83 +24,35 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class TestAction {
     private static final Logger logger = LoggerFactory.getLogger(TestAction.class);
-    public String test0003() {
-        try {
-            Client0003Test.test();
-            MessageUtil.addInfo("成功");
+    @Autowired
+    private XSocketComponent xSocketComponent;
+    @Autowired
+    private ClientMessageService clientMessageService;
 
+    // 以2003报文为例
+    public String test() {
+        try {
+            T0003Req req = new T0003Req();
+            req.head.OpCode = "0003";
+            req.head.BankCode = "313";
+            req.param.Acct = "123456789";
+            req.param.AcctName = "Bill";
+            req.param.BankSerial = SystemService.getDatetime14();
+            req.param.Reason = "原因";
+            String dataGram = req.toFDCDatagram();                // 报文
+            String recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
+            CommonRes resBean = clientMessageService.transMsgToBean(recvMsg);
+            if ("0000".equalsIgnoreCase(resBean.head.RetCode)) {
+                logger.info("【客户端】发送报文后接收响应：发送成功");
+                MessageUtil.addInfo("数据发送成功！");
+            } else {
+                logger.error("【客户端】发送报文后接收响应：" + resBean.head.RetCode + resBean.head.RetMsg);
+                MessageUtil.addError(resBean.head.RetCode + resBean.head.RetMsg);
+            }
         } catch (Exception e) {
-            MessageUtil.addError("异常");
-            logger.error(e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
+            MessageUtil.addError("发送异常，请稍候重试！");
+            logger.error("发送异常", e.getMessage());
         }
         return null;
     }
-     public String test0004() {
-        try {
-            Client0004Test.test();
-            MessageUtil.addInfo("成功");
-
-        } catch (Exception e) {
-            MessageUtil.addError("异常");
-           logger.error(e.getMessage()); //To change body of catch statement use File | Settings | File Templates.
-        }
-        return null;
-    }
-     public String test0005() {
-        try {
-            Client0005Test.test();
-            MessageUtil.addInfo("成功");
-
-        } catch (Exception e) {
-            MessageUtil.addError("异常");
-           logger.error(e.getMessage()); //To change body of catch statement use File | Settings | File Templates.
-        }
-        return null;
-    }
-     public String test0006() {
-        try {
-            Client0006Test.test();
-            MessageUtil.addInfo("成功");
-
-        } catch (Exception e) {
-            MessageUtil.addError("异常");
-           logger.error(e.getMessage()); //To change body of catch statement use File | Settings | File Templates.
-        }
-        return null;
-    }
-     public String test0007() {
-        try {
-            Client0007Test.test();
-            MessageUtil.addInfo("成功");
-
-        } catch (Exception e) {
-            MessageUtil.addError("异常");
-           logger.error(e.getMessage()); //To change body of catch statement use File | Settings | File Templates.
-        }
-        return null;
-    }
-
-     public String test2004() {
-        try {
-            Client2004Test.test();
-            MessageUtil.addInfo("成功");
-
-        } catch (Exception e) {
-            MessageUtil.addError("异常");
-           logger.error(e.getMessage()); //To change body of catch statement use File | Settings | File Templates.
-        }
-        return null;
-    }
-     public String test2005() {
-        try {
-            Client2005Test.test();
-            MessageUtil.addInfo("成功");
-
-        } catch (Exception e) {
-            MessageUtil.addError("异常");
-           logger.error(e.getMessage()); //To change body of catch statement use File | Settings | File Templates.
-        }
-        return null;
-    }
-
 }

@@ -1,8 +1,11 @@
 package fdc.gateway.service.impl;
 
+import fdc.gateway.domain.BaseBean;
+import fdc.gateway.domain.CommonRes;
 import fdc.gateway.service.IMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,20 +14,26 @@ import org.slf4j.LoggerFactory;
  * Time: 上午3:20
  * To change this template use File | Settings | File Templates.
  */
+@Service
 public class ClientMessageService implements IMessageService {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientMessageService.class);
 
+    public CommonRes transMsgToBean(String message) {
+        return (CommonRes) BaseBean.toObject(CommonRes.class, message);
+    }
+
     @Override
     public String handleMessage(String message) {
         String responseMsg = null;
-        /*if (responseMsg != null) return
-        CommonRes resHead = (CommonRes)BaseBean.toObject(CommonRes.class, message);
-        if("0000".equalsIgnoreCase(resHead.head.RetCode)) {
-            logger.info("【客户端】返回报文处理：发送成功");
-        }else {
-            logger.error("【客户端】返回报文处理："+resHead.head.RetCode+resHead.head.RetMsg);
-        }*/
+        CommonRes resBean = transMsgToBean(message);
+        if ("0000".equalsIgnoreCase(resBean.head.RetCode)) {
+            logger.info("【客户端】发送报文后接收响应：发送成功");
+            responseMsg = "数据发送成功！";
+        } else {
+            logger.error("【客户端】发送报文后接收响应：" + resBean.head.RetCode + resBean.head.RetMsg);
+            responseMsg = resBean.head.RetCode + resBean.head.RetMsg;
+        }
         return responseMsg;
     }
 }
