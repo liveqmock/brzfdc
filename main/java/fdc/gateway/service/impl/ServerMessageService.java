@@ -1,6 +1,7 @@
 package fdc.gateway.service.impl;
 
 import fdc.common.constant.AccountStatus;
+import fdc.common.constant.TradeType;
 import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.T0001Req;
 import fdc.gateway.domain.T000.T0001Res;
@@ -50,7 +51,6 @@ public class ServerMessageService implements IMessageService {
         int nOpCode = Integer.parseInt(opCode);
 
         /*
-        *      TODO 退款金额应与累计收款金额一致？是否立即付款到购房者账户？——> 肖
         *    TODO 字段待确定 暂定交易明细备注字段，【用途】
         */
         switch (nOpCode) {
@@ -100,8 +100,8 @@ public class ServerMessageService implements IMessageService {
                             record.ToAcct = accDetail.getToAccountCode();
                             record.ToAcctName = accDetail.getToAccountName();
                             record.ToBankName = accDetail.getToHsBankName();
-                            // TODO 字段待确定 暂定交易明细备注字段，【用途】
-                            record.Purpose = accDetail.getRemark();
+                            // TODO 字段待确定 暂定交易明类型字段
+                            record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
 
                             t0002Res.param.recordList.add(record);
                         }
