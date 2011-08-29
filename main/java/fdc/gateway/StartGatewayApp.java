@@ -1,6 +1,6 @@
 package fdc.gateway;
 
-import fdc.gateway.service.ContainerService;
+import fdc.gateway.xsocket.ContainerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public class StartGatewayApp {
      * @param args
      */
     public static void main(String[] args) {
-        ContainerService.init();
+        ContainerManager.init();
         logger.info("====== Socket Server ≥ı ºªØΩ· ¯==========");
     }
 }

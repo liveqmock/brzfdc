@@ -1,17 +1,16 @@
-package fdc.gateway.service;
+package fdc.gateway.xsocket;
 
-import fdc.gateway.xsocket.XSocketManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class ContainerService {
+public class ContainerManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContainerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContainerManager.class);
     private static ApplicationContext context;
 
-    private ContainerService() {
+    private ContainerManager() {
     }
 
     public static void init() {
