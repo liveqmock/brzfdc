@@ -51,7 +51,6 @@ public class ServerMessageService implements IMessageService {
 
         /*
         *      TODO 退款金额应与累计收款金额一致？是否立即付款到购房者账户？——> 肖
-         *    TODO 交易表中交易时间字段改为6位长度
         *    TODO 字段待确定 暂定交易明细备注字段，【用途】
         */
         switch (nOpCode) {
