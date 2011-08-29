@@ -142,7 +142,7 @@ public class BiDbService {
         if (rsContract != null) {
             rsContract.setStatusFlag(ContractStatus.CANCEL.getCode());
             rsContract.setModificationNum(rsContract.getModificationNum() + 1);
-            // TODO 退款金额应与累计收款金额一致？
+            rsContract.setTransbuyeramt(contractClose.getTransAmt());
             return rsContractMapper.updateByPrimaryKey(rsContract);
         }
         return -1;

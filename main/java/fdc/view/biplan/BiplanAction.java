@@ -1,7 +1,6 @@
 package fdc.view.biplan;
 
 import fdc.repository.model.BiPlan;
-import fdc.service.BiplanService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -21,8 +20,8 @@ import java.util.List;
 public class BiplanAction {
     private List<ParamPlan> biPlanList;
     private ParamPlan paramPlan;
-    @ManagedProperty(value = "#{biplanService}")
-    private BiplanService biplanService;
+   /* @ManagedProperty(value = "#{biplanService}")
+    private BiplanService biplanService;*/
 
     @PostConstruct
     public void init() {
@@ -56,11 +55,11 @@ public class BiplanAction {
         this.paramPlan = paramPlan;
     }
 
-    public BiplanService getBiplanService() {
+    /*public BiplanService getBiplanService() {
         return biplanService;
     }
 
     public void setBiplanService(BiplanService biplanService) {
         this.biplanService = biplanService;
-    }
+    }*/
 }

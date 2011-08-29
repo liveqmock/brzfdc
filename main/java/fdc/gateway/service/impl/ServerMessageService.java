@@ -238,7 +238,6 @@ public class ServerMessageService implements IMessageService {
                 contractClose.setTransAmt(new BigDecimal(t2007Req.param.TransBuyerAmt).divide(new BigDecimal(100)));
 
                 T2007Res t2007Res = new T2007Res();
-                // TODO 退款金额应与累计收款金额一致？是否立即付款到购房者账户？——> 肖
                 if (biDbService.recvCloseContractInfo(contractClose) != 1) {
                     t2007Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
                     t2007Res.head.RetMsg = "操作失败，请重试。";
