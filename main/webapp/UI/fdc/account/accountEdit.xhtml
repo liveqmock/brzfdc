@@ -84,9 +84,9 @@
                             </h:inputText>
 
                             <h:outputLabel value="* 房产商:" for="companyId"/>
-                            <p:inputText autocomplete="off" id="companyId" style="width:192px;" required="true"
-                                         requiredMessage="必须输入房产商！" value="#{accountEditAction.account.companyId}">
-                            </p:inputText>
+                            <h:selectOneMenu id="companyId" value="#{accountEditAction.account.companyId}" style="width:192px;">
+                                <f:selectItems value="#{accountEditAction.companyList}"></f:selectItems>
+                            </h:selectOneMenu>
 
                             <h:outputLabel value="监管账号:" for="accountCode"/>
                             <h:inputText autocomplete="off" id="accountCode" style="width:192px;" required="true"

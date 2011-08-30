@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
+import javax.faces.model.SelectItem;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -119,5 +121,21 @@ public class CompanyService {
      */
     public RsFdccompany selectedReocrdByPK(String pkid) {
         return fdccompanyMapper.selectByPrimaryKey(pkid);
+    }
+
+    public List<SelectItem> selectItemsCompany(String newAdd) {
+        List<SelectItem> enumOptions = new ArrayList<SelectItem>();
+        if (newAdd != null) {
+            SelectItem siNew = new SelectItem("",newAdd);
+            enumOptions.add(siNew);
+        }
+        List<RsFdccompany> rsFdccompanies = qryAllRecords();
+        if (rsFdccompanies.size() > 0) {
+            for (RsFdccompany rf:rsFdccompanies) {
+                SelectItem si = new SelectItem(rf.getCompanyId(),rf.getCompanyName());
+                enumOptions.add(si);
+            }
+        }
+        return enumOptions;
     }
 }

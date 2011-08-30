@@ -2,6 +2,7 @@ package fdc.view.account;
 
 import fdc.repository.model.RsAccount;
 import fdc.service.account.AccountService;
+import fdc.service.company.CompanyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -29,10 +30,13 @@ public class AccountEditAction {
     private static final Logger logger = LoggerFactory.getLogger(AccountEditAction.class);
     @ManagedProperty(value = "#{accountService}")
     private AccountService accountService;
+    @ManagedProperty(value = "#{companyService}")
+    private CompanyService companyService;
     @ManagedProperty(value = "#{toolsService}")
     private ToolsService toolsService;
     private RsAccount account;
     private String rtnFlag;
+    private List<SelectItem> companyList;
 
     @PostConstruct
     public void init() {
@@ -55,6 +59,23 @@ public class AccountEditAction {
         }
         rtnFlag = "<script language='javascript'>rtnScript('true');</script>";
         return null;
+    }
+
+    public List<SelectItem> getCompanyList() {
+        companyList = companyService.selectItemsCompany(null);
+        return companyList;
+    }
+
+    public CompanyService getCompanyService() {
+        return companyService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
+    }
+
+    public void setCompanyList(List<SelectItem> companyList) {
+        this.companyList = companyList;
     }
 
     public AccountService getAccountService() {
