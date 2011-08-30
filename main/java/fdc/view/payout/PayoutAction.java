@@ -35,16 +35,19 @@ public class PayoutAction {
     private PayoutService payoutService;
     private List<RsPayout> rsPayoutList;
     private List<RsPayout> chkPayoutList;
+    private List<RsPayout> passPayoutList;
+    private List<RsPayout> refusePayoutList;
     private RsPayout selectedRecord;
-    private List<RsPayout> selectedRecords;
+    private RsPayout[] selectedRecords;
     private WorkResult workResult = WorkResult.CREATE;
 
     @PostConstruct
     public void init() {
         rsPayout = new RsPayout();
-        selectedRecords = new ArrayList<RsPayout>();
         rsPayoutList = new ArrayList<RsPayout>();
-        chkPayoutList = payoutService.selectChkRecords();
+        chkPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.CREATE.getCode());
+        passPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.PASS.getCode());
+        refusePayoutList = payoutService.selectRecordsByWorkResult(WorkResult.NOTPASS.getCode());
     }
 
     public String onSave() {
@@ -64,33 +67,35 @@ public class PayoutAction {
     }
 
     public String onCheck() {
-        if (selectedRecords.isEmpty()) {
+        if (selectedRecords == null || selectedRecords.length ==0) {
             MessageUtil.addWarn("请至少选择一笔记录！");
         } else {
             try {
-                payoutService.updateRsPayoutsToStatus(selectedRecords, WorkResult.PASS.getCode());
+                payoutService.updateRsPayoutsToWorkResult(selectedRecords, WorkResult.PASS.getCode());
             } catch (Exception e) {
                 logger.error("复核失败." + e.getMessage());
                 MessageUtil.addError("复核失败." + e.getMessage());
                 return null;
             }
             MessageUtil.addInfo("复核成功!");
+            init();
         }
         return null;
     }
 
     public String onRefuse() {
-        if (selectedRecords.isEmpty()) {
+        if (selectedRecords == null || selectedRecords.length ==0) {
             MessageUtil.addWarn("请至少选择一笔记录！");
         } else {
             try {
-                payoutService.updateRsPayoutsToStatus(selectedRecords, WorkResult.NOTPASS.getCode());
+                payoutService.updateRsPayoutsToWorkResult(selectedRecords, WorkResult.NOTPASS.getCode());
             } catch (Exception e) {
-                logger.error("回退失败." + e.getMessage());
-                MessageUtil.addError("回退失败." + e.getMessage());
+                logger.error("退回失败." + e.getMessage());
+                MessageUtil.addError("退回失败." + e.getMessage());
                 return null;
             }
-            MessageUtil.addInfo("回退完成!");
+            MessageUtil.addInfo("退回完成!");
+            init();
         }
         return null;
     }
@@ -156,11 +161,27 @@ public class PayoutAction {
         this.workResult = workResult;
     }
 
-    public List<RsPayout> getSelectedRecords() {
+    public RsPayout[] getSelectedRecords() {
         return selectedRecords;
     }
 
-    public void setSelectedRecords(List<RsPayout> selectedRecords) {
+    public void setSelectedRecords(RsPayout[] selectedRecords) {
         this.selectedRecords = selectedRecords;
+    }
+
+    public List<RsPayout> getPassPayoutList() {
+        return passPayoutList;
+    }
+
+    public void setPassPayoutList(List<RsPayout> passPayoutList) {
+        this.passPayoutList = passPayoutList;
+    }
+
+    public List<RsPayout> getRefusePayoutList() {
+        return refusePayoutList;
+    }
+
+    public void setRefusePayoutList(List<RsPayout> refusePayoutList) {
+        this.refusePayoutList = refusePayoutList;
     }
 }

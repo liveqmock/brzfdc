@@ -37,7 +37,7 @@ public class PayoutService {
     }
 
     @Transactional
-    public int updateRsPayoutsToStatus(List<RsPayout> rsPayoutList, String statusFlag) {
+    public int updateRsPayoutsToWorkResult(RsPayout[] rsPayoutList, String workResult) {
         OperatorManager om = SystemService.getOperatorManager();
         String operId = om.getOperatorId();
         String operName = om.getOperatorName();
@@ -50,7 +50,7 @@ public class PayoutService {
             rsPayout.setLastUpdBy(operId);
             rsPayout.setLastUpdDate(operDate);
             rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
-            rsPayout.setStatusFlag(statusFlag);
+            rsPayout.setWorkResult(workResult);
             if(rsPayoutMapper.updateByPrimaryKey(rsPayout) != 1) {
               rtnFlag = -1;
               throw  new RuntimeException("【记录更新失败】付款监管账号："+rsPayout.getPayAccount());
@@ -59,9 +59,9 @@ public class PayoutService {
         return rtnFlag;
     }
 
-    public List<RsPayout> selectChkRecords() {
+    public List<RsPayout> selectRecordsByWorkResult(String workResultCode) {
         RsPayoutExample example = new RsPayoutExample();
-        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.CREATE.getCode());
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(workResultCode);
         return rsPayoutMapper.selectByExample(example);
     }
 }

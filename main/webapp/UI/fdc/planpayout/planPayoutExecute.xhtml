@@ -99,7 +99,12 @@
                         <h:outputText value=""/>
                     </f:facet>
                 </p:ajaxStatus>
-
+                <p:menubar>
+                            <p:menuitem type="push" value="全部入账" icon="ui-icon ui-icon-document"
+                                        action="#{payoutAction.onCheck}" update="msgs, pdt" ajax="true"/>
+                            <p:menuitem type="push" value="多笔入账" icon="ui-icon ui-icon-document"
+                                        action="#{payoutAction.onRefuse}" update="msgs1, pdt1, pdt3" ajax="true"/>
+                        </p:menubar>
                 <p:dataTable id="pdt" style="width:100%;"
                              dynamic="true" selectionMode="single"
                              value="#{biplanAction.biPlanList}" var="record"
