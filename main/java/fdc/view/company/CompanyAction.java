@@ -9,6 +9,7 @@ import platform.common.utils.MessageUtil;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class CompanyAction {
     private Logger logger = LoggerFactory.getLogger(CompanyAction.class);
     @ManagedProperty(value = "#{companyService}")

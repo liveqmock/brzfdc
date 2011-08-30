@@ -43,18 +43,19 @@
                 var sfeature = "dialogwidth:800px; dialogheight:520px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
                 var arg = new Object();
                 arg.doType = "edit";
-                dialog("companyEdit.xhtml?cmpnyPKID=" + pkid + "&amp;doType=eidt", arg, sfeature);
-
+                var rtn = dialog("companyEdit.xhtml?cmpnyPKID=" + pkid + "&amp;doType=eidt", arg, sfeature);
+                if (rtn == "1") {
+                    document.getElementById("queryForm:qryBtn").click();
+                }
             }
         </script>
 
     </ui:define>
 
     <ui:define name="content">
-        <div style="margin:5px;">
+        <div  class="entry" id="top">
             <p:growl id="msgs" showDetail="false"/>
-            <h:form id="form">
-
+            <h:form id="queryForm">
                 <p:panel id="query" header="【房地产开发商基本信息】查询条件">
                     <h:panelGrid columns="2" style="width:100%">
                         <h:panelGrid columns="2" cellspacing="3" style="width:90%" columnClasses="col-95,col-5">
@@ -67,13 +68,11 @@
                         </h:panelGrid>
                         <h:panelGrid columns="1" style="width:100%;margin-left: 215px">
                             <h:panelGroup>
-                                <p:commandButton id="qryBtn"  value="查询"
-                                                 action="#{companyAction.qryFdccompanys}"
-                                                 style="margin-left:15px;width:80px"
-                                                 update="input,pdt,msgs">
+                                <p:commandButton style="margin-left:15px;width:80px" ajax="false" action="#{companyAction.qryFdccompanys}"
+                                                 id="qryBtn"  value="查询">
                                 </p:commandButton>
-                                <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{companyAction.reset}"
-                                                 style="width:80px;margin-left:15px" update="query,msgs"/>
+                                <p:commandButton type="reset" id="resetBtn" value="重置"
+                                                 style="width:80px;margin-left:15px"/>
                             </h:panelGroup>
                         </h:panelGrid>
                     </h:panelGrid>

@@ -4,15 +4,13 @@ import fdc.repository.model.RsFdccompany;
 import fdc.service.company.CompanyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import platform.common.utils.MessageUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -30,6 +28,7 @@ public class CompanyEditAction implements Serializable {
     @ManagedProperty(value = "#{companyService}")
     private CompanyService companyService;
     private RsFdccompany fdccompany;
+    private String rtnFlag;
 
     @PostConstruct
     public void init() {
@@ -42,15 +41,24 @@ public class CompanyEditAction implements Serializable {
         }
     }
 
-    public String onBtnSaveClick() {
+    public String onBtnSaveClick() throws IOException {
         try {
             companyService.updateRsFdccompany(fdccompany);
         } catch (Exception ex) {
             ex.printStackTrace();
+            rtnFlag = "<script language='javascript'>rtnScript('false');</script>";
             return null;
         }
-        MessageUtil.addInfo("更新成功!");
+        rtnFlag = "<script language='javascript'>rtnScript('true');</script>";
         return null;
+    }
+
+    public String getRtnFlag() {
+        return rtnFlag;
+    }
+
+    public void setRtnFlag(String rtnFlag) {
+        this.rtnFlag = rtnFlag;
     }
 
     public CompanyService getCompanyService() {
