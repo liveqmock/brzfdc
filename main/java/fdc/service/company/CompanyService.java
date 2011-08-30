@@ -83,8 +83,6 @@ public class CompanyService {
             OperatorManager om = SystemService.getOperatorManager();
             fdccompany.setLastUpdBy(om.getOperatorId());
             fdccompany.setLastUpdDate(new Date());
-//            RsFdccompanyExample example = new RsFdccompanyExample();
-//            example.createCriteria().andPkIdEqualTo(fdccompany.getPkId());
             fdccompanyMapper.updateByPrimaryKeySelective(fdccompany);
         } else {
             throw new RuntimeException("并发更新冲突！UUID=" + fdccompany.getPkId());
@@ -110,7 +108,7 @@ public class CompanyService {
      */
     public List<RsFdccompany> qryRsFdccompanyByName(String companyName) {
         RsFdccompanyExample example = new RsFdccompanyExample();
-        example.createCriteria().andCompanyNameLike("%" + companyName + "%");
+        example.createCriteria().andCompanyNameLike("%" + companyName + "%").andDeleteFlagEqualTo("0");
         return fdccompanyMapper.selectByExample(example);
     }
     /**

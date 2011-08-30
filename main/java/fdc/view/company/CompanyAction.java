@@ -22,7 +22,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class CompanyAction {
     private Logger logger = LoggerFactory.getLogger(CompanyAction.class);
     @ManagedProperty(value = "#{companyService}")
@@ -33,8 +33,8 @@ public class CompanyAction {
 
     @PostConstruct
     public void init() {
-        this.fdccompany = new RsFdccompany();
-        this.fdccompanyList = companyService.qryAllRecords();
+        fdccompany = new RsFdccompany();
+        qrySelectedRecords("");
     }
 
     // 增
@@ -61,6 +61,7 @@ public class CompanyAction {
             RsFdccompany up = new RsFdccompany();
             up.setPkId(pkid);
             up.setModificationNum(Integer.parseInt(modno));
+            up.setDeleteFlag("1");
             companyService.updateRsFdccompany(up);
         } catch (Exception e) {
             logger.error("更新异常", e);
@@ -68,13 +69,14 @@ public class CompanyAction {
             return null;
         }
         MessageUtil.addInfo("修改成功！");
+        qrySelectedRecords(companyName);
         return null;
     }
 
     //  查
     public String qryFdccompanys() {
         try {
-            fdccompanyList = companyService.qryRsFdccompanyByName(companyName);
+            qrySelectedRecords(companyName);
         } catch (Exception e) {
             logger.error("查询异常", e);
             MessageUtil.addError(e.getMessage());
@@ -82,10 +84,8 @@ public class CompanyAction {
         return null;
     }
 
-    public String reset() {
-        this.fdccompany = null;
-        fdccompanyList = null;
-        return null;
+    private void qrySelectedRecords(String comName) {
+        fdccompanyList = companyService.qryRsFdccompanyByName(comName);
     }
 
     public RsFdccompany getFdccompany() {
