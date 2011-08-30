@@ -14,7 +14,7 @@ public class ContainerManager {
     }
 
     public static void init() {
-        logger.info("...XSocket Container Service 初始化开始.......");
+        logger.info("... Container Manager 初始化开始.......");
         context = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml"});
         XSocketManager manager = (XSocketManager)getBean("xSocketManager");
         manager.init();
@@ -29,9 +29,9 @@ public class ContainerManager {
 
     public static void stop(int code) {
         if (code == 0) {
-            logger.info("Xsocket Container Service 正常关闭...");
+            logger.info(" Container Manager 正常关闭...");
         } else {
-            logger.info("Xsocket Container Service 发生异常，即将关闭...");
+            logger.info(" Container Manager 发生异常，即将关闭...");
         }
         System.exit(code);
     }

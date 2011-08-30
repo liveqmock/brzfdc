@@ -22,10 +22,6 @@ public class XSocketManager {
     @Autowired
     private XSocketServer xSocketServer;
 
-    static {
-        logger.info("////================ XSocketManager 开始初始化====================////");
-    }
-
     public XSocketManager() {
     }
 

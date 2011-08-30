@@ -83,6 +83,7 @@ public class ServerMessageService implements IMessageService {
                     if (!biDbService.isAccountExistByCodeName(t0002Req.param.Acct, t0002Req.param.AcctName)) {
                         t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_NO_ACCOUNT.getCode();
                         t0002Res.head.RetMsg = "没有查到账户，请检查账户信息。";
+                        responseMsg = t0002Res.toFDCDatagram();
                         break;
                     }
                     List<RsAccDetail> accDetailList = biDbService.selectAccDetailsByCodeNameDate(t0002Req.param.Acct,
@@ -253,7 +254,7 @@ public class ServerMessageService implements IMessageService {
                 BiPlan biPlan = new BiPlan();
                 biPlan.setAccountCode(t2008Req.param.Acct);
                 biPlan.setAccountName(t2008Req.param.AcctName);
-                biPlan.setPlanNo(t2008Req.param.PlanNo);
+                biPlan.setPlanNo(t2008Req.param.PlanNO);
                 biPlan.setPlanAmount(new BigDecimal(t2008Req.param.PlanAmt).divide(new BigDecimal(100)));
                 biPlan.setPlanNum(Integer.parseInt(t2008Req.param.PlanNum));
                 try {
@@ -283,7 +284,7 @@ public class ServerMessageService implements IMessageService {
                         for (T2008Req.Param.Record record : t2008Req.param.recordList) {
                             planDetail = new BiPlanDetail();
                             wrngRecordNo = record.PlanDetailNO;
-                            planDetail.setPlanId(t2008Req.param.PlanNo);
+                            planDetail.setPlanId(t2008Req.param.PlanNO);
                             planDetail.setPlanCtrlNo(record.PlanDetailNO);
                             planDetail.setToAccountName(record.ToAcctName);
                             planDetail.setToAccountCode(record.ToAcct);

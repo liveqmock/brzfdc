@@ -12,7 +12,7 @@ import java.util.Hashtable;
 public enum WorkResult implements EnumApp {
     NOTPASS("0", "不通过"),
     PASS("1", "通过"),
-    COMMIT("2", "提交"),
+    COMMIT("2", "入账"),
     CREATE("3", "新建");
 
     private String code = null;

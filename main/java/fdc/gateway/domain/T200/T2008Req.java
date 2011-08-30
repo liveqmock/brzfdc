@@ -22,7 +22,7 @@ public class T2008Req extends BaseBean {
     public static class Param {
         public String Acct = "";
         public String AcctName = "";
-        public String PlanNo = "";
+        public String PlanNO = "";
         public String SubmitDate = "";
         public String PlanAmt = "";
         public String PlanNum = "";
