@@ -61,7 +61,6 @@ public class CompanyAction {
             RsFdccompany up = new RsFdccompany();
             up.setPkId(pkid);
             up.setModificationNum(Integer.parseInt(modno));
-            up.setAddress("1234567");
             companyService.updateRsFdccompany(up);
         } catch (Exception e) {
             logger.error("¸üÐÂÒì³£", e);
