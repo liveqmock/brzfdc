@@ -117,7 +117,7 @@
                     </p:column>
 
                     <p:column headerText="操作" style="text-align:center">
-                        <h:commandLink onclick="recordEdit(this)" immediate="true" value="修改" style="color: blue"/>
+                        <h:commandLink onclick="recordEdit(this)" value="修改" style="color: blue"/>
                         <h:commandLink id="btnDelete" immediate="false" onclick="if (confirm('删除？')) return true;else return false;" action="#{companyAction.updateNewFdccompany}" value="删除" style="margin-left: 5px;color:blue">
                             <f:param name="pkid" value="#{record.pkId}"/>
                             <f:param name="modno" value="#{record.modificationNum}"/>
