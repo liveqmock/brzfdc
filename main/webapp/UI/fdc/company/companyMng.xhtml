@@ -68,11 +68,11 @@
                         </h:panelGrid>
                         <h:panelGrid columns="1" style="width:100%;margin-left: 215px">
                             <h:panelGroup>
-                                <h:commandButton id="qryBtn"  value="查询"
+                                <p:commandButton id="qryBtn"  value="查询"
                                                  action="#{companyAction.qryFdccompanys}"
                                                  style="margin-left:15px;width:80px"
                                                  update="input,pdt,msgs">
-                                </h:commandButton>
+                                </p:commandButton>
                                 <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{companyAction.reset}"
                                                  style="width:80px;margin-left:15px" update="query,msgs"/>
                             </h:panelGroup>
