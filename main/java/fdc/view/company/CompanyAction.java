@@ -16,13 +16,13 @@ import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
- * User: zhangxiaobo
- * Date: 11-8-24
+ * User: haiyuhuang
+ * Date: 11-8-27
  * Time: ионГ10:58
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class CompanyAction {
     private Logger logger = LoggerFactory.getLogger(CompanyAction.class);
     @ManagedProperty(value = "#{companyService}")
