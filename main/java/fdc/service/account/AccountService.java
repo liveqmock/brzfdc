@@ -1,8 +1,11 @@
 package fdc.service.account;
 
 import fdc.repository.dao.RsAccountMapper;
+import fdc.repository.model.RsAccDetailExample;
 import fdc.repository.model.RsAccount;
 import fdc.repository.model.RsAccountExample;
+import fdc.repository.model.RsFdccompany;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +13,7 @@ import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
 import javax.management.RuntimeErrorException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +29,13 @@ public class AccountService {
     @Autowired
     private RsAccountMapper accountMapper;
 
+    public RsAccount selectedRecord(String pkId) {
+        return accountMapper.selectByPrimaryKey(pkId);
+    }
+
     /**
      * 判断账号是否已存在
+     *
      * @param account
      * @return
      */
@@ -34,6 +43,20 @@ public class AccountService {
         RsAccountExample example = new RsAccountExample();
         example.createCriteria().andAccountCodeEqualTo(account.getAccountCode());
         return accountMapper.countByExample(example) >= 1;
+    }
+
+    /**
+     * 是否并发更新冲突
+     *
+     * @param
+     * @return
+     */
+    public boolean isModifiable(RsAccount act) {
+        RsAccount actt = accountMapper.selectByPrimaryKey(act.getPkId());
+        if (act.getModificationNum() != actt.getModificationNum()) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -48,20 +71,60 @@ public class AccountService {
     }
 
     /**
+     * 查询
+     */
+    public List<RsAccount> selectedRecordsByCondition(String presellNo, String companyId, String accountCode, String accountName) {
+        RsAccountExample example = new RsAccountExample();
+        example.clear();
+        RsAccountExample.Criteria rsActCrit = example.createCriteria();
+        rsActCrit.andDeletedFlagEqualTo("0");
+        if (presellNo != null && !StringUtils.isEmpty(presellNo.trim())) {
+            rsActCrit.andPresellNoEqualTo(presellNo);
+        }
+        if (companyId != null && !StringUtils.isEmpty(companyId.trim())) {
+            rsActCrit.andCompanyIdEqualTo(companyId);
+        }
+        if (accountCode != null && !StringUtils.isEmpty(accountCode.trim())) {
+            rsActCrit.andAccountCodeEqualTo(accountCode);
+        }
+        if (accountName != null && !StringUtils.isEmpty(accountName.trim())) {
+            rsActCrit.andAccountNameLike(accountName + "%");
+        }
+        return accountMapper.selectByExample(example);
+    }
+
+    /**
      * 新增记录
      *
      * @param account
      */
     @Transactional
     public void insertRecord(RsAccount account) {
-        if(isExistInDb(account)) {
+        if (isExistInDb(account)) {
             throw new RuntimeException("该账号已存在，请重新录入！");
+        } else {
+            OperatorManager om = SystemService.getOperatorManager();
+            account.setCreatedBy(om.getOperatorId());
+            account.setCreatedDate(new Date());
+            account.setLastUpdBy(om.getOperatorId());
+            account.setLastUpdDate(new Date());
+            accountMapper.insertSelective(account);
         }
-        OperatorManager om = SystemService.getOperatorManager();
-        account.setCreatedBy(om.getOperatorId());
-        account.setCreatedDate(new Date());
-        account.setLastUpdBy(om.getOperatorId());
-        account.setLastUpdDate(new Date());
-        accountMapper.insertSelective(account);
+
+    }
+
+    @Transactional
+    public void updateRecord(RsAccount account) {
+
+        if (isModifiable(account)) {
+            OperatorManager om = SystemService.getOperatorManager();
+            account.setCreatedBy(om.getOperatorId());
+            account.setCreatedDate(new Date());
+            account.setLastUpdBy(om.getOperatorId());
+            account.setLastUpdDate(new Date());
+            accountMapper.updateByPrimaryKeySelective(account);
+        } else {
+            throw new RuntimeException("并发更新冲突！ActPkid=" + account.getPkId());
+        }
     }
 }

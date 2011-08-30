@@ -9,6 +9,7 @@ import platform.common.utils.MessageUtil;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class AccountAction {
     private static final Logger logger = LoggerFactory.getLogger(AccountAction.class);
     @ManagedProperty(value = "#{accountService}")
@@ -32,26 +33,41 @@ public class AccountAction {
     @PostConstruct
     public void init() {
         this.account = new RsAccount();
-        accountList = new ArrayList<RsAccount>();
+        querySelectedRecords();
     }
+
+    private void querySelectedRecords() {
+        accountList = accountService.qryAllRecords();
+    }
+
+    private void querySelectedRecords(RsAccount act) {
+        accountList = accountService.selectedRecordsByCondition(act.getPresellNo(),act.getCompanyId(),act.getAccountCode(),
+                act.getAccountName());
+    }
+
+    public String onBtnQueryClick() {
+        querySelectedRecords(account);
+        return null;
+    }
+
     // 增
     public String insertRecord() {
         try {
             accountService.insertRecord(account);
-            accountList.add(account);
         } catch (Exception e) {
             logger.error("新增数据失败，", e);
             MessageUtil.addError(e.getMessage());
             return null;
         }
         MessageUtil.addInfo("新增数据完成。");
-        account = new RsAccount();
+        querySelectedRecords();
+        this.account = new RsAccount();
         return null;
     }
 
     public String reset() {
         this.account = new RsAccount();
-        if(!accountList.isEmpty()){
+        if (!accountList.isEmpty()) {
             accountList.clear();
         }
         return null;

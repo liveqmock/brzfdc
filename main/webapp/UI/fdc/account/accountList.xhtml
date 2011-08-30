@@ -28,6 +28,7 @@
                 text-align: left;
             }
         </style>
+        <script type="text/javascript" src="#{request.contextPath}/UI/support/pub.js"/>
         <script type="text/javascript" language="javascript">
             document.onkeydown = function TabReplace() {
                 if (event.keyCode == 13) {
@@ -35,16 +36,30 @@
                         event.keyCode = 9;
                 }
             }
+            function recordEdit(obj) {
+                var pkid = obj.parentNode.parentNode.children[0].innerHTML;
+                var statusflag = obj.parentNode.parentNode.children[1].innerHTML;
+                if (statusflag != "N") {
+                    alert("账户已启用，不能修改。");
+                    return false;
+                }
+                var sfeature = "dialogwidth:800px; dialogheight:520px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
+                var arg = new Object();
+                arg.doType = "edit";
+                var rtn = dialog("accountEdit.xhtml?actPKID=" + pkid + "&amp;doType=eidt", arg, sfeature);
+                if (rtn == "1") {
+                    document.getElementById("actqueryForm:btnQuery").click();
+                }
+            }
         </script>
 
     </ui:define>
 
     <ui:define name="content">
-        <div style="margin:5px;">
+         <div  class="entry" id="top">
             <p:growl id="msgs" showDetail="false"/>
-            <h:form id="form">
-
-                <p:panel id="input" header="【监管账户信息】新增录入">
+            <h:form id="actqueryForm">
+                <p:panel id="query" header="【监管账户信息】查询">
                     <h:panelGrid columns="2" cellspacing="3" style="width:100%">
                         <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5">
 
@@ -52,37 +67,25 @@
                             <h:inputText autocomplete="off" id="presellNo" style="width:192px;" value="#{accountAction.account.presellNo}"
                                          onfocus="this.select()">
                             </h:inputText>
-
-                            <h:outputLabel value="* 房产商:" for="companyId"/>
-                            <p:inputText autocomplete="off" id="companyId" style="width:192px;" required="true"
-                                         requiredMessage="必须输入房产商！" value="#{accountAction.account.companyId}">
-                            </p:inputText>
+                            <h:outputLabel value="* 房产商:" for="selCompany"/>
+                            <h:inputText autocomplete="off" id="selCompany" style="width:192px;"
+                                         value="#{accountAction.account.companyId}"
+                                         onfocus="this.select()">
+                            </h:inputText>
 
                             <h:outputLabel value="监管账号:" for="accountCode"/>
-                            <h:inputText autocomplete="off" id="accountCode" style="width:192px;" required="true"
-                                         requiredMessage="必须输入监管账号！" value="#{accountAction.account.accountCode}">
+                            <h:inputText autocomplete="off" id="accountCode" style="width:192px;" value="#{accountAction.account.accountCode}">
                             </h:inputText>
 
                             <h:outputLabel value="账户名称:" for="accountName"/>
                             <p:inputText id="accountName" value="#{accountAction.account.accountName}"
                                          style="width:192px;"/>
-
-                            <h:outputLabel value="项目名称:" for="proName"/>
-                            <p:inputText id="proName" value="#{accountAction.account.proName}"
-                                         style="width:192px;"/>
-
-                            <h:outputLabel value="项目地址:" for="proAddr"/>
-                            <p:inputText id="proAddr" value="#{accountAction.account.proAddr}"
-                                         style="width:192px;"/>
                         </h:panelGrid>
                         <h:panelGrid style="width:20%">
-                            <p:commandButton id="saveBtn" ajax="true" value="保存"
-                                             action="#{accountAction.insertRecord}"
-                                             style="margin-left:15px;width:90px"
-                                             update="input,pdt,msgs">
+                            <p:commandButton style="margin-left:15px;width:90px" ajax="false" action="#{accountAction.onBtnQueryClick}" id="btnQuery" value="查询">
                             </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{accountAction.reset}"
-                                             style="width:90px;margin-left:15px" update="input,msgs,pdt"/>
+                            <p:commandButton type="reset" id="resetBtn" value="重置"
+                                                 style="width:90px;margin-left:15px"/>
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:panel>
@@ -102,9 +105,14 @@
                              paginator="true" rows="15" paginatorPosition="bottom"
                              rowsPerPageTemplate="100,50,30,15,5"
                              emptyMessage="数据记录为空...">
-
+                    <p:column headerText="pkid" style="display:none;">
+                        <h:outputText value="#{record.pkId}"/>
+                    </p:column>
+                    <p:column headerText="statusflag" style="display:none;">
+                        <h:outputText value="#{record.statusFlag}"/>
+                    </p:column>
                     <p:column headerText="预售许可证号" style="text-align:left">
-                        <h:outputText value="#{record.presellNo}" onfocus="this.select()"/>
+                        <h:outputText value="#{record.presellNo}"/>
                     </p:column>
 
                     <p:column headerText="房产商ID" style="text-align:center">
@@ -126,7 +134,9 @@
                     <p:column headerText="项目地址" style="text-align:left">
                         <h:outputText value="#{record.proAddr}"/>
                     </p:column>
-
+                    <p:column headerText="操作" style="text-align:center">
+                        <h:commandLink onclick="recordEdit(this)" value="修改" style="color: blue"/>
+                    </p:column>
 
 
                 </p:dataTable>
