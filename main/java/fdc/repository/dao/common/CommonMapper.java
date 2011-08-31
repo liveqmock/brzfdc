@@ -1,7 +1,11 @@
 package fdc.repository.dao.common;
 
+import fdc.repository.model.RsPayout;
+import fdc.view.payout.ParamPlan;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,4 +19,6 @@ public interface CommonMapper {
 
     @Select("select nvl(max(company_id)+1,'100001') from rs_fdccompany")
     String selectNewCompanyId();
+
+    List<RsPayout> selectRsPayoutsByParamPlan(ParamPlan paramPlan);
 }

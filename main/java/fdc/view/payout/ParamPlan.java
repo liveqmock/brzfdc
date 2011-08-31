@@ -1,4 +1,4 @@
-package fdc.view.biplan;
+package fdc.view.payout;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,10 +19,6 @@ public class ParamPlan {
     private String applyEndDate;
     private String applyStartAmt;
     private String applyEndAmt;
-    //----------Datatable ListÓÃ×Ö¶Î------
-    private String applyAmt;
-    private String applyDate;
-    private String applyOperName;
 
     public String getCompanyName() {
         return companyName;
@@ -102,29 +98,5 @@ public class ParamPlan {
 
     public void setApplyEndAmt(String applyEndAmt) {
         this.applyEndAmt = applyEndAmt;
-    }
-
-    public String getApplyAmt() {
-        return applyAmt;
-    }
-
-    public void setApplyAmt(String applyAmt) {
-        this.applyAmt = applyAmt;
-    }
-
-    public String getApplyDate() {
-        return applyDate;
-    }
-
-    public void setApplyDate(String applyDate) {
-        this.applyDate = applyDate;
-    }
-
-    public String getApplyOperName() {
-        return applyOperName;
-    }
-
-    public void setApplyOperName(String applyOperName) {
-        this.applyOperName = applyOperName;
     }
 }

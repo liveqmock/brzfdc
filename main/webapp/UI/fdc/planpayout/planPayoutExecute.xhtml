@@ -6,6 +6,18 @@
                 template="/templates/ui.xhtml">
 
     <ui:define name="head">
+        <script type="text/javascript">
+            function doPopupWindow(source) {
+                popupwindow = window.open("", "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                popupwindow.focus;
+                document.getElementById("hidden:go").onclick(null);
+            }
+            function doPopupAddWindow(source) {
+                popupaddwindow = window.open("", "popupaddwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                popupaddwindow.focus;
+                document.getElementById("hiddenadd:go").onclick(null);
+            }
+        </script>
         <style type="text/css">
             .input-col-m {
                 width: 60px;
@@ -20,144 +32,123 @@
                 text-align: right;
             }
 
-            .col-95 {
-                text-align: right;
+            .col-80 {
             }
 
-            .col-5 {
-                text-align: left;
+            .col-20 {
+                width: 5%;
             }
         </style>
-        <script type="text/javascript" language="javascript">
-            document.onkeydown = function TabReplace() {
-                if (event.keyCode == 13) {
-                    if (event.srcElement.tagName != 'BUTTON')
-                        event.keyCode = 9;
-                    else
-                        event.srcElement.click();
-                }
-            }
-        </script>
 
     </ui:define>
 
     <ui:define name="content">
         <div style="margin:5px;">
-            <p:growl id="msgs" showDetail="false"/>
-            <h:form id="form">
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true">
+                <p:tab title="未入账记录清单">
+                    <p:messages id="msgs" showDetail="false"/>
+                    <h:form id="form1">
+                        <p:menubar>
+                    <p:menuitem type="push" value="全部入账" icon="ui-icon ui-icon-document"
+                                action="#{payoutExecAction.onAllExecute}" update="msgs, pdt1, pdt2" ajax="true"/>
+                    <p:menuitem type="push" value="多笔入账" icon="ui-icon ui-icon-document"
+                                action="#{payoutExecAction.onMultiExecute}" update="msgs, pdt1, pdt2" ajax="true"/>
+                </p:menubar>
+                        <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
+                        <p:dataTable id="pdt1" style="width:100%;"
+                                     dynamic="true" selection="#{payoutExecAction.selectedRecords}"
+                                     value="#{payoutExecAction.passPayoutList}" var="record"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="15" paginatorPosition="bottom"
+                                     rowsPerPageTemplate="100,50,30,15,5"
+                                     emptyMessage="数据记录为空...">
+                            <p:column selectionMode="multiple"/>
+                            <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
+                                <h:outputText value="#{record.docNo}"/>
+                            </p:column>
 
-                <p:panel id="input" header="【实际用款执行】表单">
-                    <h:panelGrid columns="2" cellspacing="2" style="width: 100%">
-                        <h:panelGrid columns="4" cellspacing="2" style="width: 80%"
-                                     columnClasses="col-95,col-5,col-95,col-5">
+                            <p:column headerText="付款开发商" style="text-align:center" filterBy="#{record.payCompanyName}">
+                                <h:outputText value="#{record.payCompanyName}"/>
+                            </p:column>
 
+                            <p:column headerText="付款监管账号" style="text-align:center" filterBy="#{record.payAccount}">
+                                <h:outputText value="#{record.payAccount}"/>
+                            </p:column>
 
-                            <h:outputLabel value="* 付款房产商:" for="companyName"/>
-                            <h:inputText autocomplete="off" id="companyName" style="width:160px;" required="true"
-                                         requiredMessage="必须输入房产商名称！" value="#{biplanAction.paramPlan.companyName}"
-                                         onfocus="this.select()">
-                            </h:inputText>
+                            <p:column headerText="收款方户名" style="text-align:left" filterBy="#{record.recCompanyName}">
+                                <h:outputText value="#{record.recCompanyName}"/>
+                            </p:column>
 
-                            <h:outputLabel value="*付款监管账号:" for="accountCode"/>
-                            <p:inputText autocomplete="off" id="accountCode" style="width:160px;" required="true"
-                                         requiredMessage="必须输入付款监管账号！" value="#{biplanAction.paramPlan.accountCode}">
-                            </p:inputText>
+                            <p:column headerText="收款方账号" style="text-align:center" filterBy="#{record.recAccount}">
+                                <h:outputText value="#{record.recAccount}"/>
+                            </p:column>
 
-                            <h:outputLabel value="单据号:" for="docNo"/>
-                            <p:inputText id="docNo" value="#{biplanAction.paramPlan.docNo}"
-                                         style="width:160px;"/>
+                            <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                                <h:outputText value="#{record.plAmount}" style="float:right">
+                                    <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
 
-                            <h:outputLabel value="收款方户名:" for="projName"/>
-                            <p:inputText autocomplete="off" id="projName" style="width:160px;" required="true"
-                                         requiredMessage="必须输入付款监管账号！" value="#{biplanAction.paramPlan.accountCode}">
-                            </p:inputText>
+                            <p:column headerText="状态标志" style="text-align:left">
+                                <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.statusFlag).title}"/>
+                            </p:column>
 
-                            <h:outputLabel value="状态:"/>
-                            <h:selectOneMenu value="#{biplanAction.paramPlan.companyName}" style="width:167px;">
-                                <f:selectItem itemLabel="待执行" itemValue="0" />
-                                <f:selectItem itemLabel="异常处理" itemValue="1"/>
-                            </h:selectOneMenu>
-                            <h:outputText/><h:outputText/>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
 
-                        </h:panelGrid>
-                        <h:panelGrid style="width: 20%">
-                            <p:commandButton id="saveBtn" ajax="true" value="查询"
-                                             action="#{biplanAction.onQuery}"
-                                             style="margin-left:15px;width:90px"
-                                             update="input,pdt,msgs">
-                            </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="重置" action="#{biplanAction.onPrint}"
-                                             style="width:90px;margin-left:15px" update="input,msgs"/>
-                        </h:panelGrid>
-                    </h:panelGrid>
-                </p:panel>
-                <p:ajaxStatus style="width:16px;height:16px;">
-                    <f:facet name="start">
-                        <h:graphicImage value="/images/ajaxloading.gif"/>
-                    </f:facet>
-                    <f:facet name="complete">
-                        <h:outputText value=""/>
-                    </f:facet>
-                </p:ajaxStatus>
-                <p:menubar>
-                            <p:menuitem type="push" value="全部入账" icon="ui-icon ui-icon-document"
-                                        action="#{payoutAction.onCheck}" update="msgs, pdt" ajax="true"/>
-                            <p:menuitem type="push" value="多笔入账" icon="ui-icon ui-icon-document"
-                                        action="#{payoutAction.onRefuse}" update="msgs1, pdt1, pdt3" ajax="true"/>
-                        </p:menubar>
-                <p:dataTable id="pdt" style="width:100%;"
-                             dynamic="true" selectionMode="single"
-                             value="#{biplanAction.biPlanList}" var="record"
-                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             paginator="true" rows="15" paginatorPosition="bottom"
-                             rowsPerPageTemplate="100,50,30,15,5"
-                             emptyMessage="数据记录为空...">
+                <p:tab title="已入账记录清单">
+                    <p:messages id="msgs2" showDetail="false"/>
+                    <h:form id="form2">
 
-                    <p:column headerText="单据号" style="text-align:center">
-                        <h:outputText value="#{record.docNo}"/>
-                    </p:column>
+                        <p:dataTable id="pdt2" style="width:100%;"
+                                     dynamic="true"
+                                     value="#{payoutExecAction.payOverList}" var="record"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="15" paginatorPosition="bottom"
+                                     rowsPerPageTemplate="100,50,30,15,5"
+                                     emptyMessage="数据记录为空...">
+                            <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
+                                <h:outputText value="#{record.docNo}"/>
+                            </p:column>
 
-                    <p:column headerText="付款开发商" style="text-align:center">
-                        <h:outputText value="#{record.companyName}"/>
-                    </p:column>
+                            <p:column headerText="付款开发商" style="text-align:center" filterBy="#{record.payCompanyName}">
+                                <h:outputText value="#{record.payCompanyName}"/>
+                            </p:column>
 
-                    <p:column headerText="付款监管账号" style="text-align:center">
-                        <h:outputText value="#{record.accountCode}"/>
-                    </p:column>
+                            <p:column headerText="付款监管账号" style="text-align:center" filterBy="#{record.payAccount}">
+                                <h:outputText value="#{record.payAccount}"/>
+                            </p:column>
 
-                    <p:column headerText="收款方户名" style="text-align:left">
-                        <h:outputText value="#{record.toAccountName}"/>
-                    </p:column>
+                            <p:column headerText="收款方户名" style="text-align:left" filterBy="#{record.recCompanyName}">
+                                <h:outputText value="#{record.recCompanyName}"/>
+                            </p:column>
 
-                    <p:column headerText="收款方账号" style="text-align:center">
-                        <h:outputText value="#{record.toAccountCode}"/>
-                    </p:column>
+                            <p:column headerText="收款方账号" style="text-align:center" filterBy="#{record.recAccount}">
+                                <h:outputText value="#{record.recAccount}"/>
+                            </p:column>
 
-                    <p:column headerText="申请金额" style="text-align:center">
-                        <h:outputText value="#{record.applyAmt}" style="float:right">
-                            <f:convertNumber pattern="#,###,###,###,00"/>
-                        </h:outputText>
-                    </p:column>
+                            <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                                <h:outputText value="#{record.plAmount}" style="float:right">
+                                    <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
 
-                    <p:column headerText="状态标志" style="text-align:left">
-                        <h:outputText value="#{record.tradeStatusFlag}"/>
-                    </p:column>
+                            <p:column headerText="状态标志" style="text-align:right">
+                                <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.workResult).title}"/>
+                            </p:column>
 
-                    <p:column headerText="申请人" style="text-align:center">
-                        <h:outputText value="#{record.applyOperName}"/>
-                    </p:column>
-
-                    <p:column headerText="申请日期" style="text-align:center">
-                        <h:outputText value="#{record.applyDate}"/>
-                    </p:column>
-
-                    <p:column headerText="操作" style="text-align:center">
-                        <p:commandLink value="执行" style="color:blue"/>
-                    </p:column>
-
-                </p:dataTable>
-            </h:form>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
+            </p:tabView>
         </div>
     </ui:define>
-
 </ui:composition>

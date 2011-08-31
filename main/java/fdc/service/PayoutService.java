@@ -2,8 +2,10 @@ package fdc.service;
 
 import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsPayoutMapper;
+import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPayoutExample;
+import fdc.view.payout.ParamPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,8 @@ import java.util.List;
 public class PayoutService {
     @Autowired
     private RsPayoutMapper rsPayoutMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
     @Transactional
     public int insertRsPayout(RsPayout rsPayout) {
@@ -43,7 +47,7 @@ public class PayoutService {
         String operName = om.getOperatorName();
         Date operDate = new Date();
         int rtnFlag = 1;
-        for(RsPayout rsPayout : rsPayoutList) {
+        for (RsPayout rsPayout : rsPayoutList) {
             rsPayout.setAuditDate(operDate);
             rsPayout.setAuditUserId(operId);
             rsPayout.setAuditUserName(operName);
@@ -51,17 +55,35 @@ public class PayoutService {
             rsPayout.setLastUpdDate(operDate);
             rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
             rsPayout.setWorkResult(workResult);
-            if(rsPayoutMapper.updateByPrimaryKey(rsPayout) != 1) {
-              rtnFlag = -1;
-              throw  new RuntimeException("【记录更新失败】付款监管账号："+rsPayout.getPayAccount());
+            if (rsPayoutMapper.updateByPrimaryKey(rsPayout) != 1) {
+                rtnFlag = -1;
+                throw new RuntimeException("【记录更新失败】付款监管账号：" + rsPayout.getPayAccount());
             }
         }
         return rtnFlag;
+    }
+
+    @Transactional
+    public int updateRsPayoutToStatus(RsPayout rsPayout, String statusFlag) {
+        OperatorManager om = SystemService.getOperatorManager();
+        String operId = om.getOperatorId();
+        Date operDate = new Date();
+        rsPayout.setLastUpdBy(operId);
+        rsPayout.setLastUpdDate(operDate);
+        rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
+        rsPayout.setStatusFlag(statusFlag);
+        rsPayout.setWorkResult(WorkResult.COMMIT.getCode());
+        return rsPayoutMapper.updateByPrimaryKey(rsPayout);
+        // 更新statusFlag之后
     }
 
     public List<RsPayout> selectRecordsByWorkResult(String workResultCode) {
         RsPayoutExample example = new RsPayoutExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(workResultCode);
         return rsPayoutMapper.selectByExample(example);
+    }
+
+    public List<RsPayout> selectRsPayoutsByParamPlan(ParamPlan paramPlan) {
+        return commonMapper.selectRsPayoutsByParamPlan(paramPlan);
     }
 }

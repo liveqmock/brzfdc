@@ -48,59 +48,68 @@
 
                 <p:panel id="input" header="【实际用款情况】查询条件">
                     <h:panelGrid columns="2" cellspacing="2" style="width: 100%">
-                        <h:panelGrid columns="4" cellspacing="2" style="width: 80%" columnClasses="col-95,col-5,col-95,col-5">
+                        <h:panelGrid columns="4" cellspacing="2" style="width: 80%"
+                                     columnClasses="col-95,col-5,col-95,col-5">
 
-                            <h:outputLabel value="* 付款房产商:" for="companyName"/>
-                            <h:inputText autocomplete="off" id="companyName" style="width:160px;" required="true"
-                                         requiredMessage="必须输入房产商名称！" value="#{biplanAction.paramPlan.companyName}"
+                            <h:outputLabel value=" 付款房产商:" for="companyName"/>
+                            <h:inputText autocomplete="off" id="companyName" style="width:160px;"
+                                         value="#{payoutQryAction.paramPlan.companyName}"
                                          onfocus="this.select()">
                             </h:inputText>
 
-                            <h:outputLabel value="*付款监管账号:" for="accountCode"/>
-                            <p:inputText autocomplete="off" id="accountCode" style="width:160px;" required="true"
-                                         requiredMessage="必须输入付款监管账号！" value="#{biplanAction.paramPlan.accountCode}">
+                            <h:outputLabel value="付款监管账号:" for="accountCode"/>
+                            <p:inputText autocomplete="off" id="accountCode" style="width:160px;"
+                                         value="#{payoutQryAction.paramPlan.accountCode}">
                             </p:inputText>
 
-                            <h:outputLabel value="*收款方户名:" for="toAccountName"/>
-                            <h:inputText autocomplete="off" id="toAccountName" style="width:160px;" required="true"
-                                         requiredMessage="必须输入收款方户名！" value="#{biplanAction.paramPlan.toAccountName}">
+                            <h:outputLabel value="收款方户名:" for="toAccountName"/>
+                            <h:inputText autocomplete="off" id="toAccountName" style="width:160px;"
+                                         value="#{payoutQryAction.paramPlan.toAccountName}">
                             </h:inputText>
 
-                            <h:outputLabel value="*收款方账号:" for="toAccountCode"/>
+                            <h:outputLabel value="收款方账号:" for="toAccountCode"/>
                             <p:inputText autocomplete="off" id="toAccountCode"
-                                         value="#{biplanAction.paramPlan.toAccountCode}"
-                                         required="true" requiredMessage="必须输入收款方账号！" style="width:160px;"/>
+                                         value="#{payoutQryAction.paramPlan.toAccountCode}"
+                                         style="width:160px;"/>
 
                             <h:outputLabel value="状态标志:" for="tradeStatusFlag"/>
-                            <p:inputText id="tradeStatusFlag" value="#{biplanAction.paramPlan.tradeStatusFlag}"
-                                         style="width:160px;"/>
+                            <h:selectOneMenu id="tradeStatusFlag" style="width:165px;"
+                                             value="#{payoutQryAction.paramPlan.tradeStatusFlag}">
+                                <f:selectItems value="#{payoutQryAction.refundStatusList}"/>
+                            </h:selectOneMenu>
 
                             <h:outputLabel value="单据号:" for="docNo"/>
-                            <p:inputText id="docNo" value="#{biplanAction.paramPlan.docNo}"
+                            <p:inputText id="docNo" value="#{payoutQryAction.paramPlan.docNo}"
                                          style="width:160px;"/>
 
-                            <h:outputLabel value="申请起始日期:"/>
-                                <p:inputText id="applyStartDate" value="#{biplanAction.paramPlan.applyStartDate}"
-                                             style="width:160px;"/>
-                            <h:outputLabel value="申请截止日期:"/>
-                                <p:inputText id="applyEndDate" value="#{biplanAction.paramPlan.applyEndDate}"
-                                             style="width:160px;"/>
-
                             <h:outputLabel value="申请金额大于:"/>
-                                <p:inputText id="applyStartAmt" value="#{biplanAction.paramPlan.applyStartAmt}"
-                                             style="width:160px;"/>
+                            <p:inputText id="applyStartAmt" value="#{payoutQryAction.paramPlan.applyStartAmt}"
+                                         style="width:160px;">
+                                <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                            </p:inputText>
+
                             <h:outputLabel value="申请金额小于:"/>
-                                <p:inputText id="applyEndAmt" value="#{biplanAction.paramPlan.applyEndAmt}"
-                                             style="width:160px;"/>
+                            <p:inputText id="applyEndAmt" value="#{payoutQryAction.paramPlan.applyEndAmt}"
+                                         style="width:160px;">
+                                <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                            </p:inputText>
+
+                            <h:outputLabel value="申请起始日期:"/>
+                            <p:inputMask mask="9999-99-99" value="#{payoutQryAction.paramPlan.applyStartDate}"
+                                         style="width:160px;"/>
+
+                            <h:outputLabel value="申请截止日期:"/>
+                            <p:inputMask mask="9999-99-99" value="#{payoutQryAction.paramPlan.applyEndDate}"
+                                         style="width:160px;"/>
 
                         </h:panelGrid>
                         <h:panelGrid style="width: 20%">
                             <p:commandButton id="saveBtn" ajax="true" value="查询"
-                                             action="#{biplanAction.onQuery}"
+                                             action="#{payoutQryAction.onQuery}"
                                              style="margin-left:15px;width:90px"
                                              update="input,pdt,msgs">
                             </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="导出" action="#{biplanAction.onPrint}"
+                            <p:commandButton ajax="true" id="resetBtn" value="导出" action="#{payoutQryAction.onPrint}"
                                              style="width:90px;margin-left:15px" update="input,msgs"/>
                         </h:panelGrid>
                     </h:panelGrid>
@@ -116,7 +125,7 @@
 
                 <p:dataTable id="pdt" style="width:100%;"
                              dynamic="true" selectionMode="single"
-                             value="#{biplanAction.biPlanList}" var="record"
+                             value="#{payoutQryAction.payoutList}" var="record"
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              paginator="true" rows="15" paginatorPosition="bottom"
                              rowsPerPageTemplate="100,50,30,15,5"
@@ -126,39 +135,37 @@
                         <h:outputText value="#{record.docNo}"/>
                     </p:column>
 
-                    <p:column headerText="付款开发商" style="text-align:center">
-                        <h:outputText value="#{record.companyName}"/>
+                    <p:column headerText="付款开发商" style="text-align:center" >
+                        <h:outputText value="#{record.payCompanyName}"/>
                     </p:column>
 
                     <p:column headerText="付款监管账号" style="text-align:center">
-                        <h:outputText value="#{record.accountCode}"/>
+                        <h:outputText value="#{record.payAccount}"/>
                     </p:column>
 
-                    <p:column headerText="收款方户名" style="text-align:left">
-                        <h:outputText value="#{record.toAccountName}"/>
+                    <p:column headerText="收款方户名" style="text-align:left" >
+                        <h:outputText value="#{record.recCompanyName}"/>
                     </p:column>
 
-                    <p:column headerText="收款方账号" style="text-align:center">
-                        <h:outputText value="#{record.toAccountCode}"/>
+                    <p:column headerText="收款方账号" style="text-align:center" >
+                        <h:outputText value="#{record.recAccount}"/>
                     </p:column>
 
-                    <p:column headerText="申请金额" style="text-align:center">
-                        <h:outputText value="#{record.applyAmt}" style="float:right">
-                        <f:convertNumber pattern="#,###,###,###,00"/>
+                    <p:column headerText="申请金额" style="text-align:center" >
+                        <h:outputText value="#{record.plAmount}" style="float:right">
+                            <f:convertNumber pattern="#,###,###,###,##0.00"/>
                         </h:outputText>
                     </p:column>
 
-                    <p:column headerText="状态标志" style="text-align:left">
-                        <h:outputText value="#{record.tradeStatusFlag}"/>
+                    <p:column headerText="状态标志" style="text-align:center">
+                        <h:outputText value="#{payoutQryAction.statusFlag.valueOfAlias(record.statusFlag).title}"/>
                     </p:column>
 
-                    <p:column headerText="申请人" style="text-align:center">
-                        <h:outputText value="#{record.applyOperName}"/>
+                    <p:column headerText="操作" style="text-align:center">
+                        <h:commandLink value="详细信息" style="color: blue;"/>
                     </p:column>
 
-                    <p:column headerText="申请日期" style="text-align:center">
-                        <h:outputText value="#{record.applyDate}"/>
-                    </p:column>
+
 
                 </p:dataTable>
             </h:form>
