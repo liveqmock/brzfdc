@@ -1,5 +1,6 @@
 package fdc.service;
 
+import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsPayoutMapper;
 import fdc.repository.dao.common.CommonMapper;
@@ -28,7 +29,6 @@ public class PayoutService {
     private RsPayoutMapper rsPayoutMapper;
     @Autowired
     private CommonMapper commonMapper;
-
     @Transactional
     public int insertRsPayout(RsPayout rsPayout) {
         OperatorManager om = SystemService.getOperatorManager();
@@ -63,16 +63,24 @@ public class PayoutService {
         return rtnFlag;
     }
 
+    // TODO 入账
     @Transactional
-    public int updateRsPayoutToStatus(RsPayout rsPayout, String statusFlag) {
+    public int updateRsPayoutToExecStatus(RsPayout rsPayout) {
         OperatorManager om = SystemService.getOperatorManager();
         String operId = om.getOperatorId();
+        String operName = om.getOperatorName();
         Date operDate = new Date();
+
         rsPayout.setLastUpdBy(operId);
         rsPayout.setLastUpdDate(operDate);
+        rsPayout.setExecUserId(operId);
+        rsPayout.setExecUserName(operName);
+        rsPayout.setExecDate(operDate);
         rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
-        rsPayout.setStatusFlag(statusFlag);
+        rsPayout.setStatusFlag(RefundStatus.ACCOUNT_SUCCESS.getCode());
         rsPayout.setWorkResult(WorkResult.COMMIT.getCode());
+        rsPayout.setSerial(SystemService.getSdfdate8() + commonMapper.selectMaxPayoutSerial());
+        // TODO 银行流水 接口2004用
         return rsPayoutMapper.updateByPrimaryKey(rsPayout);
         // 更新statusFlag之后
     }
@@ -85,5 +93,19 @@ public class PayoutService {
 
     public List<RsPayout> selectRsPayoutsByParamPlan(ParamPlan paramPlan) {
         return commonMapper.selectRsPayoutsByParamPlan(paramPlan);
+    }
+
+    @Transactional
+    public int updateRsPayoutSent(RsPayout rsPayout) {
+        OperatorManager om = SystemService.getOperatorManager();
+        String operId = om.getOperatorId();
+        String operName = om.getOperatorName();
+        Date operDate = new Date();
+
+        rsPayout.setLastUpdBy(operId);
+        rsPayout.setLastUpdDate(operDate);
+         rsPayout.setWorkResult(WorkResult.SENT.getCode());
+        rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
+         return rsPayoutMapper.updateByPrimaryKey(rsPayout);
     }
 }

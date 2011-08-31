@@ -1,6 +1,7 @@
 package fdc.gateway.domain;
 
 import platform.service.SystemService;
+import pub.platform.advance.utils.PropertyManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,5 +20,5 @@ public class ReqHead {
     public String OpCode = "";
     public String OpDate = SystemService.getSdfdate8();
     public String OpTime = SystemService.getSdftime6();
-    public String BankCode = "313";
+    public String BankCode = PropertyManager.getProperty("bank.code.of.brz");
 }

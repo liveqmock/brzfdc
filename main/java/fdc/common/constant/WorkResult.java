@@ -13,7 +13,8 @@ public enum WorkResult implements EnumApp {
     NOTPASS("0", "不通过"),
     PASS("1", "通过"),
     COMMIT("2", "入账"),
-    CREATE("3", "新建");
+    CREATE("3", "新建"),
+    SENT("4", "已发送");
 
     private String code = null;
     private String title = null;

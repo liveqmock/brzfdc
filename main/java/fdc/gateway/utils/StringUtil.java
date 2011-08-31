@@ -40,7 +40,7 @@ public class StringUtil {
         } else {
             rtnStrAmt = String.valueOf(dblAmt * 100);
         }
-        return rtnStrAmt;
+        return rtnStrAmt.split("\\.")[0];
     }
 
     /**

@@ -40,6 +40,8 @@ public class PayoutAction {
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
     private WorkResult workResult = WorkResult.CREATE;
+    private double planAmt;  // 计划金额
+    private double avAmt;   // 可用金额
 
     @PostConstruct
     public void init() {
@@ -52,6 +54,10 @@ public class PayoutAction {
 
     public String onSave() {
 
+        if (rsPayout.getPlAmount().doubleValue() > this.avAmt || rsPayout.getPlAmount().doubleValue() > this.planAmt) {
+            MessageUtil.addError("申请金额不得大于计划金额或可用金额！");
+            return null;
+        }
         try {
             if (payoutService.insertRsPayout(rsPayout) == 1) {
                 MessageUtil.addInfo("受理用款成功！");
@@ -67,7 +73,7 @@ public class PayoutAction {
     }
 
     public String onCheck() {
-        if (selectedRecords == null || selectedRecords.length ==0) {
+        if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("请至少选择一笔记录！");
         } else {
             try {
@@ -84,7 +90,7 @@ public class PayoutAction {
     }
 
     public String onRefuse() {
-        if (selectedRecords == null || selectedRecords.length ==0) {
+        if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("请至少选择一笔记录！");
         } else {
             try {
@@ -183,5 +189,21 @@ public class PayoutAction {
 
     public void setRefusePayoutList(List<RsPayout> refusePayoutList) {
         this.refusePayoutList = refusePayoutList;
+    }
+
+    public double getPlanAmt() {
+        return planAmt;
+    }
+
+    public void setPlanAmt(double planAmt) {
+        this.planAmt = planAmt;
+    }
+
+    public double getAvAmt() {
+        return avAmt;
+    }
+
+    public void setAvAmt(double avAmt) {
+        this.avAmt = avAmt;
     }
 }

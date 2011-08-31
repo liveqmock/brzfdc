@@ -21,4 +21,7 @@ public interface CommonMapper {
     String selectNewCompanyId();
 
     List<RsPayout> selectRsPayoutsByParamPlan(ParamPlan paramPlan);
+
+    @Select("select nvl(max(SERIAL)+1,'100001') from rs_payout")
+    String selectMaxPayoutSerial();
 }

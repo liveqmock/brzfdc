@@ -30,4 +30,5 @@ public class T2004Req extends BaseBean {
         public String Purpose = "";
         public String PlanDetailNO = "";
     }
+
 }
