@@ -2,7 +2,9 @@ package fdc.view.payout;
 
 import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
+import fdc.gateway.domain.CommonRes;
 import fdc.repository.model.RsPayout;
+import fdc.service.ClientBiService;
 import fdc.service.PayoutService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +35,13 @@ public class PayoutExecAction {
     private RsPayout rsPayout;
     @ManagedProperty(value = "#{payoutService}")
     private PayoutService payoutService;
+    @ManagedProperty(value = "#{clientBiService}")
+    private ClientBiService clientBiService;
     private List<RsPayout> passPayoutList;
     private List<RsPayout> payOverList;
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
+    private RsPayout[] toSendRecords;
     private WorkResult workResult = WorkResult.CREATE;
 
     @PostConstruct
@@ -47,13 +52,13 @@ public class PayoutExecAction {
     }
 
     public String onAllExecute() {
-       if (passPayoutList.isEmpty()) {
+        if (passPayoutList.isEmpty()) {
             MessageUtil.addWarn("可入账记录为空！");
         } else {
             try {
-                for(RsPayout record : passPayoutList) {
-                    if(payoutService.updateRsPayoutToStatus(record, RefundStatus.ACCOUNT_SUCCESS.getCode()) == -1){
-                        throw new RuntimeException("【记录更新失败】付款监管账号："+record.getPayAccount());
+                for (RsPayout record : passPayoutList) {
+                    if (payoutService.updateRsPayoutToExecStatus(record) == -1) {
+                        throw new RuntimeException("【记录更新失败】付款监管账号：" + record.getPayAccount());
                     }
                 }
             } catch (Exception e) {
@@ -68,13 +73,13 @@ public class PayoutExecAction {
     }
 
     public String onMultiExecute() {
-          if (selectedRecords == null || selectedRecords.length ==0) {
+        if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("请至少选择一笔记录！");
         } else {
-               try {
-                for(RsPayout record : selectedRecords) {
-                    if(payoutService.updateRsPayoutToStatus(record, RefundStatus.ACCOUNT_SUCCESS.getCode()) == -1){
-                        throw new RuntimeException("【记录更新失败】付款监管账号："+record.getPayAccount());
+            try {
+                for (RsPayout record : selectedRecords) {
+                    if (payoutService.updateRsPayoutToExecStatus(record) == -1) {
+                        throw new RuntimeException("【记录更新失败】付款监管账号：" + record.getPayAccount());
                     }
                 }
             } catch (Exception e) {
@@ -83,8 +88,55 @@ public class PayoutExecAction {
                 return null;
             }
             MessageUtil.addInfo("入账完成!");
+
             init();
-          }
+        }
+        return null;
+    }
+
+    public String onAllSend() {
+        if (payOverList.isEmpty()) {
+            MessageUtil.addWarn("可发送记录为空！");
+        } else {
+            int sentResult = 1;
+            try {
+                for (RsPayout record : payOverList) {
+                    sentResult = clientBiService.sendRsPayoutMsg(record);
+                    if (sentResult != 1) {
+                        throw new RuntimeException("发送失败");
+                    }
+                }
+                MessageUtil.addInfo("发送完成！");
+            } catch (Exception e) {
+                logger.error("操作失败." + e.getMessage());
+                MessageUtil.addError("操作失败." + e.getMessage());
+                return null;
+            }
+            init();
+        }
+        return null;
+    }
+
+    public String onMultiSend() {
+        if (toSendRecords == null || toSendRecords.length == 0) {
+            MessageUtil.addWarn("请至少选择一笔待发送记录！");
+        } else {
+            int sentResult = 1;
+            try {
+                for (RsPayout record : toSendRecords) {
+                    sentResult = clientBiService.sendRsPayoutMsg(record);
+                   if (sentResult != 1) {
+                        throw new RuntimeException("发送失败");
+                    }
+                }
+                MessageUtil.addInfo("发送完成！");
+            } catch (Exception e) {
+                logger.error("操作失败." + e.getMessage());
+                MessageUtil.addError("操作失败." + e.getMessage());
+                return null;
+            }
+            init();
+        }
         return null;
     }
 
@@ -150,5 +202,21 @@ public class PayoutExecAction {
 
     public void setPayOverList(List<RsPayout> payOverList) {
         this.payOverList = payOverList;
+    }
+
+    public RsPayout[] getToSendRecords() {
+        return toSendRecords;
+    }
+
+    public void setToSendRecords(RsPayout[] toSendRecords) {
+        this.toSendRecords = toSendRecords;
+    }
+
+    public ClientBiService getClientBiService() {
+        return clientBiService;
+    }
+
+    public void setClientBiService(ClientBiService clientBiService) {
+        this.clientBiService = clientBiService;
     }
 }

@@ -67,6 +67,15 @@
                             <p:inputText id="accountName" value="#{accountAction.account.accountName}"
                                          style="width:192px;"/>
 
+                            <h:outputLabel value="*预存金额:" for="balance"/>
+                            <p:inputText id="balance" value="#{accountAction.account.balance}" required="true"
+                                          requiredMessage="必须填入预存金额！" style="width:192px;"
+                                          onblur="document.getElementById('form:balanceUsable').value=this.value;"/>
+
+                            <h:outputLabel value="可用余额:" for="balanceUsable"/>
+                            <p:inputText id="balanceUsable" value="#{accountAction.account.balanceUsable}"
+                                         style="width:192px;"/>
+
                             <h:outputLabel value="项目名称:" for="proName"/>
                             <p:inputText id="proName" value="#{accountAction.account.proName}"
                                          style="width:192px;"/>
