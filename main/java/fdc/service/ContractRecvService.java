@@ -1,13 +1,17 @@
 package fdc.service;
 
 import fdc.common.constant.ContractRecvStatus;
+import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsContractMapper;
 import fdc.repository.dao.RsReceiveMapper;
 import fdc.repository.model.RsReceive;
 import fdc.repository.model.RsReceiveExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import platform.service.SystemService;
+import pub.platform.security.OperatorManager;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +28,24 @@ public class ContractRecvService {
     private RsContractMapper contractMapper;
     @Autowired
     private RsReceiveMapper receiveMapper;
+
+    /**
+     * 发送之后状态更新
+     * @param rsReceive
+     * @return
+     */
+    public int updateRsReceiveSent(RsReceive rsReceive) {
+        OperatorManager om = SystemService.getOperatorManager();
+        String operId = om.getOperatorId();
+        String operName = om.getOperatorName();
+        Date operDate = new Date();
+
+        rsReceive.setLastUpdBy(operId);
+        rsReceive.setLastUpdDate(operDate);
+         rsReceive.setWorkResult(WorkResult.SENT.getCode());
+        rsReceive.setModificationNum(rsReceive.getModificationNum() + 1);
+        return receiveMapper.updateByPrimaryKey(rsReceive);
+    }
 
     public List<RsReceive> selectContractRecvList() {
         RsReceiveExample example = new RsReceiveExample();

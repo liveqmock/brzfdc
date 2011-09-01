@@ -42,6 +42,8 @@ public class ClientBiService {
     private ClientMessageService clientMessageService;
     @Autowired
     private PayoutService payoutService;
+    @Autowired
+    private ContractRecvService contractRecvService;
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
@@ -85,23 +87,30 @@ public class ClientBiService {
      * @param record , flag 收支标志， tradeType 交易类型
      * @return
      */
-    public int sendRsReceiveMsg(RsReceive record, String flag, String tradeType) {
+    public int sendRsReceiveMsg(RsReceive record) throws IOException {
         T2005Req req = new T2005Req();
         req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
         req.param.Acct = record.getAccountCode();
-       /* req.param.AcctName = record.();
-        req.param.ContractNum = record.getContractNo();
-        req.param.BankSerial = record.getLocalSerial();  // TODO record.getBankSerial();  暂时以fdc流水代替
+        req.param.AcctName = record.getCompanyName();
+        req.param.ContractNum = record.getBusinessNo();
+        req.param.BankSerial = record.getSerial();  // TODO record.getBankSerial();  暂时以fdc流水代替
         req.param.Date = sdfdate8.format(record.getTradeDate());
         req.param.Time = sdftime6.format(record.getTradeDate());
-        req.param.Flag = flag;
-        req.param.Type = tradeType;
-        req.param.ToAcctName = record.getToAccountName();
-        req.param.ToAcct = record.getToAccountCode();
-        req.param.ToBankName = record.getToHsBankName();
-        req.param.Amt = StringUtil.toBiformatAmt(record.getTradeAmt());*/
-        req.param.Purpose = TradeType.valueOfAlias(tradeType).getTitle();
-        return -1;
+        req.param.Flag = "1";   // 收入
+        req.param.Type = TradeType.HOUSE_INCOME.getCode();
+        req.param.ToAcctName = record.getBuyerAccName();
+        req.param.ToAcct = record.getBuyerAccCode();
+        req.param.ToBankName = record.getBuyerBankName();
+        req.param.Amt = StringUtil.toBiformatAmt(record.getPlAmount());// TODO 申请金额？
+        req.param.Purpose = record.getPurpose();
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            return contractRecvService.updateRsReceiveSent(record);
+        }
     }
 
     private CommonRes sendMsgAndRecvRes(String dataGram) throws IOException {
