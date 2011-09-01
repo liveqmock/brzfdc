@@ -39,6 +39,7 @@ public class PayoutExecAction {
     private ClientBiService clientBiService;
     private List<RsPayout> passPayoutList;
     private List<RsPayout> payOverList;
+    private List<RsPayout> sendOverList;
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
     private RsPayout[] toSendRecords;
@@ -49,6 +50,7 @@ public class PayoutExecAction {
         rsPayout = new RsPayout();
         passPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.PASS.getCode());
         payOverList = payoutService.selectRecordsByWorkResult(WorkResult.COMMIT.getCode());
+        sendOverList = payoutService.selectRecordsByWorkResult(WorkResult.SENT.getCode());
     }
 
     public String onAllExecute() {
@@ -132,6 +134,7 @@ public class PayoutExecAction {
                 MessageUtil.addInfo("发送完成！");
             } catch (Exception e) {
                 logger.error("操作失败." + e.getMessage());
+                e.printStackTrace();
                 MessageUtil.addError("操作失败." + e.getMessage());
                 return null;
             }
@@ -218,5 +221,13 @@ public class PayoutExecAction {
 
     public void setClientBiService(ClientBiService clientBiService) {
         this.clientBiService = clientBiService;
+    }
+
+    public List<RsPayout> getSendOverList() {
+        return sendOverList;
+    }
+
+    public void setSendOverList(List<RsPayout> sendOverList) {
+        this.sendOverList = sendOverList;
     }
 }

@@ -97,11 +97,12 @@
                                 <h:outputLabel value="*计划编号:" for="planNo" style="margin-left: 16px;"/>
                                 <p:inputText id="planNo" value="#{payoutAction.rsPayout.businessNo}" required="true"
                                             requiredMessage="必须输入计划编号!" style="width:160px;"/>
+
                                 <h:outputLabel value="*计划金额:" for="planAmt" style="margin-left: 10px;"/>
-                                <p:inputText id="planAmt" value="#{payoutAction.planAmt}" required="true" readonly="true"
+                                <p:inputText id="planAmt" value="#{payoutAction.planAmt}" required="true" readonly="false"
                                              style="width:160px;"/>
                                 <h:outputLabel value="*可用金额:" for="avAmt" style="margin-left: 16px;"/>
-                                <p:inputText id="avAmt" value="#{payoutAction.avAmt}"  required="true" readonly="true"
+                                <p:inputText id="avAmt" value="#{payoutAction.avAmt}"  required="true" readonly="false"
                                              style="width:160px;"/>
                                 <h:outputLabel/><h:outputLabel/>
                             </h:panelGrid>
@@ -192,7 +193,7 @@
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="状态标志" style="text-align:left">
+                <!--<p:column headerText="状态标志" style="text-align:left">
                     <h:outputText value="#{record.statusFlag}"/>
                 </p:column>
 
@@ -204,7 +205,7 @@
                     <h:outputText value="#{record.applyDate}">
                         <f:convertDateTime pattern="yyyyMMdd"/>
                     </h:outputText>
-                </p:column>
+                </p:column>-->
 
             </p:dataTable>
         </h:form>

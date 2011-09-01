@@ -46,13 +46,14 @@
         <div style="margin:5px;">
             <p:tabView style="font-weight:normal;font-style:normal" dynamic="true">
                 <p:tab title="待复核记录清单">
-                    <p:messages id="msgs1" showDetail="false"/>
+                    <div>
+                    <p:growl life="1000" id="msgs1" showDetail="false"/>
                     <h:form id="form1">
                         <p:menubar>
                             <p:menuitem type="push" value="复核通过" icon="ui-icon ui-icon-document"
-                                        action="#{payoutAction.onCheck}" update="msgs1, pdt1, pdt2" ajax="true"/>
+                                        action="#{payoutAction.onCheck}" update="msgs1, pdt1, pdt2, pdt3" ajax="true"/>
                             <p:menuitem type="push" value="退回" icon="ui-icon ui-icon-document"
-                                        action="#{payoutAction.onRefuse}" update="msgs1, pdt1, pdt3" ajax="true"/>
+                                        action="#{payoutAction.onRefuse}" update="msgs1, pdt1,pdt2, pdt3" ajax="true"/>
                         </p:menubar>
                         <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
@@ -102,14 +103,16 @@
 
                         </p:dataTable>
                     </h:form>
+                    </div>
                 </p:tab>
 
                 <p:tab title="已通过记录清单">
-                    <p:messages id="msgs2" showDetail="false"/>
+                     <div>
+                    <p:growl life="1000" id="msgs2" showDetail="false"/>
                     <h:form id="form2">
                         <p:menubar>
                             <p:menuitem type="push" value="退回" icon="ui-icon ui-icon-document"
-                                        action="#{payoutAction.onRefuse}" update="msgs2, pdt2, pdt3" ajax="true"/>
+                                        action="#{payoutAction.onRefuse}" update="msgs2, pdt1,pdt2, pdt3" ajax="true"/>
                         </p:menubar>
                         <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
@@ -159,14 +162,16 @@
 
                         </p:dataTable>
                     </h:form>
+                    </div>
                 </p:tab>
 
                 <p:tab title="退回记录清单">
-                    <p:messages id="msgs3" showDetail="false"/>
+                    <div>
+                    <p:growl life="1000" id="msgs3" showDetail="false"/>
                     <h:form id="form3">
                         <p:menubar>
                             <p:menuitem type="push" value="复核通过" icon="ui-icon ui-icon-document"
-                                        action="#{payoutAction.onCheck}" update="msgs3, pdt2, pdt3" ajax="true"/>
+                                        action="#{payoutAction.onCheck}" update="msgs3, pdt1, pdt2, pdt3" ajax="true"/>
 
                         </p:menubar>
                         <p:ajaxStatus style="height:18px;text-align:center">
@@ -217,10 +222,9 @@
 
                         </p:dataTable>
                     </h:form>
+                    </div>
                 </p:tab>
             </p:tabView>
-
-
 
         </div>
 

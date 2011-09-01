@@ -3,6 +3,7 @@ package fdc.view.payout;
 import fdc.common.constant.WorkResult;
 import fdc.repository.model.RsPayout;
 import fdc.service.PayoutService;
+import org.primefaces.event.TabChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -47,6 +48,9 @@ public class PayoutAction {
     public void init() {
         rsPayout = new RsPayout();
         rsPayoutList = new ArrayList<RsPayout>();
+        initTabList();
+    }
+    public void initTabList() {
         chkPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.CREATE.getCode());
         passPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.PASS.getCode());
         refusePayoutList = payoutService.selectRecordsByWorkResult(WorkResult.NOTPASS.getCode());
@@ -84,7 +88,7 @@ public class PayoutAction {
                 return null;
             }
             MessageUtil.addInfo("复核成功!");
-            init();
+            initTabList();
         }
         return null;
     }
@@ -101,10 +105,14 @@ public class PayoutAction {
                 return null;
             }
             MessageUtil.addInfo("退回完成!");
-            init();
+            initTabList();
         }
         return null;
     }
+
+    /* public void onTabChange(TabChangeEvent event) {
+         initTabList();
+      }*/
 
     public String onReset() {
         rsPayout = new RsPayout();

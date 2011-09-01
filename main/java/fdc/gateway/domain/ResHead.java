@@ -10,7 +10,6 @@ import fdc.gateway.utils.BiRtnCode;
  * Time: обнГ4:15
  * To change this template use File | Settings | File Templates.
  */
-@XStreamAlias("root")
 public class ResHead {
     public String RetCode = BiRtnCode.BI_RTN_CODE_SUCCESS.getCode();
     public String RetMsg = "";

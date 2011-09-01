@@ -50,7 +50,7 @@ public class ServerMessageService implements IMessageService {
         String opCode = StringUtil.getSubstrBetweenStrs(message, "<OpCode>", "</OpCode>");
         int nOpCode = Integer.parseInt(opCode);
 
-        /*
+        /*   0001-0002-2001-2002-2003-2006-2007-2008
         *    TODO 字段待确定 暂定交易明细备注字段，【用途】
         */
         switch (nOpCode) {
@@ -103,7 +103,6 @@ public class ServerMessageService implements IMessageService {
                             record.ToBankName = accDetail.getToHsBankName();
                             // TODO 字段待确定 暂定交易明类型字段
                             record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
-
                             t0002Res.param.recordList.add(record);
                         }
                     }

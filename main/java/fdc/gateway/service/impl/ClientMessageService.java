@@ -23,6 +23,11 @@ public class ClientMessageService implements IMessageService {
         return (CommonRes) BaseBean.toObject(CommonRes.class, message);
     }
 
+    /**
+     *
+     * @param message
+     * @return
+     */
     @Override
     public String handleMessage(String message) {
         String responseMsg = null;
