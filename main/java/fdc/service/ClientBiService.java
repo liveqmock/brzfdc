@@ -60,7 +60,7 @@ public class ClientBiService {
         req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
         req.param.Acct = record.getPayAccount();
         req.param.AcctName = record.getPayCompanyName();
-        req.param.BankSerial = record.getSerial();  // TODO record.getBankSerial();  暂时以fdc流水代替
+        req.param.BankSerial = record.getBankSerial();
         req.param.Date = sdfdate8.format(record.getExecDate());
         req.param.Time = sdftime6.format(record.getExecDate());
         req.param.Flag = "0";

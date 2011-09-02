@@ -1,5 +1,7 @@
 package fdc.service.account;
 
+import fdc.common.constant.AccountStatus;
+import fdc.common.constant.LimitStatus;
 import fdc.repository.dao.RsAccountMapper;
 import fdc.repository.model.RsAccDetailExample;
 import fdc.repository.model.RsAccount;
@@ -29,8 +31,19 @@ public class AccountService {
     @Autowired
     private RsAccountMapper accountMapper;
 
-    public RsAccount selectedRecord(String pkId) {
+    public RsAccount selectedRecordByPkid(String pkId) {
         return accountMapper.selectByPrimaryKey(pkId);
+    }
+
+    public RsAccount selectNormalAccountByNo(String accountNo) {
+        RsAccountExample accountExample = new RsAccountExample();
+        accountExample.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(AccountStatus.WATCH.getCode())
+                .andLimitFlagEqualTo(LimitStatus.NOT_LIMIT.getCode()).andAccountCodeEqualTo(accountNo);
+        List<RsAccount> accountList = accountMapper.selectByExample(accountExample);
+        if (accountList.isEmpty()) {
+            throw new RuntimeException("没有查询到未限制的已监管账户！请确认该账户已开启监管并未限制付款！");
+        }
+        return accountList.get(0);
     }
 
     /**
@@ -114,7 +127,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void updateRecord(RsAccount account) {
+    public int updateRecord(RsAccount account) {
 
         if (isModifiable(account)) {
             OperatorManager om = SystemService.getOperatorManager();
@@ -122,7 +135,8 @@ public class AccountService {
             account.setCreatedDate(new Date());
             account.setLastUpdBy(om.getOperatorId());
             account.setLastUpdDate(new Date());
-            accountMapper.updateByPrimaryKeySelective(account);
+            account.setModificationNum(account.getModificationNum() + 1);
+            return accountMapper.updateByPrimaryKeySelective(account);
         } else {
             throw new RuntimeException("并发更新冲突！ActPkid=" + account.getPkId());
         }

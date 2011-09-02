@@ -2,12 +2,14 @@ package fdc.view.expensesplan;
 
 import fdc.repository.model.RsPlanCtrl;
 import fdc.service.expensesplan.ExpensesPlanService;
+import org.apache.commons.lang.StringUtils;
 import platform.common.utils.MessageUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,16 +26,20 @@ public class ExpensesPlanQryAction implements Serializable {
     private RsPlanCtrl rsPlanCtrl;
     private List<RsPlanCtrl> rsPlanCtrlList;
 
-   // @ManagedProperty(value = "#{platformService}")
-    //private PlatformService platformService;
     @ManagedProperty(value = "#{expensesPlanService}")
     private ExpensesPlanService expensesPlanService;
 
     @PostConstruct
     public void init() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String pkid = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
+        //String action = (String) context.getExternalContext().getRequestParameterMap().get("action");
+        if(StringUtils.isEmpty(pkid)) {
         rsPlanCtrl = new RsPlanCtrl();
          rsPlanCtrlList = expensesPlanService.selectPlanList();
-      //  platformService.selectBranchTellers("9999");
+        }else {
+           rsPlanCtrl = expensesPlanService.selectPlanCtrlByPkid(pkid);
+        }
     }
 
     public String onQuery() {

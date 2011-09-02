@@ -39,7 +39,7 @@ public class ContractRecvService {
         String operId = om.getOperatorId();
         String operName = om.getOperatorName();
         Date operDate = new Date();
-
+        // TODO 并发冲突未处理
         rsReceive.setLastUpdBy(operId);
         rsReceive.setLastUpdDate(operDate);
          rsReceive.setWorkResult(WorkResult.SENT.getCode());

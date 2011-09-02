@@ -1,11 +1,14 @@
 package fdc.service;
 
+import com.sun.xml.internal.fastinfoset.algorithm.BooleanEncodingAlgorithm;
 import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsPayoutMapper;
 import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPayoutExample;
+import fdc.repository.model.RsPlanCtrl;
+import fdc.service.expensesplan.ExpensesPlanService;
 import fdc.view.payout.ParamPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,33 @@ public class PayoutService {
     private RsPayoutMapper rsPayoutMapper;
     @Autowired
     private CommonMapper commonMapper;
-    @Transactional
+    @Autowired
+    private ExpensesPlanService expensesPlanService;
+    @Autowired
+    private TradeService tradeService;
+
+    public RsPayout selectPayoutByPkid(String pkid) {
+        return rsPayoutMapper.selectByPrimaryKey(pkid);
+    }
+
+    private int updateRsPayout(RsPayout rsPayout) {
+        RsPayout originRecord = rsPayoutMapper.selectByPrimaryKey(rsPayout.getPkId());
+        if (originRecord.getModificationNum().equals(rsPayout.getModificationNum())) {
+            throw new RuntimeException("记录并发更新冲突，请重试！");
+        } else {
+            OperatorManager om = SystemService.getOperatorManager();
+            String operId = om.getOperatorId();
+            rsPayout.setLastUpdBy(operId);
+            rsPayout.setLastUpdDate(new Date());
+            rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
+            return rsPayoutMapper.updateByPrimaryKey(rsPayout);
+        }
+    }
+
+    /**
+     * @param rsPayout
+     * @return
+     */
     public int insertRsPayout(RsPayout rsPayout) {
         OperatorManager om = SystemService.getOperatorManager();
         rsPayout.setApplyUserId(om.getOperatorId());
@@ -51,11 +80,8 @@ public class PayoutService {
             rsPayout.setAuditDate(operDate);
             rsPayout.setAuditUserId(operId);
             rsPayout.setAuditUserName(operName);
-            rsPayout.setLastUpdBy(operId);
-            rsPayout.setLastUpdDate(operDate);
-            rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
             rsPayout.setWorkResult(workResult);
-            if (rsPayoutMapper.updateByPrimaryKey(rsPayout) != 1) {
+            if (updateRsPayout(rsPayout) != 1) {
                 rtnFlag = -1;
                 throw new RuntimeException("【记录更新失败】付款监管账号：" + rsPayout.getPayAccount());
             }
@@ -65,24 +91,20 @@ public class PayoutService {
 
     // TODO 入账
     @Transactional
-    public int updateRsPayoutToExecStatus(RsPayout rsPayout) {
+    public int updateRsPayoutToExec(RsPayout rsPayout) {
         OperatorManager om = SystemService.getOperatorManager();
         String operId = om.getOperatorId();
         String operName = om.getOperatorName();
         Date operDate = new Date();
-
-        rsPayout.setLastUpdBy(operId);
-        rsPayout.setLastUpdDate(operDate);
         rsPayout.setExecUserId(operId);
         rsPayout.setExecUserName(operName);
         rsPayout.setExecDate(operDate);
-        rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
         rsPayout.setStatusFlag(RefundStatus.ACCOUNT_SUCCESS.getCode());
         rsPayout.setWorkResult(WorkResult.COMMIT.getCode());
-        rsPayout.setSerial(SystemService.getSdfdate8() + commonMapper.selectMaxPayoutSerial());
+        rsPayout.setSerial(SystemService.getDatetime14());
+        rsPayout.setBankSerial(rsPayout.getSerial());
         // TODO 银行流水 接口2004用
-        return rsPayoutMapper.updateByPrimaryKey(rsPayout);
-        // 更新statusFlag之后
+        return tradeService.handlePayoutTrade(rsPayout) + updateRsPayout(rsPayout);
     }
 
     public List<RsPayout> selectRecordsByWorkResult(String workResultCode) {
@@ -97,15 +119,7 @@ public class PayoutService {
 
     @Transactional
     public int updateRsPayoutSent(RsPayout rsPayout) {
-        OperatorManager om = SystemService.getOperatorManager();
-        String operId = om.getOperatorId();
-        String operName = om.getOperatorName();
-        Date operDate = new Date();
-
-        rsPayout.setLastUpdBy(operId);
-        rsPayout.setLastUpdDate(operDate);
-         rsPayout.setWorkResult(WorkResult.SENT.getCode());
-        rsPayout.setModificationNum(rsPayout.getModificationNum() + 1);
-         return rsPayoutMapper.updateByPrimaryKey(rsPayout);
+        rsPayout.setWorkResult(WorkResult.SENT.getCode());
+        return updateRsPayout(rsPayout);
     }
 }

@@ -1,9 +1,13 @@
 package fdc.view.payout;
 
+import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
 import fdc.repository.model.RsPayout;
+import fdc.repository.model.RsPlanCtrl;
 import fdc.service.PayoutService;
-import org.primefaces.event.TabChangeEvent;
+import fdc.service.expensesplan.ExpensesPlanService;
+import org.apache.commons.lang.StringUtils;
+import org.primefaces.component.commandbutton.CommandButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -12,12 +16,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,38 +36,75 @@ public class PayoutAction {
     private RsPayout rsPayout;
     @ManagedProperty(value = "#{payoutService}")
     private PayoutService payoutService;
+    @ManagedProperty(value = "#{expensesPlanService}")
+    private ExpensesPlanService expensesPlanService;
     private List<RsPayout> rsPayoutList;
     private List<RsPayout> chkPayoutList;
     private List<RsPayout> passPayoutList;
     private List<RsPayout> refusePayoutList;
+    private List<RsPlanCtrl> rsPlanCtrlList;
+
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
     private WorkResult workResult = WorkResult.CREATE;
-    private double planAmt;  // 计划金额
-    private double avAmt;   // 可用金额
+    private RefundStatus statusFlag = RefundStatus.ACCOUNT_SUCCESS;
+    private RsPlanCtrl planCtrl;
 
     @PostConstruct
     public void init() {
         rsPayout = new RsPayout();
+        planCtrl = new RsPlanCtrl();
         rsPayoutList = new ArrayList<RsPayout>();
-        initTabList();
+        if (!initPayout()) {
+            initTabList();
+        }
     }
+
+    private boolean initPayout() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String pkid = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
+        String action = (String) context.getExternalContext().getRequestParameterMap().get("action");
+
+        if (!StringUtils.isEmpty(pkid) && "insert".equalsIgnoreCase(action)) {
+            planCtrl = expensesPlanService.selectPlanCtrlByPkid(pkid);
+            rsPayout.setBusinessNo(planCtrl.getPlanCtrlNo());
+            rsPayout.setRecAccount(planCtrl.getToAccountCode());
+            rsPayout.setRecCompanyName(planCtrl.getToAccountName());
+            // TODO  银行代码
+            rsPayout.setRecBankCode("313");
+            rsPayout.setRecBankName(planCtrl.getToHsBankName());
+            rsPayout.setPayCompanyName(planCtrl.getCompanyName());
+            rsPayout.setPayAccount(planCtrl.getAccountCode());
+
+            return true;
+        } else if (!StringUtils.isEmpty(pkid) && "query".equalsIgnoreCase(action)) {
+            rsPayout = payoutService.selectPayoutByPkid(pkid);
+            planCtrl = expensesPlanService.selectPlanCtrlByPlanNo(rsPayout.getBusinessNo());
+        }
+        return false;
+    }
+
     public void initTabList() {
         chkPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.CREATE.getCode());
         passPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.PASS.getCode());
         refusePayoutList = payoutService.selectRecordsByWorkResult(WorkResult.NOTPASS.getCode());
+        rsPlanCtrlList = expensesPlanService.selectPlanList();
     }
 
     public String onSave() {
 
-        if (rsPayout.getPlAmount().doubleValue() > this.avAmt || rsPayout.getPlAmount().doubleValue() > this.planAmt) {
-            MessageUtil.addError("申请金额不得大于计划金额或可用金额！");
+        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+            MessageUtil.addError("申请金额不得大于可用金额！");
             return null;
         }
         try {
+            // TODO  默认审核金额== 申请金额
+            rsPayout.setApAmount(rsPayout.getPlAmount());
             if (payoutService.insertRsPayout(rsPayout) == 1) {
                 MessageUtil.addInfo("受理用款成功！");
-                return onReset();
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
             } else {
                 MessageUtil.addError("受理用款失败！");
             }
@@ -113,17 +152,6 @@ public class PayoutAction {
     /* public void onTabChange(TabChangeEvent event) {
          initTabList();
       }*/
-
-    public String onReset() {
-        rsPayout = new RsPayout();
-        return null;
-    }
-
-    public void showDetailListener(ActionEvent event) {
-        String pkid = (String) event.getComponent().getAttributes().get("pkId");
-        Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        sessionMap.put("pkId", pkid);
-    }
 
     //=========================================
 
@@ -199,19 +227,35 @@ public class PayoutAction {
         this.refusePayoutList = refusePayoutList;
     }
 
-    public double getPlanAmt() {
-        return planAmt;
+    public ExpensesPlanService getExpensesPlanService() {
+        return expensesPlanService;
     }
 
-    public void setPlanAmt(double planAmt) {
-        this.planAmt = planAmt;
+    public void setExpensesPlanService(ExpensesPlanService expensesPlanService) {
+        this.expensesPlanService = expensesPlanService;
     }
 
-    public double getAvAmt() {
-        return avAmt;
+    public List<RsPlanCtrl> getRsPlanCtrlList() {
+        return rsPlanCtrlList;
     }
 
-    public void setAvAmt(double avAmt) {
-        this.avAmt = avAmt;
+    public void setRsPlanCtrlList(List<RsPlanCtrl> rsPlanCtrlList) {
+        this.rsPlanCtrlList = rsPlanCtrlList;
+    }
+
+    public RsPlanCtrl getPlanCtrl() {
+        return planCtrl;
+    }
+
+    public void setPlanCtrl(RsPlanCtrl planCtrl) {
+        this.planCtrl = planCtrl;
+    }
+
+    public RefundStatus getStatusFlag() {
+        return statusFlag;
+    }
+
+    public void setStatusFlag(RefundStatus statusFlag) {
+        this.statusFlag = statusFlag;
     }
 }

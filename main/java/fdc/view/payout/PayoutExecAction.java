@@ -59,7 +59,7 @@ public class PayoutExecAction {
         } else {
             try {
                 for (RsPayout record : passPayoutList) {
-                    if (payoutService.updateRsPayoutToExecStatus(record) == -1) {
+                    if (payoutService.updateRsPayoutToExec(record) == -1) {
                         throw new RuntimeException("【记录更新失败】付款监管账号：" + record.getPayAccount());
                     }
                 }
@@ -80,7 +80,7 @@ public class PayoutExecAction {
         } else {
             try {
                 for (RsPayout record : selectedRecords) {
-                    if (payoutService.updateRsPayoutToExecStatus(record) == -1) {
+                    if (payoutService.updateRsPayoutToExec(record) == -1) {
                         throw new RuntimeException("【记录更新失败】付款监管账号：" + record.getPayAccount());
                     }
                 }
@@ -127,7 +127,7 @@ public class PayoutExecAction {
             try {
                 for (RsPayout record : toSendRecords) {
                     sentResult = clientBiService.sendRsPayoutMsg(record);
-                   if (sentResult != 1) {
+                    if (sentResult != 1) {
                         throw new RuntimeException("发送失败");
                     }
                 }
@@ -141,12 +141,6 @@ public class PayoutExecAction {
             init();
         }
         return null;
-    }
-
-    public void showDetailListener(ActionEvent event) {
-        String pkid = (String) event.getComponent().getAttributes().get("pkId");
-        Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        sessionMap.put("pkId", pkid);
     }
 
     //=========================================

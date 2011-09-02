@@ -5,48 +5,48 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 template="/templates/ui.xhtml">
 
-    <ui:define name="head">
-        <script type="text/javascript">
-            function doPopupWindow(source) {
-                popupwindow = window.open("", "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupwindow.focus;
-                document.getElementById("hidden:go").onclick(null);
-            }
-            function doPopupAddWindow(source) {
-                popupaddwindow = window.open("", "popupaddwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupaddwindow.focus;
-                document.getElementById("hiddenadd:go").onclick(null);
-            }
-        </script>
-        <style type="text/css">
-            .input-col-m {
-                width: 60px;
-            }
+<ui:define name="head">
+    <script type="text/javascript">
+        function doPopupWindow(source) {
+            popupwindow = window.open("", "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+            popupwindow.focus;
+            document.getElementById("hidden:go").onclick(null);
+        }
+        function doPopupAddWindow(source) {
+            popupaddwindow = window.open("", "popupaddwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+            popupaddwindow.focus;
+            document.getElementById("hiddenadd:go").onclick(null);
+        }
+    </script>
+    <style type="text/css">
+        .input-col-m {
+            width: 60px;
+        }
 
-            .input-col-l {
-                width: 80px;
-            }
+        .input-col-l {
+            width: 80px;
+        }
 
-            .input-col-xxl {
-                width: 1%;
-                text-align: right;
-            }
+        .input-col-xxl {
+            width: 1%;
+            text-align: right;
+        }
 
-            .col-80 {
-            }
+        .col-80 {
+        }
 
-            .col-20 {
-                width: 5%;
-            }
-        </style>
+        .col-20 {
+            width: 5%;
+        }
+    </style>
 
-    </ui:define>
+</ui:define>
 
-    <ui:define name="content">
-        <div style="margin:5px;">
-            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true">
-                <p:tab title="待复核记录清单">
-                    <div>
+<ui:define name="content">
+    <div style="margin:5px;">
+        <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
+            <p:tab title="待复核记录清单">
+                <div>
                     <p:growl life="1000" id="msgs1" showDetail="false"/>
                     <h:form id="form1">
                         <p:menubar>
@@ -70,6 +70,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <f:facet name="header">
+                                实际用款待复核记录
+                            </f:facet>
                             <p:column selectionMode="multiple"/>
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
                                 <h:outputText value="#{record.docNo}"/>
@@ -103,11 +106,11 @@
 
                         </p:dataTable>
                     </h:form>
-                    </div>
-                </p:tab>
+                </div>
+            </p:tab>
 
-                <p:tab title="已通过记录清单">
-                     <div>
+            <p:tab title="已通过记录清单">
+                <div>
                     <p:growl life="1000" id="msgs2" showDetail="false"/>
                     <h:form id="form2">
                         <p:menubar>
@@ -129,6 +132,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <f:facet name="header">
+                                实际用款通过记录
+                            </f:facet>
                             <p:column selectionMode="multiple"/>
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
                                 <h:outputText value="#{record.docNo}"/>
@@ -162,11 +168,11 @@
 
                         </p:dataTable>
                     </h:form>
-                    </div>
-                </p:tab>
+                </div>
+            </p:tab>
 
-                <p:tab title="退回记录清单">
-                    <div>
+            <p:tab title="退回记录清单">
+                <div>
                     <p:growl life="1000" id="msgs3" showDetail="false"/>
                     <h:form id="form3">
                         <p:menubar>
@@ -189,6 +195,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <f:facet name="header">
+                                实际用款退回记录
+                            </f:facet>
                             <p:column selectionMode="multiple"/>
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
                                 <h:outputText value="#{record.docNo}"/>
@@ -222,12 +231,12 @@
 
                         </p:dataTable>
                     </h:form>
-                    </div>
-                </p:tab>
-            </p:tabView>
+                </div>
+            </p:tab>
+        </p:tabView>
 
-        </div>
+    </div>
 
-    </ui:define>
+</ui:define>
 
 </ui:composition>

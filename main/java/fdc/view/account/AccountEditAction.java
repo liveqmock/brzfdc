@@ -45,7 +45,7 @@ public class AccountEditAction {
             Map<String, String> paramsmap = context.getExternalContext().getRequestParameterMap();
             String paramDoType = paramsmap.get("doType");
             String paramActPkID = paramsmap.get("actPKID");
-            account = accountService.selectedRecord(paramActPkID);
+            account = accountService.selectedRecordByPkid(paramActPkID);
         }
     }
 

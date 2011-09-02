@@ -63,6 +63,7 @@ public class BiDbService {
                 rsPlanCtrl.setToAccountCode(biPlanDetail.getToAccountCode());
                 rsPlanCtrl.setToHsBankName(biPlanDetail.getToHsBankName());
                 rsPlanCtrl.setPlAmount(biPlanDetail.getPlAmount());
+                rsPlanCtrl.setAvAmount(rsPlanCtrl.getPlAmount());
                 rsPlanCtrl.setPlanDate(biPlanDetail.getPlanDate());
                 rsPlanCtrl.setPlanDesc(biPlanDetail.getPlanDesc());
                 rsPlanCtrl.setRemark(biPlanDetail.getRemark());

@@ -44,7 +44,7 @@
 
     <ui:define name="content">
         <div style="margin:5px;">
-            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true">
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
                 <p:tab title="未入账记录清单">
                     <div>
                     <p:growl life="1000" id="msgs" showDetail="false"/>
@@ -72,6 +72,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <f:facet name="header">
+                                实际用款未入账记录
+                            </f:facet>
                             <p:column selectionMode="multiple"/>
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
                                 <h:outputText value="#{record.docNo}"/>
@@ -133,6 +136,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <f:facet name="header">
+                                实际用款入账未发送记录
+                            </f:facet>
                             <p:column selectionMode="multiple"/>
 
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
@@ -181,7 +187,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
-
+                            <f:facet name="header">
+                                实际用款已发送记录
+                            </f:facet>
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}">
                                 <h:outputText value="#{record.docNo}"/>
                             </p:column>
