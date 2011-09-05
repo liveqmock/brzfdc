@@ -50,7 +50,7 @@ public class CompanyService {
      */
     public boolean isModifiable(RsFdccompany fdccompany) {
         RsFdccompany originRecord = fdccompanyMapper.selectByPrimaryKey(fdccompany.getPkId());
-        if (fdccompany.getModificationNum() != originRecord.getModificationNum()) {
+        if (!fdccompany.getModificationNum().equals(originRecord.getModificationNum())) {
             return false;
         }
         return true;

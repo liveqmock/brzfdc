@@ -66,7 +66,7 @@ public class AccountService {
      */
     public boolean isModifiable(RsAccount act) {
         RsAccount actt = accountMapper.selectByPrimaryKey(act.getPkId());
-        if (act.getModificationNum() != actt.getModificationNum()) {
+        if (!act.getModificationNum().equals(actt.getModificationNum())) {
             return false;
         }
         return true;
