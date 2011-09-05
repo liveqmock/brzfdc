@@ -43,7 +43,7 @@ public class PayoutService {
 
     private int updateRsPayout(RsPayout rsPayout) {
         RsPayout originRecord = rsPayoutMapper.selectByPrimaryKey(rsPayout.getPkId());
-        if (originRecord.getModificationNum().equals(rsPayout.getModificationNum())) {
+        if (!originRecord.getModificationNum().equals(rsPayout.getModificationNum())) {
             throw new RuntimeException("记录并发更新冲突，请重试！");
         } else {
             OperatorManager om = SystemService.getOperatorManager();

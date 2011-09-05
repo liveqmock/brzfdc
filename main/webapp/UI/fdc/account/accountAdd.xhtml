@@ -55,7 +55,7 @@
 
                             <h:outputLabel value="* 房产商:" for="companyId"/>
                             <p:inputText autocomplete="off" id="companyId" style="width:192px;" required="true"
-                                         requiredMessage="必须输入房产商！" value="#{accountAction.account.companyId}">
+                                         requiredMessage="必须输入房产商名称！" value="#{accountAction.account.companyId}">
                             </p:inputText>
 
                             <h:outputLabel value="监管账号:" for="accountCode"/>
@@ -63,18 +63,17 @@
                                          requiredMessage="必须输入监管账号！" value="#{accountAction.account.accountCode}">
                             </h:inputText>
 
+                            <h:outputLabel value="确认监管账号:" for="confirmAccountNo"/>
+                            <h:inputText autocomplete="off" id="confirmAccountNo" style="width:192px;" required="true"
+                                         requiredMessage="必须输入确认监管账号！" value="#{accountAction.confirmAccountNo}">
+                            </h:inputText>
+
                             <h:outputLabel value="账户名称:" for="accountName"/>
                             <p:inputText id="accountName" value="#{accountAction.account.accountName}"
                                          style="width:192px;"/>
 
-                            <h:outputLabel value="*预存金额:" for="balance"/>
-                            <p:inputText id="balance" value="#{accountAction.account.balance}" required="true"
-                                          requiredMessage="必须填入预存金额！" style="width:192px;"
-                                          onblur="document.getElementById('form:balanceUsable').value=this.value;"/>
-
-                            <h:outputLabel value="可用余额:" for="balanceUsable"/>
-                            <p:inputText id="balanceUsable" value="#{accountAction.account.balanceUsable}"
-                                         style="width:192px;"/>
+                            <h:outputLabel value="预存金额:" for="balance"/>
+                            <p:inputText id="balance" value="#{accountAction.account.balance}" style="width:192px;"/>
 
                             <h:outputLabel value="项目名称:" for="proName"/>
                             <p:inputText id="proName" value="#{accountAction.account.proName}"

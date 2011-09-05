@@ -29,6 +29,7 @@ public class AccountAction {
     private AccountService accountService;
     private RsAccount account;
     private List<RsAccount> accountList;
+    private String confirmAccountNo;
 
     @PostConstruct
     public void init() {
@@ -53,6 +54,12 @@ public class AccountAction {
     // 增
     public String insertRecord() {
         try {
+            if(!confirmAccountNo.equalsIgnoreCase(account.getAccountCode())) {
+              MessageUtil.addError("两次输入的监管账户号不一致！");
+              return null;
+            }
+            // 初始帐户余额均为可用
+            account.setBalanceUsable(account.getBalance());
             accountService.insertRecord(account);
         } catch (Exception e) {
             logger.error("新增数据失败，", e);
@@ -95,5 +102,13 @@ public class AccountAction {
 
     public void setAccountList(List<RsAccount> accountList) {
         this.accountList = accountList;
+    }
+
+    public String getConfirmAccountNo() {
+        return confirmAccountNo;
+    }
+
+    public void setConfirmAccountNo(String confirmAccountNo) {
+        this.confirmAccountNo = confirmAccountNo;
     }
 }

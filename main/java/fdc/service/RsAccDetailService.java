@@ -37,7 +37,7 @@ public class RsAccDetailService {
 
     public int updateAccDetail(RsAccDetail rsAccDetail) {
         RsAccDetail originRecord = accDetailMapper.selectByPrimaryKey(rsAccDetail.getPkId());
-        if (originRecord.getModificationNum().equals(rsAccDetail.getModificationNum())) {
+        if (!originRecord.getModificationNum().equals(rsAccDetail.getModificationNum())) {
             throw new RuntimeException("记录并发更新冲突，请重试！");
         } else {
             OperatorManager om = SystemService.getOperatorManager();

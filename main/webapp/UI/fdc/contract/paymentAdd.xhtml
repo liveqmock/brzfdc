@@ -100,21 +100,19 @@
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
+                            <p:column headerText="交易状态" style="text-align:center;width:30px" filterBy="#{record.statusFlag}"
                                       filterOptions="#{contractRecvAction.contractStatusOptions}"
                                       filterMatchMode="exact">
                                 <h:outputText
                                         value="#{contractRecvAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
                             </p:column>
-                            <p:column headerText="详细" style="width:50px;text-align:center">
+                            <p:column headerText="操作" style="width:50px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"
                                                oncomplete="doPopupWindow(this);return false;">
                                     <f:setPropertyActionListener value="#{record}"
                                                                  target="#{contractRecvAction.selectedRecord}"/>
                                 </p:commandLink>
-                            </p:column>
-                            <p:column headerText="新增" style="width:50px;text-align:center">
-                                <p:commandLink style="color:blue;" value="新增" update="popupaddwindow"
+                                <p:commandLink style="color:blue;margin-left:10px" value="新增" update="popupaddwindow"
                                                oncomplete="doPopupAddWindow(this);return false;">
                                     <f:setPropertyActionListener value="#{record}"
                                                                  target="#{contractRecvAction.selectedRecord}"/>
