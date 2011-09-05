@@ -81,7 +81,24 @@
                     </div>
                 </p:tab>
                 <p:tab title="未发送解冻明细记录">
+                    <p:growl id="msgs" showDetail="false"/>
                     <h:form id="form2">
+                        <p:menubar>
+                            <p:menuitem type="push" value="全部发送" icon="ui-icon ui-icon-document"
+                                        action="#{accountUnlockAction.onAllSend}" update="msgs, pdt1, pdt2, pdt3"
+                                        ajax="true"/>
+                            <p:menuitem type="push" value="多笔发送" icon="ui-icon ui-icon-document"
+                                        action="#{accountUnlockAction.onMultiSend}" update="msgs, pdt1, pdt2, pdt3"
+                                        ajax="true"/>
+                        </p:menubar>
+                        <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
                         <p:dataTable id="pdt2" style="width:100%;"
                                      dynamic="true"
                                      value="#{accountUnlockAction.unSendLockDetailList}" var="record"
@@ -112,6 +129,12 @@
                             <p:column headerText="冻结金额" style="text-align:center">
                                 <h:outputText value="#{record.balanceLock}" style="float:right">
                                     <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="冻结状态" style="text-align:center">
+                                <h:outputText
+                                        value="#{accountUnlockAction.lockStatus.valueOfAlias(record.statusFlag).title}">
                                 </h:outputText>
                             </p:column>
 
@@ -149,6 +172,12 @@
                             <p:column headerText="冻结金额" style="text-align:center">
                                 <h:outputText value="#{record.balanceLock}" style="float:right">
                                     <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="冻结状态" style="text-align:center">
+                                <h:outputText
+                                        value="#{accountUnlockAction.lockStatus.valueOfAlias(record.statusFlag).title}">
                                 </h:outputText>
                             </p:column>
 

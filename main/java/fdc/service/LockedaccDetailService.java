@@ -1,5 +1,6 @@
 package fdc.service;
 
+import fdc.common.constant.SendFlag;
 import fdc.repository.dao.RsLockedaccDetailMapper;
 import fdc.repository.model.RsLockedaccDetail;
 import fdc.repository.model.RsLockedaccDetailExample;
@@ -34,9 +35,15 @@ public class LockedaccDetailService {
         return lockedaccDetailMapper.insertSelective(record);
     }
 
-    public List<RsLockedaccDetail> selectRecordsBySendflag(String sendflag) {
+    public List<RsLockedaccDetail> selectRecordsBySendflagAndLockstatus(String sendflag, String lockstatus) {
         RsLockedaccDetailExample example = new RsLockedaccDetailExample();
-        example.createCriteria().andDeletedFlagEqualTo("0").andSendFlagEqualTo(sendflag);
+        example.createCriteria().andDeletedFlagEqualTo("0").andSendFlagEqualTo(sendflag).andStatusFlagEqualTo(lockstatus);
+        return lockedaccDetailMapper.selectByExample(example);
+    }
+
+    public List<RsLockedaccDetail> selectRecordsBySendflagAndNotEqualLockstatus(String sendflag, String lockstatus) {
+        RsLockedaccDetailExample example = new RsLockedaccDetailExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andSendFlagEqualTo(sendflag).andStatusFlagNotEqualTo(lockstatus);
         return lockedaccDetailMapper.selectByExample(example);
     }
 
@@ -44,6 +51,14 @@ public class LockedaccDetailService {
     public int updateRecordToSendflag(RsLockedaccDetail record, String sendflag) {
         record.setSendFlag(sendflag);
         return updateRecord(record);
+    }
+
+    public boolean isSent(RsLockedaccDetail record) {
+        RsLockedaccDetail originRecord = lockedaccDetailMapper.selectByPrimaryKey(record.getPkId());
+        if(SendFlag.SENT.getCode().equalsIgnoreCase(originRecord.getSendFlag())) {
+            return true;
+        }
+        return false;
     }
 
     public int updateRecord(RsLockedaccDetail record) {

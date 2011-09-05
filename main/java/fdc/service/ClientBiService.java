@@ -1,14 +1,17 @@
 package fdc.service;
 
+import fdc.common.constant.SendFlag;
 import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
 import fdc.gateway.domain.CommonRes;
+import fdc.gateway.domain.T000.T0006Req;
 import fdc.gateway.domain.T200.T2004Req;
 import fdc.gateway.domain.T200.T2005Req;
 import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.utils.StringUtil;
 import fdc.gateway.xsocket.client.XSocketComponent;
 import fdc.repository.model.RsAccDetail;
+import fdc.repository.model.RsLockedaccDetail;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsReceive;
 import org.slf4j.Logger;
@@ -44,6 +47,8 @@ public class ClientBiService {
     private PayoutService payoutService;
     @Autowired
     private ContractRecvService contractRecvService;
+    @Autowired
+    private LockedaccDetailService lockedaccDetailService;
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
@@ -110,6 +115,32 @@ public class ClientBiService {
             return -1;
         } else {
             return contractRecvService.updateRsReceiveSent(record);
+        }
+    }
+
+    /**
+     * 发送账户冻结解冻明细 0006
+     * @param record
+     * @return
+     */
+    public int sendLockAccDetail(RsLockedaccDetail record) throws IOException {
+        if(lockedaccDetailService.isSent(record)) {
+            return 1;
+        }
+        T0006Req req = new T0006Req();
+        req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
+        req.param.Acct = record.getAccountCode();
+        req.param.AcctName = record.getAccountName();
+        req.param.Status = record.getStatusFlag();
+        req.param.Balance = StringUtil.toBiformatAmt(record.getBalance());
+        req.param.LockAmt = StringUtil.toBiformatAmt(record.getBalanceLock());
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            return lockedaccDetailService.updateRecordToSendflag(record, SendFlag.SENT.getCode());
         }
     }
 

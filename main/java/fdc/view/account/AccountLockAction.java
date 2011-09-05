@@ -4,6 +4,7 @@ import fdc.common.constant.LockAccStatus;
 import fdc.common.constant.SendFlag;
 import fdc.repository.model.RsAccount;
 import fdc.repository.model.RsLockedaccDetail;
+import fdc.service.ClientBiService;
 import fdc.service.LockedaccDetailService;
 import fdc.service.TradeService;
 import fdc.service.account.AccountService;
@@ -17,6 +18,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -42,8 +44,11 @@ public class AccountLockAction {
     private LockedaccDetailService lockedaccDetailService;
     @ManagedProperty(value = "#{tradeService}")
     private TradeService tradeService;
-    private BigDecimal lockConfirmAmt = new BigDecimal(0);
+    @ManagedProperty(value = "#{clientBiService}")
+    private ClientBiService clientBiService;
+    private BigDecimal lockConfirmAmt;
     private LockAccStatus lockStatus = LockAccStatus.FULL_LOCK;
+    private RsLockedaccDetail[] selectedRecords;
 
     @PostConstruct
     public void init() {
@@ -58,8 +63,10 @@ public class AccountLockAction {
     }
 
     private void initLockDetailList() {
-        unSendLockDetailList = lockedaccDetailService.selectRecordsBySendflag(SendFlag.UN_SEND.getCode());
-        sentLockDetailList = lockedaccDetailService.selectRecordsBySendflag(SendFlag.SENT.getCode());
+        unSendLockDetailList = lockedaccDetailService.selectRecordsBySendflagAndNotEqualLockstatus(
+                SendFlag.UN_SEND.getCode(), LockAccStatus.UN_LOCK.getCode());
+        sentLockDetailList = lockedaccDetailService.selectRecordsBySendflagAndNotEqualLockstatus(
+                SendFlag.SENT.getCode(), LockAccStatus.UN_LOCK.getCode());
     }
 
     public String onSave() {
@@ -86,6 +93,49 @@ public class AccountLockAction {
             MessageUtil.addError("操作失败！" + e.getMessage());
         }
         return null;
+    }
+
+    public String onAllSend() {
+        if (unSendLockDetailList.isEmpty()) {
+            MessageUtil.addWarn("没有待发送数据！");
+            return null;
+        }
+        try {
+            for (RsLockedaccDetail record : unSendLockDetailList) {
+                if(sendOneLockDetail(record) != 1){
+                   throw new RuntimeException("发送失败！账号："+record.getAccountCode());
+                }
+            }
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败！" + e.getMessage());
+        }
+        MessageUtil.addInfo("发送成功！");
+        initLockDetailList();
+        return null;
+    }
+
+    public String onMultiSend() {
+        if (selectedRecords == null || selectedRecords.length == 0) {
+            MessageUtil.addWarn("至少选中一项数据记录！");
+            return null;
+        }
+        try {
+            for (RsLockedaccDetail record : selectedRecords) {
+                if(sendOneLockDetail(record) != 1){
+                   throw new RuntimeException("发送失败！账号："+record.getAccountCode());
+                }
+            }
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败！" + e.getMessage());
+        }
+        MessageUtil.addInfo("发送成功！");
+        initLockDetailList();
+        return null;
+    }
+
+    private int sendOneLockDetail(RsLockedaccDetail record) throws IOException {
+
+        return clientBiService.sendLockAccDetail(record);
     }
 
     //==========================================
@@ -168,5 +218,21 @@ public class AccountLockAction {
 
     public void setTradeService(TradeService tradeService) {
         this.tradeService = tradeService;
+    }
+
+    public RsLockedaccDetail[] getSelectedRecords() {
+        return selectedRecords;
+    }
+
+    public void setSelectedRecords(RsLockedaccDetail[] selectedRecords) {
+        this.selectedRecords = selectedRecords;
+    }
+
+    public ClientBiService getClientBiService() {
+        return clientBiService;
+    }
+
+    public void setClientBiService(ClientBiService clientBiService) {
+        this.clientBiService = clientBiService;
     }
 }
