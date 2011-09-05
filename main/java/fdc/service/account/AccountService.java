@@ -83,6 +83,12 @@ public class AccountService {
         return accountMapper.selectByExample(example);
     }
 
+    public List<RsAccount> qryAllLockRecords() {
+        RsAccountExample example = new RsAccountExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andBalanceLockGreaterThan(new BigDecimal(0));
+        return accountMapper.selectByExample(example);
+    }
+
     /**
      * ≤È—Ø
      */

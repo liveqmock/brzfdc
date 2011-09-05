@@ -2,6 +2,7 @@ package fdc.service;
 
 import fdc.common.constant.AccountStatus;
 import fdc.common.constant.LimitStatus;
+import fdc.common.constant.LockAccStatus;
 import fdc.common.constant.TradeType;
 import fdc.repository.model.*;
 import fdc.service.account.AccountService;
@@ -31,9 +32,12 @@ public class TradeService {
     private PayoutService payoutService;
     @Autowired
     private ExpensesPlanService expensesPlanService;
+    @Autowired
+    private LockedaccDetailService lockedaccDetailService;
 
     /**
      * 处理计划付款交易
+     *
      * @param payout
      * @return
      */
@@ -77,4 +81,31 @@ public class TradeService {
         return rtnCnt;
     }
 
+    // 账户冻结
+    @Transactional
+    public int handleLockAccountByDetail(RsAccount rsAccount, RsLockedaccDetail rsLockedaccDetail) {
+        rsLockedaccDetail.setAccountCode(rsAccount.getAccountCode());
+        rsLockedaccDetail.setAccountName(rsAccount.getAccountName());
+        rsLockedaccDetail.setBalance(rsAccount.getBalance());
+        rsAccount.setBalanceLock(rsAccount.getBalanceLock().add(rsLockedaccDetail.getBalanceLock()));
+        rsAccount.setBalanceUsable(rsAccount.getBalance().subtract(rsAccount.getBalanceLock()));
+        if (rsLockedaccDetail.getBalanceLock().equals(rsAccount.getBalanceUsable())) {
+            rsLockedaccDetail.setStatusFlag(LockAccStatus.FULL_LOCK.getCode());
+        } else if (rsLockedaccDetail.getBalanceLock().compareTo(rsAccount.getBalanceUsable()) < 0) {
+            rsLockedaccDetail.setStatusFlag(LockAccStatus.PART_LOCK.getCode());
+        }
+        return accountService.updateRecord(rsAccount) + lockedaccDetailService.insertRecord(rsLockedaccDetail);
+    }
+
+    // 账户解冻
+    @Transactional
+    public int handleUnlockAccountByDetail(RsAccount rsAccount, RsLockedaccDetail rsLockedaccDetail) {
+        rsLockedaccDetail.setAccountCode(rsAccount.getAccountCode());
+        rsLockedaccDetail.setAccountName(rsAccount.getAccountName());
+        rsLockedaccDetail.setBalance(rsAccount.getBalance());
+        rsAccount.setBalanceLock(rsAccount.getBalanceLock().subtract(rsLockedaccDetail.getBalanceLock()));
+        rsAccount.setBalanceUsable(rsAccount.getBalance().subtract(rsAccount.getBalanceLock()));
+        rsLockedaccDetail.setStatusFlag(LockAccStatus.UN_LOCK.getCode());
+        return accountService.updateRecord(rsAccount) + lockedaccDetailService.insertRecord(rsLockedaccDetail);
+    }
 }
