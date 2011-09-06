@@ -52,6 +52,7 @@ public class TradeService {
         accDetail.setTradeAmt(record.getTradeAmt());
         accDetail.setTradeDate(new Date());
         accDetail.setContractNo(record.getContractNo());
+        accDetail.setChangeFlag("R");
         accDetail.setPlanCtrlNo(record.getPlanCtrlNo());
         accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
         if (InOutFlag.IN.getCode().equalsIgnoreCase(record.getInoutFlag())) {

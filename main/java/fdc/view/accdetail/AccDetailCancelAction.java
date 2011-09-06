@@ -7,6 +7,7 @@ import fdc.repository.model.RsAccDetail;
 import fdc.service.RsAccDetailService;
 import fdc.service.TradeService;
 import org.apache.commons.lang.StringUtils;
+import platform.common.utils.MessageUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -51,10 +52,19 @@ public class AccDetailCancelAction {
     }
 
     public String onCancel() {
-
+        try {
+           if(tradeService.handleCancelAccDetail(accDetail) == 2) {
+              MessageUtil.addInfo("交易冲正成功！");
+           }
+        }catch (Exception e) {
+            MessageUtil.addError("操作失败."+e.getMessage());
+        }
         return null;
     }
 
+    public String onSend() {
+        return null;
+    }
 
 
     //=================================
