@@ -1,9 +1,6 @@
 package fdc.service;
 
-import fdc.common.constant.AccountStatus;
-import fdc.common.constant.LimitStatus;
-import fdc.common.constant.LockAccStatus;
-import fdc.common.constant.TradeType;
+import fdc.common.constant.*;
 import fdc.repository.model.*;
 import fdc.service.account.AccountService;
 import fdc.service.expensesplan.ExpensesPlanService;
@@ -36,6 +33,43 @@ public class TradeService {
     private LockedaccDetailService lockedaccDetailService;
 
     /**
+     * 处理合同收款
+     * @param receive
+     * @return
+     */
+    public int handleReceiveTrade(RsReceive receive) {
+        // 查询未限制已监管未删除账户
+        RsAccount account = accountService.selectNormalAccountByNo(receive.getAccountCode());
+        if(account == null) {
+            throw new RuntimeException("监管账号不存在！");
+        }
+        //--------
+        // 新增交易明细
+        RsAccDetail accDetail = new RsAccDetail();
+        accDetail.setAccountCode(receive.getAccountCode());
+        accDetail.setAccountName(receive.getCompanyName());
+        accDetail.setToAccountCode(receive.getTradeAccCode());
+        accDetail.setToAccountName(receive.getTradeAccName());
+        accDetail.setToHsBankName(receive.getTradeBankName());
+        accDetail.setInoutFlag(InOutFlag.IN.getCode());// 收入
+        Date today = new Date();
+        accDetail.setTradeDate(today);
+        accDetail.setTradeAmt(receive.getApAmount());
+        accDetail.setBalance(account.getBalance().add(accDetail.getTradeAmt()));
+        accDetail.setLocalSerial(receive.getSerial());
+        accDetail.setBankSerial(receive.getBankSerial());
+        accDetail.setTradeType(TradeType.HOUSE_INCOME.getCode());
+        accDetail.setContractNo(receive.getBusinessNo());
+        accDetail.setRemark(receive.getRemark());
+        //------------
+        // 设置账户余额 和可用余额
+        account.setBalance(account.getBalance().add(receive.getApAmount()));
+        account.setBalanceUsable(account.getBalanceUsable().add(receive.getApAmount()));
+        int rtnCnt = accDetailService.insertAccDetail(accDetail)
+                + accountService.updateRecord(account);
+        return rtnCnt;
+    }
+    /**
      * 处理计划付款交易
      *
      * @param payout
@@ -65,7 +99,7 @@ public class TradeService {
         Date today = new Date();
         accDetail.setTradeDate(today);
         accDetail.setTradeAmt(payout.getApAmount());
-        accDetail.setBalance(account.getBalanceUsable().subtract(accDetail.getTradeAmt()));
+        accDetail.setBalance(account.getBalance().subtract(accDetail.getTradeAmt()));
         accDetail.setLocalSerial(payout.getSerial());
         accDetail.setBankSerial(payout.getBankSerial());
         accDetail.setTradeType(TradeType.PLAN_PAYOUT.getCode());

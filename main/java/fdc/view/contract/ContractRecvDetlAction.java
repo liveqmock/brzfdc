@@ -87,6 +87,7 @@ public class ContractRecvDetlAction implements Serializable {
 
     public String onSave() {
         try {
+            selectedRecord.setApAmount(selectedRecord.getPlAmount());
             if (contractRecvService.insertRecord(selectedRecord) == 1) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");

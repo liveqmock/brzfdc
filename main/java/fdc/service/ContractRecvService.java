@@ -6,6 +6,7 @@ import fdc.common.constant.SendFlag;
 import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsContractMapper;
 import fdc.repository.dao.RsReceiveMapper;
+import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsReceive;
 import fdc.repository.model.RsReceiveExample;
@@ -31,6 +32,8 @@ public class ContractRecvService {
     private RsContractMapper contractMapper;
     @Autowired
     private RsReceiveMapper receiveMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
     public int insertRecord(RsReceive record) throws Exception {
         OperatorManager om = SystemService.getOperatorManager();
@@ -38,6 +41,9 @@ public class ContractRecvService {
         record.setApplyUserId(om.getOperatorId());
         record.setApplyUserName(om.getOperatorName());
         record.setCreatedDate(new Date());
+        String serial = commonMapper.selectMaxRecvSerial();
+        record.setSerial(serial);
+        record.setBankSerial(serial);
         return receiveMapper.insertSelective(record);
     }
 

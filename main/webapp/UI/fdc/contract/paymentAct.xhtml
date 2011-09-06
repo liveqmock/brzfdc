@@ -7,15 +7,10 @@
 
     <ui:define name="head">
         <script type="text/javascript">
-            function doPopupWindow(source) {
-                popupwindow = window.open("", "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+          function doPopupRecvWindow(obj) {
+                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+                popupwindow = window.open("contractRecvDetlForm.xhtml?action=query&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
-                document.getElementById("hidden:go").onclick(null);
-            }
-            function doPopupAddWindow(source) {
-                popupaddwindow = window.open("", "popupaddwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupaddwindow.focus;
-                document.getElementById("hiddenadd:go").onclick(null);
             }
         </script>
         <style type="text/css">
@@ -44,17 +39,74 @@
 
     <ui:define name="content">
         <div style="margin:5px;">
-            <p:tabView style="font-weight:normal;font-style:normal">
-                <p:tab title="待入帐记录清单">
-                    <p:messages id="msgs2" showDetail="false"/>
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
+                <p:tab title="未入账记录清单">
+                    <p:growl id="msgs1" showDetail="false"/>
+                    <h:form id="form1">
+                        <p:menubar>
+                            <p:menuitem type="push" value="入账" icon="ui-icon ui-icon-document"
+                                        action="#{contractRecvActAction.onAct}" update="msgs1, pdt1, pdt2, pdt3" ajax="true"/>
+                        </p:menubar>
+                       <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
+                        <p:dataTable id="pdt1" style="width:100%;"
+                                     dynamic="true" selection="#{contractRecvActAction.selectedRecords}"
+                                     value="#{contractRecvActAction.pendChkoverList}" var="record"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="15" paginatorPosition="bottom"
+                                     rowsPerPageTemplate="100,50,30,15,5"
+                                     emptyMessage="数据记录为空...">
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
+                            <p:column selectionMode="multiple"/>
+                            <p:column headerText="单据号" style="text-align:center">
+                                <h:outputText value="#{record.docNo}"/>
+                            </p:column>
+                            <p:column headerText="合同号" style="text-align:center">
+                                <h:outputText value="#{record.businessNo}"/>
+                            </p:column>
+                            <p:column headerText="缴款类型" style="text-align:center">
+                                <h:outputText
+                                        value="#{contractRecvActAction.recvStatus.valueOfAlias(record.receiveType).title}"/>
+                            </p:column>
+                            <p:column headerText="缴款金额">
+                                <h:outputText value="#{record.plAmount}" style="float: right">
+                                    <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="房产商" style="text-align:center">
+                                <h:outputText value="#{record.companyName}"/>
+                            </p:column>
+                            <p:column headerText="买方姓名" style="text-align:center">
+                                <h:outputText value="#{record.buyerName}"/>
+                            </p:column>
+                            <p:column headerText="交易状态" style="text-align:center">
+                                <h:outputText
+                                        value="#{contractRecvActAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
+                            </p:column>
+                            <p:column headerText="操作" style="width:50px;text-align:center">
+                                <p:commandLink style="color:blue;" value="详细" update="popupwindow"
+                                               onclick="doPopupRecvWindow(this);">
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
+                <p:tab title="未发送记录清单">
+                    <p:growl id="msgs2" showDetail="false"/>
                     <h:form id="form2">
                         <p:menubar>
-                            <p:menuitem type="push" value="执行入帐" icon="ui-icon ui-icon-document"
-                                        action="#{contractRecvAction.onPrint}" update="msgs2, pdt2" ajax="true"/>
-                            <p:menuitem type="push" value="退回" icon="ui-icon ui-icon-document"
-                                        action="#{contractRecvAction.onPrint}" update="msgs2, pdt2" ajax="true"/>
+                            <p:menuitem type="push" value="发送" icon="ui-icon ui-icon-document"
+                                        action="#{contractRecvActAction.onSend}" update="msgs2, pdt1, pdt2, pdt3" ajax="true"/>
                         </p:menubar>
-                        <p:ajaxStatus style="height:18px;text-align:center">
+                       <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
                                 <h:graphicImage value="/images/ajaxloadingbar.gif"/>
                             </f:facet>
@@ -63,69 +115,109 @@
                             </f:facet>
                         </p:ajaxStatus>
                         <p:dataTable id="pdt2" style="width:100%;"
-                                     dynamic="true"
-                                     value="#{contractRecvAction.pendActList}" var="record"
+                                     dynamic="true" selection="#{contractRecvActAction.selectedRecords}"
+                                     value="#{contractRecvActAction.pendCommitActList}" var="record"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
                             <p:column selectionMode="multiple"/>
-                            <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}"
-                                      filterMatchMode="contains">
+                            <p:column headerText="单据号" style="text-align:center">
                                 <h:outputText value="#{record.docNo}"/>
                             </p:column>
-                            <p:column headerText="合同号" style="text-align:center" filterBy="#{record.businessNo}"
-                                      filterMatchMode="contains">
+                            <p:column headerText="合同号" style="text-align:center">
                                 <h:outputText value="#{record.businessNo}"/>
                             </p:column>
-                            <p:column headerText="缴款类型" style="text-align:center" filterBy="#{record.receiveType}"
-                                      filterOptions="#{contractRecvAction.recvStatusOptions}"
-                                      filterMatchMode="exact">
-                                <h:outputText value="#{contractRecvAction.recvStatus.valueOfAlias(record.receiveType).title}"/>
+                            <p:column headerText="缴款类型" style="text-align:center">
+                                <h:outputText
+                                        value="#{contractRecvActAction.recvStatus.valueOfAlias(record.receiveType).title}"/>
                             </p:column>
                             <p:column headerText="缴款金额">
                                 <h:outputText value="#{record.plAmount}" style="float: right">
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="房产商" style="text-align:center" filterBy="#{record.companyName}"
-                                      filterMatchMode="contains">
+                            <p:column headerText="房产商" style="text-align:center">
                                 <h:outputText value="#{record.companyName}"/>
                             </p:column>
-                            <p:column headerText="买方姓名" style="text-align:center" filterBy="#{record.buyerName}"
-                                      filterMatchMode="contains">
+                            <p:column headerText="买方姓名" style="text-align:center">
                                 <h:outputText value="#{record.buyerName}"/>
                             </p:column>
-                            <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
-                                      filterOptions="#{contractRecvAction.contractStatusOptions}"
-                                      filterMatchMode="exact">
+                            <p:column headerText="交易状态" style="text-align:center">
                                 <h:outputText
-                                        value="#{contractRecvAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
+                                        value="#{contractRecvActAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
                             </p:column>
                             <p:column headerText="操作" style="width:50px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"
-                                               oncomplete="doPopupWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{contractRecvAction.selectedRecord}"/>
+                                               onclick="doPopupRecvWindow(this);">
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
                     </h:form>
                 </p:tab>
+                <p:tab title="已发送记录清单">
+                    <p:growl id="msgs3" showDetail="false"/>
+                    <h:form id="form3">
+
+                       <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
+                        <p:dataTable id="pdt3" style="width:100%;"
+                                     dynamic="true"
+                                     value="#{contractRecvActAction.pendSentActList}" var="record"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="15" paginatorPosition="bottom"
+                                     rowsPerPageTemplate="100,50,30,15,5"
+                                     emptyMessage="数据记录为空...">
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
+                            <p:column headerText="单据号" style="text-align:center">
+                                <h:outputText value="#{record.docNo}"/>
+                            </p:column>
+                            <p:column headerText="合同号" style="text-align:center">
+                                <h:outputText value="#{record.businessNo}"/>
+                            </p:column>
+                            <p:column headerText="缴款类型" style="text-align:center">
+                                <h:outputText
+                                        value="#{contractRecvActAction.recvStatus.valueOfAlias(record.receiveType).title}"/>
+                            </p:column>
+                            <p:column headerText="缴款金额">
+                                <h:outputText value="#{record.plAmount}" style="float: right">
+                                    <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="房产商" style="text-align:center"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.companyName}"/>
+                            </p:column>
+                            <p:column headerText="买方姓名" style="text-align:center">
+                                <h:outputText value="#{record.buyerName}"/>
+                            </p:column>
+                            <p:column headerText="交易状态" style="text-align:center">
+                                <h:outputText
+                                        value="#{contractRecvActAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
+                            </p:column>
+                            <p:column headerText="操作" style="width:50px;text-align:center">
+                                <p:commandLink style="color:blue;" value="详细" update="popupwindow"
+                                               onclick="doPopupRecvWindow(this);">
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
+
             </p:tabView>
         </div>
-        <h:form id="hidden" target="popupwindow">
-            <h:commandLink id="go" actionListener="#{contractRecvAction.showDetailListener}"
-                           action="contractRecvDetlForm">
-                <f:attribute name="pkId" value="#{contractRecvAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
-        <h:form id="hiddenadd" target="popupaddwindow">
-            <h:commandLink id="go" actionListener="#{contractRecvAction.showDetailListener}"
-                           action="#{contractRecvAction.onShowDetail}">
-                <f:attribute name="pkId" value="#{contractRecvAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
+
     </ui:define>
 
 </ui:composition>

@@ -4,8 +4,9 @@ import fdc.common.constant.ContractRecvStatus;
 import fdc.common.constant.ContractStatus;
 import fdc.common.constant.WorkResult;
 import fdc.repository.model.RsReceive;
+import fdc.service.ClientBiService;
 import fdc.service.ContractRecvService;
-import org.springframework.beans.factory.annotation.Autowired;
+import fdc.service.TradeService;
 import platform.common.utils.MessageUtil;
 
 import javax.annotation.PostConstruct;
@@ -23,37 +24,42 @@ import java.util.List;
  */
 @ManagedBean
 @ViewScoped
-public class ContractRecvChkAction {
+public class ContractRecvActAction {
     @ManagedProperty(value = "#{contractRecvService}")
     private ContractRecvService contractRecvService;
+    @ManagedProperty(value = "#{clientBiService}")
+    private ClientBiService clientBiService;
+    @ManagedProperty(value = "#{tradeService}")
+    private TradeService tradeService;
 
-    private List<RsReceive> pendChkList;
     private List<RsReceive> pendChkoverList;
-    private List<RsReceive> pendChkUnpassList;
+    private List<RsReceive> pendCommitActList;
+    private List<RsReceive> pendSentActList;
     private RsReceive[] selectedRecords;
     private ContractStatus contractStatus = ContractStatus.NORMAL;
     private ContractRecvStatus recvStatus = ContractRecvStatus.BACK;
 
     @PostConstruct
     public void init() {
-        this.pendChkList = contractRecvService.selectContractList(WorkResult.CREATE);
         this.pendChkoverList = contractRecvService.selectContractList(WorkResult.PASS);
-        this.pendChkUnpassList = contractRecvService.selectContractList(WorkResult.NOTPASS);
+        this.pendCommitActList = contractRecvService.selectContractList(WorkResult.COMMIT);
+        this.pendSentActList = contractRecvService.selectContractList(WorkResult.SENT);
     }
 
-    public String onCheck() {
+    public String onAct() {
         if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("至少选择一笔数据记录！");
             return null;
         }
         try {
             for (RsReceive record : selectedRecords) {
-
-                if (contractRecvService.updateRsReceiveToWorkResult(record, WorkResult.PASS) != 1) {
-                    throw new RuntimeException("复核失败！");
+                if (tradeService.handleReceiveTrade(record) == 2) {
+                    if (contractRecvService.updateRsReceiveToWorkResult(record, WorkResult.COMMIT) != 1) {
+                        throw new RuntimeException("入账失败！账号:" + record.getAccountCode());
+                    }
                 }
             }
-            MessageUtil.addInfo("复核成功！");
+            MessageUtil.addInfo("入账成功！");
             init();
         } catch (Exception e) {
             MessageUtil.addError("操作失败." + e.getMessage());
@@ -61,19 +67,18 @@ public class ContractRecvChkAction {
         return null;
     }
 
-    public String onBack() {
+    public String onSend() {
         if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("至少选择一笔数据记录！");
             return null;
         }
         try {
             for (RsReceive record : selectedRecords) {
-
-                if (contractRecvService.updateRsReceiveToWorkResult(record, WorkResult.NOTPASS) != 1) {
-                    throw new RuntimeException("退回失败！");
+                if (clientBiService.sendRsReceiveMsg(record, "1") != 1) {
+                    throw new RuntimeException("发送失败！账号：" + record.getAccountCode());
                 }
             }
-            MessageUtil.addInfo("退回成功！");
+            MessageUtil.addInfo("发送成功！");
             init();
         } catch (Exception e) {
             MessageUtil.addError("操作失败." + e.getMessage());
@@ -91,28 +96,12 @@ public class ContractRecvChkAction {
         this.contractRecvService = contractRecvService;
     }
 
-    public List<RsReceive> getPendChkList() {
-        return pendChkList;
-    }
-
-    public void setPendChkList(List<RsReceive> pendChkList) {
-        this.pendChkList = pendChkList;
-    }
-
     public List<RsReceive> getPendChkoverList() {
         return pendChkoverList;
     }
 
     public void setPendChkoverList(List<RsReceive> pendChkoverList) {
         this.pendChkoverList = pendChkoverList;
-    }
-
-    public List<RsReceive> getPendChkUnpassList() {
-        return pendChkUnpassList;
-    }
-
-    public void setPendChkUnpassList(List<RsReceive> pendChkUnpassList) {
-        this.pendChkUnpassList = pendChkUnpassList;
     }
 
     public RsReceive[] getSelectedRecords() {
@@ -137,5 +126,37 @@ public class ContractRecvChkAction {
 
     public void setRecvStatus(ContractRecvStatus recvStatus) {
         this.recvStatus = recvStatus;
+    }
+
+    public List<RsReceive> getPendCommitActList() {
+        return pendCommitActList;
+    }
+
+    public void setPendCommitActList(List<RsReceive> pendCommitActList) {
+        this.pendCommitActList = pendCommitActList;
+    }
+
+    public List<RsReceive> getPendSentActList() {
+        return pendSentActList;
+    }
+
+    public void setPendSentActList(List<RsReceive> pendSentActList) {
+        this.pendSentActList = pendSentActList;
+    }
+
+    public ClientBiService getClientBiService() {
+        return clientBiService;
+    }
+
+    public void setClientBiService(ClientBiService clientBiService) {
+        this.clientBiService = clientBiService;
+    }
+
+    public TradeService getTradeService() {
+        return tradeService;
+    }
+
+    public void setTradeService(TradeService tradeService) {
+        this.tradeService = tradeService;
     }
 }

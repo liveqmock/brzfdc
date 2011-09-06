@@ -34,8 +34,8 @@ import java.text.SimpleDateFormat;
  */
 
 /**
- * 0003 - 0004-0005-0006-0007
- * 2004 -2005
+ * 0003-0004-0005-0007
+ * 2004 -2005-0006
  */
 @Service
 public class ClientBiService {
@@ -90,25 +90,25 @@ public class ClientBiService {
     /**
      * 2005- 发送预售房合同收支记录
      *
-     * @param record , flag 收支标志， tradeType 交易类型
+     * @param record , flag 收支标志
      * @return
      */
-    public int sendRsReceiveMsg(RsReceive record) throws Exception {
+    public int sendRsReceiveMsg(RsReceive record, String flag) throws Exception {
         T2005Req req = new T2005Req();
         req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
         req.param.Acct = record.getAccountCode();
         req.param.AcctName = record.getCompanyName();
         req.param.ContractNum = record.getBusinessNo();
-        req.param.BankSerial = record.getSerial();  // TODO record.getBankSerial();  暂时以fdc流水代替
+        req.param.BankSerial = record.getBankSerial();
         req.param.Date = sdfdate8.format(record.getTradeDate());
         req.param.Time = sdftime6.format(record.getTradeDate());
-        req.param.Flag = "1";   // 收入
+        req.param.Flag = flag;   // 1-收入  2-支出
         req.param.Type = TradeType.HOUSE_INCOME.getCode();
         req.param.ToAcctName = record.getBuyerAccName();
         req.param.ToAcct = record.getBuyerAccCode();
         req.param.ToBankName = record.getBuyerBankName();
-        req.param.Amt = StringUtil.toBiformatAmt(record.getPlAmount());// TODO 申请金额？
-        req.param.Purpose = record.getPurpose();
+        req.param.Amt = StringUtil.toBiformatAmt(record.getPlAmount());
+        req.param.Purpose = record.getPurpose()+TradeType.HOUSE_INCOME.getTitle();
         String dataGram = req.toFDCDatagram();                // 报文
 
         CommonRes res = sendMsgAndRecvRes(dataGram);
