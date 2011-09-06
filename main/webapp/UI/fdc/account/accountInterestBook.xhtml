@@ -160,12 +160,6 @@
                          paginator="true" rows="15" paginatorPosition="bottom"
                          rowsPerPageTemplate="100,50,30,15,5"
                          emptyMessage="数据记录为空...">
-                <p:column filterBy="#{record.accountName}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="监管账户"/>
-                    </f:facet>
-                    <h:outputText value="#{record.accountName}"/>
-                </p:column>
                 <p:column filterBy="#{record.accountCode}" filterMatchMode="contains">
                     <f:facet name="header">
                         <h:outputText value="监管账号"/>
