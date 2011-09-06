@@ -27,4 +27,7 @@ public interface CommonMapper {
 
     @Select("select nvl(max(SERIAL)+1,'100001') from rs_receive")
     String selectMaxRecvSerial();
+
+     @Select("select nvl(max(SERIAL)+1,'100001') from rs_acc_detail")
+    String selectMaxAccDetailSerial();
 }

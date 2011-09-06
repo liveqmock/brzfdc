@@ -7,6 +7,7 @@ import fdc.service.expensesplan.ExpensesPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import platform.common.utils.BeanHelper;
 import platform.service.SystemService;
 
 import java.util.Date;
@@ -32,18 +33,57 @@ public class TradeService {
     @Autowired
     private LockedaccDetailService lockedaccDetailService;
 
+    // 冲正
+    public int handleCancelAccDetail(RsAccDetail record) {
+        // 查询未限制已监管未删除账户
+        RsAccount account = accountService.selectNormalAccountByNo(record.getAccountCode());
+        if (account == null) {
+            throw new RuntimeException("监管账号不存在！");
+        }
+        //-----------------------------------------------
+        // 新增交易明细
+        RsAccDetail accDetail = new RsAccDetail();
+        accDetail.setAccountCode(record.getAccountCode());
+        accDetail.setAccountName(record.getAccountName());
+        accDetail.setToAccountCode(record.getToAccountCode());
+        accDetail.setToAccountName(record.getToAccountName());
+        accDetail.setToHsBankName(record.getToHsBankName());
+        accDetail.setTradeType(TradeType.OTHERS.getCode());
+        accDetail.setTradeAmt(record.getTradeAmt());
+        accDetail.setTradeDate(new Date());
+        accDetail.setContractNo(record.getContractNo());
+        accDetail.setPlanCtrlNo(record.getPlanCtrlNo());
+        accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
+        if (InOutFlag.IN.getCode().equalsIgnoreCase(record.getInoutFlag())) {
+            accDetail.setInoutFlag(InOutFlag.OUT.getCode());
+            accDetail.setBalance(record.getBalance().subtract(record.getTradeAmt()));
+            account.setBalance(account.getBalance().subtract(record.getTradeAmt()));
+            account.setBalanceUsable(account.getBalanceUsable().subtract(record.getTradeAmt()));
+        } else {
+            accDetail.setInoutFlag(InOutFlag.IN.getCode());
+            accDetail.setBalance(record.getBalance().add(record.getTradeAmt()));
+            account.setBalance(account.getBalance().add(record.getTradeAmt()));
+            account.setBalanceUsable(account.getBalanceUsable().add(record.getTradeAmt()));
+        }
+
+        int rtnCnt = accDetailService.insertAccDetail(accDetail)
+                + accountService.updateRecord(account);
+        return rtnCnt;
+    }
+
     /**
      * 处理合同收款
+     *
      * @param receive
      * @return
      */
     public int handleReceiveTrade(RsReceive receive) {
         // 查询未限制已监管未删除账户
         RsAccount account = accountService.selectNormalAccountByNo(receive.getAccountCode());
-        if(account == null) {
+        if (account == null) {
             throw new RuntimeException("监管账号不存在！");
         }
-        //--------
+        //------------------------------------------------
         // 新增交易明细
         RsAccDetail accDetail = new RsAccDetail();
         accDetail.setAccountCode(receive.getAccountCode());
@@ -61,7 +101,8 @@ public class TradeService {
         accDetail.setTradeType(TradeType.HOUSE_INCOME.getCode());
         accDetail.setContractNo(receive.getBusinessNo());
         accDetail.setRemark(receive.getRemark());
-        //------------
+        accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
+        //----------------------------------------------------
         // 设置账户余额 和可用余额
         account.setBalance(account.getBalance().add(receive.getApAmount()));
         account.setBalanceUsable(account.getBalanceUsable().add(receive.getApAmount()));
@@ -69,6 +110,7 @@ public class TradeService {
                 + accountService.updateRecord(account);
         return rtnCnt;
     }
+
     /**
      * 处理计划付款交易
      *
@@ -87,7 +129,7 @@ public class TradeService {
         planCtrl.setAvAmount(planCtrl.getAvAmount().subtract(payout.getApAmount()));
 
         //======== 开始付款 ===========
-        //--------
+        //--------------------------------------------------
         // 新增交易明细
         RsAccDetail accDetail = new RsAccDetail();
         accDetail.setAccountCode(payout.getPayAccount());
@@ -105,7 +147,8 @@ public class TradeService {
         accDetail.setTradeType(TradeType.PLAN_PAYOUT.getCode());
         accDetail.setPlanCtrlNo(payout.getBusinessNo());
         accDetail.setRemark(payout.getRemark());
-        //------------
+        accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
+        //-----------------------------------------------------
         // 设置账户余额 和可用余额
         account.setBalance(account.getBalance().subtract(payout.getApAmount()));
         account.setBalanceUsable(account.getBalanceUsable().subtract(payout.getApAmount()));

@@ -1,13 +1,17 @@
 package fdc.service;
 
+import fdc.common.constant.TradeStatus;
 import fdc.repository.dao.RsAccDetailMapper;
+import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsAccDetail;
+import fdc.repository.model.RsAccDetailExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,14 +21,24 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 /*
-  TODO !!!  此类中方法不可添加事务托管
  */
 @Service
 public class RsAccDetailService {
 
     @Autowired
     private RsAccDetailMapper accDetailMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
+    public RsAccDetail selectAccDetailByPkid(String pkid) {
+        return accDetailMapper.selectByPrimaryKey(pkid);
+    }
+
+    public List<RsAccDetail> selectAccDetailsByStatus(TradeStatus tradeStatus) {
+        RsAccDetailExample example = new RsAccDetailExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(tradeStatus.getCode());
+        return accDetailMapper.selectByExample(example);
+    }
     public int insertAccDetail(RsAccDetail rsAccDetail) {
         OperatorManager om = SystemService.getOperatorManager();
         String operId = om.getOperatorId();
@@ -32,6 +46,8 @@ public class RsAccDetailService {
         rsAccDetail.setCreatedDate(new Date());
         rsAccDetail.setLastUpdBy(operId);
         rsAccDetail.setLastUpdDate(new Date());
+        rsAccDetail.setLocalSerial(commonMapper.selectMaxAccDetailSerial());
+        rsAccDetail.setBankSerial(rsAccDetail.getLocalSerial());
         return accDetailMapper.insertSelective(rsAccDetail);
     }
 
