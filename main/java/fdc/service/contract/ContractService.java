@@ -28,6 +28,15 @@ public class ContractService {
         example.createCriteria().andDeletedFlagEqualTo("0");
         return  contractMapper.selectByExample(example);
     }
+
+    public RsContract selectContractByNo(String contractNo) {
+        RsContractExample example = new RsContractExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andContractNoEqualTo(contractNo);
+        List<RsContract> list = contractMapper.selectByExample(example);
+        if(list.isEmpty()) {
+            return null;
+        }else return list.get(0);
+    }
     public List<RsContract> selectContractList(ContractRecvStatus recvStatus){
         RsContractExample example = new RsContractExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(recvStatus.getCode());

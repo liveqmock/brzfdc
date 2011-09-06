@@ -1,5 +1,6 @@
 package fdc.service;
 
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import fdc.common.constant.SendFlag;
 import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
@@ -92,7 +93,7 @@ public class ClientBiService {
      * @param record , flag 收支标志， tradeType 交易类型
      * @return
      */
-    public int sendRsReceiveMsg(RsReceive record) throws IOException {
+    public int sendRsReceiveMsg(RsReceive record) throws Exception {
         T2005Req req = new T2005Req();
         req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
         req.param.Acct = record.getAccountCode();
@@ -114,7 +115,7 @@ public class ClientBiService {
         if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
             return -1;
         } else {
-            return contractRecvService.updateRsReceiveSent(record);
+            return contractRecvService.updateRsReceiveToWorkResult(record, WorkResult.SENT);
         }
     }
 

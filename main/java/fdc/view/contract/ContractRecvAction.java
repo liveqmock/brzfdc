@@ -80,8 +80,8 @@ public class ContractRecvAction implements Serializable {
 
     private void initList() {
         this.detlList = contractService.selectContractList();
-        this.pendChkList = contractRecvService.selectContractList(ContractRecvStatus.INIT);
-        this.pendActList = contractRecvService.selectContractList(ContractRecvStatus.CHECKED);
+        this.pendChkList = contractRecvService.selectContractList(WorkResult.CREATE);
+        this.pendActList = contractRecvService.selectContractList(WorkResult.PASS);
         this.detlRecvList = contractRecvService.selectContractRecvList();
     }
 
@@ -91,16 +91,6 @@ public class ContractRecvAction implements Serializable {
 
     public String onPrint() {
         return null;
-    }
-
-    public String onShowDetail() {
-        return "common/contractDetlForm.xhtml";
-    }
-
-    public void showDetailListener(ActionEvent event) {
-        String pkid = (String) event.getComponent().getAttributes().get("pkId");
-        Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        sessionMap.put("pkId", pkid);
     }
 
 

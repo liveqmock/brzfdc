@@ -7,20 +7,20 @@
 
     <ui:define name="head">
         <script type="text/javascript">
-            function doPopupWindow(source) {
-                popupwindow = window.open("", "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+            function doPopupWindow(obj) {
+                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+                popupwindow = window.open("contractDetlForm.xhtml?pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
-                document.getElementById("hidden:go").onclick(null);
             }
-            function doPopupAddWindow(source) {
-                popupaddwindow = window.open("", "popupaddwindow", "height=400,width=800,left=300,top=200,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupaddwindow.focus;
-                document.getElementById("hiddenadd:go").onclick(null);
+            function doPopupAddWindow(obj) {
+                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+                popupwindow = window.open("contractRecvAddForm.xhtml?pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                popupwindow.focus;
             }
-            function doPopupRecvWindow(source) {
-                popuprecvwindow = window.open("", "popuprecvwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popuprecvwindow.focus;
-                document.getElementById("hiddenrecv:go").onclick(null);
+            function doPopupRecvWindow(obj) {
+                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+                popupwindow = window.open("contractRecvDetlForm.xhtml?action=query&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                popupwindow.focus;
             }
 
         </script>
@@ -67,55 +67,61 @@
                             </f:facet>
                         </p:ajaxStatus>
                         <p:dataTable id="pdt" style="width:100%;"
-                                     dynamic="true" selectionMode="single"
+                                     dynamic="true"
                                      value="#{contractRecvAction.detlList}" var="record"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
 
-                            <p:column headerText="合同号" style="text-align:center" filterBy="#{record.contractNo}"
+                            <p:column headerText="合同号" style="text-align:center;width:15px;"
+                                      filterBy="#{record.contractNo}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.contractNo}"/>
                             </p:column>
-                            <p:column headerText="房产商" style="text-align:center" filterBy="#{record.companyName}"
+                            <p:column headerText="房产商" style="text-align:center;width:55px;"
+                                      filterBy="#{record.companyName}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.companyName}"/>
                             </p:column>
-                            <p:column headerText="监管帐号" style="text-align:center" filterBy="#{record.accountCode}"
+                            <p:column headerText="监管帐号" style="text-align:center;width:25px;"
+                                      filterBy="#{record.accountCode}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.accountCode}"/>
                             </p:column>
-                            <p:column headerText="买方姓名" style="text-align:center" filterBy="#{record.buyerName}"
+                            <p:column headerText="买方姓名" style="text-align:center;width:25px;"
+                                      filterBy="#{record.buyerName}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.buyerName}"/>
                             </p:column>
-                            <p:column headerText="房屋类型" style="text-align:center" filterBy="#{record.houseType}"
+                            <p:column headerText="房屋类型" style="text-align:center;width:25px;"
+                                      filterBy="#{record.houseType}"
                                       filterOptions="#{contractRecvAction.houseTypeOptions}"
                                       filterMatchMode="exact">
-                                <h:outputText value="#{contractRecvAction.houseType.valueOfAlias(record.houseType).title}"/>
+                                <h:outputText
+                                        value="#{contractRecvAction.houseType.valueOfAlias(record.houseType).title}"/>
                             </p:column>
-                            <p:column headerText="房款总价">
+                            <p:column headerText="房款总价" style="text-align:center;;width:25px;">
                                 <h:outputText value="#{record.totalAmt}" style="float: right">
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="交易状态" style="text-align:center;width:30px" filterBy="#{record.statusFlag}"
+                            <p:column headerText="交易状态" style="text-align:center;width:20px"
+                                      filterBy="#{record.statusFlag}"
                                       filterOptions="#{contractRecvAction.contractStatusOptions}"
                                       filterMatchMode="exact">
                                 <h:outputText
                                         value="#{contractRecvAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
                             </p:column>
-                            <p:column headerText="操作" style="width:50px;text-align:center">
+                            <p:column headerText="操作" style="width:80px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"
-                                               oncomplete="doPopupWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{contractRecvAction.selectedRecord}"/>
+                                               onclick="doPopupWindow(this);">
                                 </p:commandLink>
-                                <p:commandLink style="color:blue;margin-left:10px" value="新增" update="popupaddwindow"
-                                               oncomplete="doPopupAddWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{contractRecvAction.selectedRecord}"/>
+                                <p:commandLink style="color:blue;margin-left:3px" value="新增" update="popupaddwindow"
+                                               onclick="doPopupAddWindow(this);">
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
@@ -143,7 +149,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
-
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.docNo}"/>
@@ -155,7 +163,8 @@
                             <p:column headerText="缴款类型" style="text-align:center" filterBy="#{record.receiveType}"
                                       filterOptions="#{contractRecvAction.recvStatusOptions}"
                                       filterMatchMode="exact">
-                                <h:outputText value="#{contractRecvAction.recvStatus.valueOfAlias(record.receiveType).title}"/>
+                                <h:outputText
+                                        value="#{contractRecvAction.recvStatus.valueOfAlias(record.receiveType).title}"/>
                             </p:column>
                             <p:column headerText="缴款金额">
                                 <h:outputText value="#{record.plAmount}" style="float: right">
@@ -178,9 +187,7 @@
                             </p:column>
                             <p:column headerText="操作" style="width:50px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"
-                                               oncomplete="doPopupRecvWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{contractRecvAction.selectedRecvRecord}"/>
+                                               onclick="doPopupRecvWindow(this);">
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
@@ -188,24 +195,7 @@
                 </p:tab>
             </p:tabView>
         </div>
-        <h:form id="hidden" target="popupwindow">
-            <h:commandLink id="go" actionListener="#{contractRecvAction.showDetailListener}"
-                           action="contractDetlForm">
-                <f:attribute name="pkId" value="#{contractRecvAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
-        <h:form id="hiddenadd" target="popupaddwindow">
-            <h:commandLink id="go" actionListener="#{contractRecvAction.showDetailListener}"
-                           action="contractRecvAddForm">
-                <f:attribute name="pkId" value="#{contractRecvAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
-        <h:form id="hiddenrecv" target="popuprecvwindow">
-            <h:commandLink id="go" actionListener="#{contractRecvAction.showDetailListener}"
-                           action="contractRecvDetlForm">
-                <f:attribute name="pkId" value="#{contractRecvAction.selectedRecvRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
+
     </ui:define>
 
 </ui:composition>

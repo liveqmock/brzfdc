@@ -51,17 +51,20 @@
                             <h:inputText value="#{contractRecvDetlAction.selectedRecord.plAmount}" size="30" disabled="true">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
+
+                            <h:outputLabel value="申请时间:"/>
+                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.applyDate}" size="30"
+                                         disabled="true">
+                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+                                    </h:inputText>
                             <h:outputLabel value="缴款类型:"/>
-                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.receiveType}" size="30"
-                                         disabled="true"/>
-                            <h:outputLabel value="缴款时间:"/>
-                            <h:inputText value="#{contractRecvDetlAction.selectedRecord.tradeDate}" size="30"
+                            <h:outputText value="#{contractRecvDetlAction.receiveType.valueOfAlias(contractRecvDetlAction.selectedRecord.receiveType).title}" size="30"
                                          disabled="true"/>
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:fieldset>
                 <p:fieldset legend="合同明细信息">
-                    <h:panelGrid id="detailPanel1" columns="1" cellpadding="3" border="0" style="margin-top: 15px;">
+                    <h:panelGrid id="detailPanel2" columns="1" cellpadding="3" border="0" style="margin-top: 15px;">
                         <h:panelGrid columns="4" cellpadding="2" border="0"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="合同号:"/>

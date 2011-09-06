@@ -30,7 +30,7 @@ public class ContractDetlAction implements Serializable {
     public void init() {
         FacesContext context = FacesContext.getCurrentInstance();
 //        String paramPk_id = (String)context.getExternalContext().getSessionMap().get("pkId");
-        String paramPk_id = (String) context.getExternalContext().getRequestParameterMap().get("pkId");
+        String paramPk_id = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
         contractDetlQry(paramPk_id);
     }
 
