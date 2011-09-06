@@ -115,8 +115,8 @@
                         <h:outputText value="#{record.presellNo}"/>
                     </p:column>
 
-                    <p:column headerText="房产商ID" style="text-align:center">
-                        <h:outputText value="#{record.companyId}"/>
+                    <p:column headerText="房产商" style="text-align:center">
+                        <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"/>
                     </p:column>
 
                     <p:column headerText="监管账号" style="text-align:left">

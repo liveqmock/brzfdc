@@ -9,9 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,9 +27,12 @@ public class AccountTradeDetlAction {
     private Date beginDate;
     private Date endDate;
     private List<RsAccDetail> rsAccDetails;
+//    private Map<String,String> tradeTypeMap;
+//    private
 
     @PostConstruct
     public void init() {
+//        tradeTypeMap = FlagStatusForMap.getTradeTypeMap();
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH,1);
         beginDate = cal.getTime();

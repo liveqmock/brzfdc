@@ -106,9 +106,9 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="公司ID"/>
+                                <h:outputText value="公司"/>
                             </f:facet>
-                            <h:outputText value="#{record.companyId}"></h:outputText>
+                            <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
@@ -156,7 +156,7 @@
                             <f:facet name="header">
                                 <h:outputText value="交易类型"/>
                             </f:facet>
-                            <h:outputText value="#{record.tradeType}"></h:outputText>
+                            <h:outputText value="#{flagStatusForMap.tradeTypeMap[record.tradeType]}"></h:outputText>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
@@ -174,19 +174,19 @@
                             <f:facet name="header">
                                 <h:outputText value="状态标志"/>
                             </f:facet>
-                            <h:outputText value="#{record.statusName}"></h:outputText>
+                            <h:outputText value="#{flagStatusForMap.actDetlStatusFlagMap[record.statusFlag]}"></h:outputText>
                         </p:column>
                         <p:column style="text-align:center;">
                             <f:facet name="header">
                                 <h:outputText value="日终对账标志"/>
                             </f:facet>
-                            <h:outputText value="#{record.dcheckFlag}"></h:outputText>
+                            <h:outputText value="#{flagStatusForMap.actDetlDcheckFlagMap[record.dcheckFlag]}"></h:outputText>
                         </p:column>
                         <p:column style="text-align:center;">
                             <f:facet name="header">
                                 <h:outputText value="变更标志"/>
                             </f:facet>
-                            <h:outputText value="#{record.changeFlag}"></h:outputText>
+                            <h:outputText value="#{flagStatusForMap.actDetlChangeFlagMap[record.changeFlag]}"></h:outputText>
                         </p:column>
                     </p:dataTable>
                 </div>
