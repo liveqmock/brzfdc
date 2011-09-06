@@ -112,4 +112,12 @@ public class AccDetailCancelAction {
     public void setTradeType(TradeType tradeType) {
         this.tradeType = tradeType;
     }
+
+    public TradeService getTradeService() {
+        return tradeService;
+    }
+
+    public void setTradeService(TradeService tradeService) {
+        this.tradeService = tradeService;
+    }
 }

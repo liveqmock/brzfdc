@@ -107,7 +107,6 @@ public class PayoutAction {
             return null;
         }
         try {
-            // TODO  默认审核金额== 申请金额
             rsPayout.setApAmount(rsPayout.getPlAmount());
             if (payoutService.insertRsPayout(rsPayout) == 1) {
                 MessageUtil.addInfo("受理用款成功！");
