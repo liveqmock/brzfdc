@@ -1,0 +1,297 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:fbi="http://www.fbifaces.org"
+                template="/templates/ui.xhtml">
+
+<ui:define name="head">
+    <style type="text/css">
+        .input-col-m {
+            width: 60px;
+        }
+
+        .input-col-l {
+            width: 80px;
+        }
+
+        .input-col-xxl {
+            width: 1%;
+            text-align: right;
+        }
+
+        .col-95 {
+            text-align: right;
+        }
+
+        .col-5 {
+            text-align: left;
+        }
+    </style>
+    <script type="text/javascript" src="#{request.contextPath}/UI/support/pub.js"/>
+    <script type="text/javascript" language="javascript">
+        document.onkeydown = function TabReplace() {
+            if (event.keyCode == 13) {
+                if (event.srcElement.tagName != 'BUTTON')
+                    event.keyCode = 9;
+            }
+        }
+        function recordEdit(obj) {
+            var acctno = obj.parentNode.parentNode.children[4].innerHTML;
+            var companyid = obj.parentNode.parentNode.children[1].innerHTML;
+            var statusflag = obj.parentNode.parentNode.children[0].innerHTML;
+            if (statusflag != "0") {
+                alert("账户不在监管中。");
+                return false;
+            }
+            var sfeature = "dialogwidth:800px; dialogheight:520px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
+            var arg = new Object();
+            arg.doType = "edit";
+            arg.companyid = companyid;
+            arg.acctno = acctno;
+            var rtn = dialog("interestBook.xhtml?acctno=" + acctno + "&amp;companyid=" + companyid + "&amp;doType=eidt", arg, sfeature);
+            if (rtn == "1") {
+                document.getElementById("actqueryForm:btnQuery").click();
+            }
+            return false;
+        }
+    </script>
+
+</ui:define>
+
+<ui:define name="content">
+<div class="entry" id="top">
+<p:tabView style="font-weight:normal;font-style:normal" cache="false" dynamic="true">
+<p:tab title="监管账户入账">
+    <p:growl id="msgs" showDetail="false"/>
+    <h:form id="actqueryForm">
+        <p:panel id="query" header="【监管账户信息】查询">
+            <h:panelGrid columns="2" cellspacing="3" style="width:100%">
+                <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5">
+
+                    <h:outputLabel value="预售许可证号:" for="presellNo"/>
+                    <h:inputText autocomplete="off" id="presellNo" style="width:192px;"
+                                 value="#{accountAction.account.presellNo}"
+                                 onfocus="this.select()">
+                    </h:inputText>
+                    <h:outputLabel value="房产商ID:" for="selCompany"/>
+                    <h:inputText autocomplete="off" id="selCompany" style="width:192px;"
+                                 value="#{accountAction.account.companyId}"
+                                 onfocus="this.select()">
+                    </h:inputText>
+
+                    <h:outputLabel value="监管账号:" for="accountCode"/>
+                    <h:inputText autocomplete="off" id="accountCode" style="width:192px;"
+                                 value="#{accountAction.account.accountCode}">
+                    </h:inputText>
+
+                    <h:outputLabel value="账户名称:" for="accountName"/>
+                    <p:inputText id="accountName" value="#{accountAction.account.accountName}"
+                                 style="width:192px;"/>
+                </h:panelGrid>
+                <h:panelGrid style="width:20%">
+                    <p:commandButton style="margin-left:15px;width:90px" ajax="false"
+                                     action="#{accountAction.onBtnQueryClick}" id="btnQuery" value="查询">
+                    </p:commandButton>
+                    <p:commandButton type="reset" id="resetBtn" value="重置"
+                                     style="width:90px;margin-left:15px"/>
+                </h:panelGrid>
+            </h:panelGrid>
+        </p:panel>
+        <p:ajaxStatus style="width:16px;height:16px;">
+            <f:facet name="start">
+                <h:graphicImage value="/images/ajaxloading.gif"/>
+            </f:facet>
+            <f:facet name="complete">
+                <h:outputText value=""/>
+            </f:facet>
+        </p:ajaxStatus>
+
+        <p:dataTable id="pdt" style="width:100%;"
+                     dynamic="true" selectionMode="single"
+                     value="#{accountAction.accountList}" var="record"
+                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     paginator="true" rows="15" paginatorPosition="bottom"
+                     rowsPerPageTemplate="100,50,30,15,5"
+                     emptyMessage="数据记录为空...">
+            <p:column headerText="statusflag" style="display:none;">
+                <h:outputText value="#{record.statusFlag}"/>
+            </p:column>
+            <p:column headerText="companyid" style="display:none;">
+                <h:outputText value="#{record.companyId}"/>
+            </p:column>
+            <p:column headerText="预售许可证号" style="text-align:left">
+                <h:outputText value="#{record.presellNo}"/>
+            </p:column>
+
+            <p:column headerText="房产商" style="text-align:center">
+                <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"/>
+            </p:column>
+
+            <p:column headerText="监管账号" style="text-align:left">
+                <h:outputText value="#{record.accountCode}"/>
+            </p:column>
+
+            <p:column headerText="账户名称" style="text-align:left">
+                <h:outputText value="#{record.accountName}"/>
+            </p:column>
+
+            <p:column headerText="项目名称" style="text-align:left">
+                <h:outputText value="#{record.proName}"/>
+            </p:column>
+
+            <p:column headerText="项目地址" style="text-align:left">
+                <h:outputText value="#{record.proAddr}"/>
+            </p:column>
+            <p:column headerText="操作" style="text-align:center">
+                <h:commandLink onclick="recordEdit(this)" value="录入" style="color: blue"/>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</p:tab>
+<p:tab title="利息入账明细查询">
+    <h:form id="qryForm">
+        <p:panel id="query" header="监管账号交易明细">
+            <h:panelGrid columns="2" cellspacing="3" style="width:100%">
+                <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5">
+
+                    <h:outputLabel value="起始日期："/>
+                    <p:calendar pattern="yyyy-MM-dd" id="begindate" readonly="true" mode="popup"
+                                locale="zh_CN"
+                                value="#{accountTradeDetlAction.beginDate}"></p:calendar>
+                    <h:outputLabel value="截止日期："/>
+                    <p:calendar pattern="yyyy-MM-dd" id="enddate"
+                                value="#{accountTradeDetlAction.endDate}"></p:calendar>
+                </h:panelGrid>
+                <h:panelGrid style="width:20%">
+                    <p:commandButton style="margin-left:15px;width:90px" ajax="false"
+                                     action="#{accountTradeDetlAction.onBtnQueryClick}" id="btnQuery"
+                                     value="查询">
+                    </p:commandButton>
+                    <p:commandButton type="reset" id="resetBtn" value="重填"
+                                     style="width:90px;margin-left:15px"/>
+                </h:panelGrid>
+            </h:panelGrid>
+        </p:panel>
+        <p:ajaxStatus style="width:16px;height:16px;">
+            <f:facet name="start">
+                <h:graphicImage value="/images/ajaxloading.gif"/>
+            </f:facet>
+            <f:facet name="complete">
+                <h:outputText value=""/>
+            </f:facet>
+        </p:ajaxStatus>
+
+        <div style="width:100%;height:300px;overflow-x:auto;">
+            <p:dataTable id="pdt" style="width:2000px;"
+                         dynamic="true" selectionMode="single"
+                         value="#{accountTradeDetlAction.rsAccDetails}" var="record"
+                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         paginator="true" rows="15" paginatorPosition="bottom"
+                         rowsPerPageTemplate="100,50,30,15,5"
+                         emptyMessage="数据记录为空...">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="监管账户"/>
+                    </f:facet>
+                    <h:outputText value="#{record.accountName}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="监管账号"/>
+                    </f:facet>
+                    <h:outputText value="#{record.accountCode}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="公司"/>
+                    </f:facet>
+                    <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="对方账号"/>
+                    </f:facet>
+                    <h:outputText value="#{record.toAccountCode}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="对方账户户名"/>
+                    </f:facet>
+                    <h:outputText value="#{record.toAccountName}"></h:outputText>
+                </p:column>
+                <p:column style="text-align:center;">
+                    <f:facet name="header">
+                        <h:outputText value="收支标志"/>
+                    </f:facet>
+                    <h:outputText value="#{record.inoutFlag}"></h:outputText>
+                </p:column>
+                <p:column style="text-align:center;">
+                    <f:facet name="header">
+                        <h:outputText value="交易时间"/>
+                    </f:facet>
+                    <h:outputText value="#{record.tradeDate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd"/>
+                    </h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="交易金额"/>
+                    </f:facet>
+                    <h:outputText style="float:right;" value="#{record.tradeAmt}">
+                        <f:convertNumber pattern="###,##0.00"/>
+                    </h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="交易后余额"/>
+                    </f:facet>
+                    <h:outputText style="float:right;" value="#{record.balance}">
+                        <f:convertNumber pattern="###,##0.00"/>
+                    </h:outputText>
+                </p:column>
+                <p:column style="text-align:center;">
+                    <f:facet name="header">
+                        <h:outputText value="交易类型"/>
+                    </f:facet>
+                    <h:outputText value="#{flagStatusForMap.tradeTypeMap[record.tradeType]}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="购房合同号"/>
+                    </f:facet>
+                    <h:outputText value="#{record.contractNo}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="计划控制编号"/>
+                    </f:facet>
+                    <h:outputText value="#{record.planCtrlNo}"></h:outputText>
+                </p:column>
+                <p:column style="text-align:center;">
+                    <f:facet name="header">
+                        <h:outputText value="状态标志"/>
+                    </f:facet>
+                    <h:outputText value="#{flagStatusForMap.actDetlStatusFlagMap[record.statusFlag]}"></h:outputText>
+                </p:column>
+                <p:column style="text-align:center;">
+                    <f:facet name="header">
+                        <h:outputText value="日终对账标志"/>
+                    </f:facet>
+                    <h:outputText value="#{flagStatusForMap.actDetlDcheckFlagMap[record.dcheckFlag]}"></h:outputText>
+                </p:column>
+                <p:column style="text-align:center;">
+                    <f:facet name="header">
+                        <h:outputText value="变更标志"/>
+                    </f:facet>
+                    <h:outputText value="#{flagStatusForMap.actDetlChangeFlagMap[record.changeFlag]}"></h:outputText>
+                </p:column>
+            </p:dataTable>
+        </div>
+    </h:form>
+</p:tab>
+</p:tabView>
+</div>
+</ui:define>
+</ui:composition>

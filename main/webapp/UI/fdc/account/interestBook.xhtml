@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/templates/ui.xhtml">
+
+    <ui:define name="head">
+        <style type="text/css">
+            .col-label {
+                width: 100px;
+                text-align: right;
+            }
+
+            .col-label2 {
+                width: 200px;
+                text-align: right;
+            }
+
+            .col-input {
+                width: 30px;
+            }
+
+            .col_remark {
+                width: 100px;
+                text-align: right;
+            }
+
+        </style>
+        <script type="text/javascript">
+            function reback() {
+                window.location.replace("contractInfoQry.xhtml");
+//                document.location.href = "contractInfoQry.xhtml";
+            }
+            function rtnScript(rtnflag) {
+                if (rtnflag == "true") {
+                    alert("操作成功！");
+                    window.returnValue = "1";
+                    window.close();
+                } else {
+                    alert("操作失败！");
+                    window.returnValue = "0";
+                    window.close();
+                }
+            }
+        </script>
+        <base target="_self"/>
+    </ui:define>
+    <ui:define name="content">
+        <div style="margin:5px;">
+            <h:form id="form">
+                <h:outputText id="rntFlag" escape="false" value="#{accountTradeDetlAction.rtnFlag}"/>
+                <p:fieldset legend="缴款信息">
+                    <h:panelGrid id="detailPanel1" columns="1" cellpadding="8" border="0" style="margin-top: 15px;">
+                        <h:panelGrid columns="4" cellpadding="2" border="0"
+                                     columnClasses="col-label,col-input,col-label2,col-input">
+                            <h:outputLabel value="公司名:"/>
+                            <h:inputText style="width:150px;" readonly="true" value="#{flagStatusForMap.companyMap[param.companyid]}"/>
+                            <h:outputLabel value="监管账号:"/>
+                            <h:inputText style="width:150px;" value="#{param.acctno}" readonly="true"/>
+                            <h:outputLabel value="缴款金额:"/>
+                            <h:inputText style="width:150px;" value="#{accountTradeDetlAction.rsAccDetail.tradeAmt}" size="16">
+                            </h:inputText>
+                            <h:outputLabel value="缴款时间:"/>
+                            <p:calendar style="width:150px;" value="#{accountTradeDetlAction.rsAccDetail.tradeDate}">
+                                <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+8" locale="cn"/>
+                            </p:calendar>
+                        </h:panelGrid>
+
+                    </h:panelGrid>
+                </p:fieldset>
+                        <p:fieldset legend="操作">
+
+                        <h:panelGrid columns="2" cellpadding="5" border="0"
+                                     columnClasses="col-label,col-input,col-label2,col-input">
+
+                            <h:commandButton id="btnSave" ajax="true" value="保存"
+                                             action="#{accountTradeDetlAction.onBtnSaveClick}"
+                                             style="margin-left:300px;width:90px">
+                            </h:commandButton>
+                            <h:commandButton ajax="true" immediate="true"
+                                             onclick="window.close();return false;" value="关闭" style="width:90px;margin-left:15px"/>
+                        </h:panelGrid>
+                        </p:fieldset>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

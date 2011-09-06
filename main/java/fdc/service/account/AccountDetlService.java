@@ -31,6 +31,10 @@ public class AccountDetlService {
         return rsAccDetailMapper.selectByExample(example);
     }
 
+    public void insertSelectedRecord(RsAccDetail rsAccDetail) {
+        rsAccDetailMapper.insertSelective(rsAccDetail);
+    }
+
     public RsAccDetailMapper getRsAccDetailMapper() {
         return rsAccDetailMapper;
     }

@@ -1,14 +1,18 @@
 package fdc.view.account;
 
+import fdc.common.constant.TradeType;
 import fdc.repository.model.RsAccDetail;
 import fdc.service.account.AccountDetlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import platform.service.SystemService;
+import pub.platform.utils.BusinessDate;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.util.*;
 
 /**
@@ -22,26 +26,66 @@ import java.util.*;
 @ViewScoped
 public class AccountTradeDetlAction {
     private static final Logger logger = LoggerFactory.getLogger(AccountTradeDetlAction.class);
-    @ManagedProperty(value="#{accountDetlService}")
+    @ManagedProperty(value = "#{accountDetlService}")
     private AccountDetlService accountDetlService;
     private Date beginDate;
     private Date endDate;
     private List<RsAccDetail> rsAccDetails;
-//    private Map<String,String> tradeTypeMap;
-//    private
+    private RsAccDetail rsAccDetail;
+    private String rtnFlag;
 
     @PostConstruct
     public void init() {
-//        tradeTypeMap = FlagStatusForMap.getTradeTypeMap();
+        rsAccDetail = new RsAccDetail();
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH,1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         beginDate = cal.getTime();
         endDate = new Date();
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate,endDate);
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate, endDate);
     }
 
     public void onBtnQueryClick() {
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate,endDate);
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate, endDate);
+    }
+
+    public String onBtnSaveClick() {
+        try {
+            String createBy = SystemService.getOperatorManager().getOperatorId();
+            FacesContext context = FacesContext.getCurrentInstance();
+            String accountno = (String) context.getExternalContext().getRequestParameterMap().get("acctno");
+            String companyid = (String) context.getExternalContext().getRequestParameterMap().get("companyid");
+            rsAccDetail.setAccountCode(accountno);
+            rsAccDetail.setCompanyId(companyid);
+            rsAccDetail.setStatusFlag("0");
+            rsAccDetail.setInoutFlag("1");
+            //½»Ò×ºóÓà¶î
+            rsAccDetail.setTradeType(TradeType.INTEREST.getCode());
+            rsAccDetail.setCreatedBy(createBy);
+            rsAccDetail.setCreatedDate(new Date());
+            accountDetlService.insertSelectedRecord(rsAccDetail);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            rtnFlag = "<script language='javascript'>rtnScript('false');</script>";
+            return null;
+        }
+        rtnFlag = "<script language='javascript'>rtnScript('true');</script>";
+        return null;
+    }
+
+    public String getRtnFlag() {
+        return rtnFlag;
+    }
+
+    public void setRtnFlag(String rtnFlag) {
+        this.rtnFlag = rtnFlag;
+    }
+
+    public RsAccDetail getRsAccDetail() {
+        return rsAccDetail;
+    }
+
+    public void setRsAccDetail(RsAccDetail rsAccDetail) {
+        this.rsAccDetail = rsAccDetail;
     }
 
     public AccountDetlService getAccountDetlService() {
