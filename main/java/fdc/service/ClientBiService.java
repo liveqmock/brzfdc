@@ -5,6 +5,7 @@ import fdc.common.constant.SendFlag;
 import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
 import fdc.gateway.domain.CommonRes;
+import fdc.gateway.domain.T000.T0003Req;
 import fdc.gateway.domain.T000.T0006Req;
 import fdc.gateway.domain.T200.T2004Req;
 import fdc.gateway.domain.T200.T2005Req;
@@ -34,8 +35,8 @@ import java.text.SimpleDateFormat;
  */
 
 /**
- * 0003-0004-0005-0007
- * 2004 -2005-0006
+ * 0004-0005-0007
+ * 2004 -2005-0006-0003
  */
 @Service
 public class ClientBiService {
@@ -53,6 +54,29 @@ public class ClientBiService {
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
+
+    /**
+     * 发送冲正交易   0003
+     *
+     * @param record
+     * @return
+     */
+    public int sendAccDetailCancel(RsAccDetail record) throws IOException {
+        T0003Req req = new T0003Req();
+        req.head.OpCode = "0003";
+        req.param.Acct = record.getAccountCode();
+        req.param.AcctName = record.getAccountName();
+        req.param.BankSerial = record.getBankSerial();
+        req.param.Reason = "冲正";
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
 
     /**
      * 2004-发送账户按计划付款明细记录
@@ -108,7 +132,7 @@ public class ClientBiService {
         req.param.ToAcct = record.getBuyerAccCode();
         req.param.ToBankName = record.getBuyerBankName();
         req.param.Amt = StringUtil.toBiformatAmt(record.getPlAmount());
-        req.param.Purpose = record.getPurpose()+TradeType.HOUSE_INCOME.getTitle();
+        req.param.Purpose = record.getPurpose() + TradeType.HOUSE_INCOME.getTitle();
         String dataGram = req.toFDCDatagram();                // 报文
 
         CommonRes res = sendMsgAndRecvRes(dataGram);
@@ -121,11 +145,12 @@ public class ClientBiService {
 
     /**
      * 发送账户冻结解冻明细 0006
+     *
      * @param record
      * @return
      */
     public int sendLockAccDetail(RsLockedaccDetail record) throws IOException {
-        if(lockedaccDetailService.isSent(record)) {
+        if (lockedaccDetailService.isSent(record)) {
             return 1;
         }
         T0006Req req = new T0006Req();

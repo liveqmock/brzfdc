@@ -43,26 +43,22 @@ public class AccDetailCancelAction {
     public void init() {
         FacesContext context = FacesContext.getCurrentInstance();
         String pkid = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
-       // String action = (String) context.getExternalContext().getRequestParameterMap().get("action");
-        if(!StringUtils.isEmpty(pkid)) {
+        // String action = (String) context.getExternalContext().getRequestParameterMap().get("action");
+        if (!StringUtils.isEmpty(pkid)) {
             accDetail = accDetailService.selectAccDetailByPkid(pkid);
-        }else {
+        } else {
             accDetailList = accDetailService.selectAccDetailsByStatus(TradeStatus.SUCCESS);
         }
     }
 
     public String onCancel() {
         try {
-           if(tradeService.handleCancelAccDetail(accDetail) == 2) {
-              MessageUtil.addInfo("交易冲正成功！");
-           }
-        }catch (Exception e) {
-            MessageUtil.addError("操作失败."+e.getMessage());
+            if (tradeService.handleCancelAccDetail(accDetail) == 2) {
+                MessageUtil.addInfo("交易冲正成功！");
+            }
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败." + e.getMessage());
         }
-        return null;
-    }
-
-    public String onSend() {
         return null;
     }
 

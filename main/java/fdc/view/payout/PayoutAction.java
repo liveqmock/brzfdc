@@ -1,10 +1,13 @@
 package fdc.view.payout;
 
+import fdc.common.constant.LimitStatus;
 import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
+import fdc.repository.model.RsAccount;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPlanCtrl;
 import fdc.service.PayoutService;
+import fdc.service.account.AccountService;
 import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.commandbutton.CommandButton;
@@ -38,6 +41,8 @@ public class PayoutAction {
     private PayoutService payoutService;
     @ManagedProperty(value = "#{expensesPlanService}")
     private ExpensesPlanService expensesPlanService;
+    @ManagedProperty(value = "#{accountService}")
+    private AccountService accountService;
     private List<RsPayout> rsPayoutList;
     private List<RsPayout> chkPayoutList;
     private List<RsPayout> passPayoutList;
@@ -92,7 +97,11 @@ public class PayoutAction {
     }
 
     public String onSave() {
-
+        RsAccount account = accountService.selectNormalAccountByNo(rsPayout.getPayAccount());
+        if(account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())){
+            MessageUtil.addError("该账户已被限制付款！");
+            return null;
+        }
         if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
             MessageUtil.addError("申请金额不得大于可用金额！");
             return null;
@@ -257,5 +266,13 @@ public class PayoutAction {
 
     public void setStatusFlag(RefundStatus statusFlag) {
         this.statusFlag = statusFlag;
+    }
+
+    public AccountService getAccountService() {
+        return accountService;
+    }
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import platform.common.utils.BeanHelper;
 import platform.service.SystemService;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -32,14 +33,18 @@ public class TradeService {
     private ExpensesPlanService expensesPlanService;
     @Autowired
     private LockedaccDetailService lockedaccDetailService;
+    @Autowired
+    private ClientBiService clientBiService;
 
     // 冲正
-    public int handleCancelAccDetail(RsAccDetail record) {
+    @Transactional
+    public int handleCancelAccDetail(RsAccDetail record) throws IOException {
         // 查询未限制已监管未删除账户
         RsAccount account = accountService.selectNormalAccountByNo(record.getAccountCode());
         if (account == null) {
             throw new RuntimeException("监管账号不存在！");
         }
+
         //-----------------------------------------------
         // 新增交易明细
         RsAccDetail accDetail = new RsAccDetail();
@@ -52,7 +57,8 @@ public class TradeService {
         accDetail.setTradeAmt(record.getTradeAmt());
         accDetail.setTradeDate(new Date());
         accDetail.setContractNo(record.getContractNo());
-        accDetail.setChangeFlag("R");
+        accDetail.setChangeFlag("R");      // 冲正标记
+        record.setChangeFlag("R");
         accDetail.setPlanCtrlNo(record.getPlanCtrlNo());
         accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
         if (InOutFlag.IN.getCode().equalsIgnoreCase(record.getInoutFlag())) {
@@ -67,8 +73,11 @@ public class TradeService {
             account.setBalanceUsable(account.getBalanceUsable().add(record.getTradeAmt()));
         }
 
-        int rtnCnt = accDetailService.insertAccDetail(accDetail)
+        int rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
                 + accountService.updateRecord(account);
+        if (clientBiService.sendAccDetailCancel(record) == -1) {
+            throw new RuntimeException("发送冲正交易记录失败!");
+        }
         return rtnCnt;
     }
 
