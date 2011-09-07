@@ -117,7 +117,6 @@ public class AccountService {
      *
      * @param account
      */
-    @Transactional
     public void insertRecord(RsAccount account) {
         if (isExistInDb(account)) {
             throw new RuntimeException("该账号已存在，请重新录入！");
@@ -131,14 +130,11 @@ public class AccountService {
         }
 
     }
-
-    @Transactional
+    /**
+     * 通过主键更新*/
     public int updateRecord(RsAccount account) {
-
         if (isModifiable(account)) {
             OperatorManager om = SystemService.getOperatorManager();
-            account.setCreatedBy(om.getOperatorId());
-            account.setCreatedDate(new Date());
             account.setLastUpdBy(om.getOperatorId());
             account.setLastUpdDate(new Date());
             account.setModificationNum(account.getModificationNum() + 1);
@@ -147,4 +143,20 @@ public class AccountService {
             throw new RuntimeException("并发更新冲突！ActPkid=" + account.getPkId());
         }
     }
-}
+
+    /**
+     * 利息入账更新余额*/
+
+    public int updateRecordBalance(RsAccount rsAccount) {
+        BigDecimal tradeAmt = rsAccount.getBalance();
+        RsAccountExample example = new RsAccountExample();
+        example.clear();
+        example.createCriteria().andAccountCodeEqualTo(rsAccount.getAccountCode()).andCompanyIdEqualTo(rsAccount.getCompanyId());
+        RsAccount tmpRact = accountMapper.selectByExample(example).get(0);
+        rsAccount.setPkId(tmpRact.getPkId());
+        rsAccount.setModificationNum(tmpRact.getModificationNum());
+        rsAccount.setBalance(tmpRact.getBalance().add(tradeAmt));
+        rsAccount.setBalanceUsable(tmpRact.getBalanceUsable().add(tradeAmt));
+        return updateRecord(rsAccount);
+    }
+ }

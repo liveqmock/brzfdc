@@ -89,6 +89,7 @@ public class FlagStatusForMap {
         actDetlStatusFlagMap = new HashMap();
         actDetlStatusFlagMap.put("0","已撤销");
         actDetlStatusFlagMap.put("1","交易成功");
+        actDetlStatusFlagMap.put("2","复核通过");
         return actDetlStatusFlagMap;
     }
 

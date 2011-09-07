@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import platform.service.SystemService;
+import pub.platform.security.OperatorManager;
 
 import java.util.Date;
 import java.util.List;
@@ -32,15 +34,43 @@ public class AccountDetlService {
         return rsAccDetailMapper.selectByExample(example);
     }
 
+    /**
+     * 插入*/
     public void insertSelectedRecord(RsAccDetail rsAccDetail) {
+        OperatorManager om = SystemService.getOperatorManager();
+        rsAccDetail.setCreatedBy(om.getOperatorId());
+        rsAccDetail.setCreatedDate(new Date());
+        rsAccDetail.setLastUpdBy(om.getOperatorId());
+        rsAccDetail.setLastUpdDate(new Date());
         rsAccDetailMapper.insertSelective(rsAccDetail);
     }
 
     public List<RsAccDetail> selectedRecordsForChk(String tradeType, String statusflag) {
         RsAccDetailExample example = new RsAccDetailExample();
+        example.clear();
+        RsAccDetailExample.Criteria criteria = example.createCriteria();
         if (tradeType != null && !StringUtils.isEmpty(tradeType.trim())) {
-            example.createCriteria().andDeletedFlagEqualTo("0").andTradeTypeEqualTo(tradeType)
-                    .andStatusFlagEqualTo(statusflag);
+            criteria.andTradeTypeEqualTo(tradeType);
+        }
+        if (statusflag != null && !StringUtils.isEmpty(tradeType.trim())) {
+            criteria.andStatusFlagEqualTo(statusflag);
+        }
+        example.setOrderByClause("trade_Date desc");
+        return rsAccDetailMapper.selectByExample(example);
+    }
+
+    public List<RsAccDetail> selectedRecordsForSend(String tradeType,String statusflag,String sendflag) {
+        RsAccDetailExample example = new RsAccDetailExample();
+        example.clear();
+        RsAccDetailExample.Criteria criteria = example.createCriteria();
+        if (tradeType != null && !StringUtils.isEmpty(tradeType.trim())) {
+            criteria.andTradeTypeEqualTo(tradeType);
+        }
+        if (statusflag != null && !StringUtils.isEmpty(tradeType.trim())) {
+            criteria.andStatusFlagEqualTo(statusflag);
+        }
+        if (sendflag != null && !StringUtils.isEmpty(sendflag.trim())) {
+            criteria.andSendFlagEqualTo(sendflag);
         }
         example.setOrderByClause("trade_Date desc");
         return rsAccDetailMapper.selectByExample(example);
@@ -56,11 +86,10 @@ public class AccountDetlService {
     }
 
     public int updateSelectedRecord(RsAccDetail rsAccDetail) {
-//        if (isChecked(rsAccDetail)) {
-            return rsAccDetailMapper.updateByPrimaryKeySelective(rsAccDetail);
-//        } else {
-//            throw new RuntimeException("记录并发更新冲突！");
-//        }
+        OperatorManager om = SystemService.getOperatorManager();
+        rsAccDetail.setLastUpdBy(om.getOperatorId());
+        rsAccDetail.setLastUpdDate(new Date());
+        return rsAccDetailMapper.updateByPrimaryKeySelective(rsAccDetail);
     }
 
     public RsAccDetailMapper getRsAccDetailMapper() {

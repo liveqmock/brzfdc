@@ -65,57 +65,137 @@
         <div class="entry" id="top">
             <p:tabView style="font-weight:normal;font-style:normal" cache="false" dynamic="true">
                 <p:tab title="监管账户入账">
-                    <p:growl id="msgs" showDetail="false"/>
-                    <h:form id="actqueryForm">
-                        <p:commandButton id="btnQuery" style="display:none" action="#{accountTradeDetlAction.init}"/>
-                        <p:dataTable id="pdt" style="width:100%;"
-                                     dynamic="true" selectionMode="single"
-                                     value="#{accountAction.accountList}" var="record"
+                    <p:growl id="msgs1" showDetail="false"/>
+                    <h:form id="bookForm">
+                        <p:menubar>
+                            <p:menuitem type="push" value="入账" icon="ui-icon ui-icon-document"
+                                        action="#{interestBookAction.onBook}" update="msgs1, pdt1, pdt2"
+                                        ajax="true"/>
+                        </p:menubar>
+                        <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
+                        <p:dataTable id="pdt1" style="width:100%;"
+                                     dynamic="true" value="#{interestBookAction.rsAccDetailsChk}" var="record"
+                                     selection="#{interestBookAction.selectedRecords}"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,10,5"
                                      emptyMessage="数据记录为空...">
-                            <p:column headerText="statusflag" style="display:none;">
-                                <h:outputText value="#{record.statusFlag}"/>
+                            <p:column selectionMode="multiple"/>
+                            <p:column filterBy="#{record.accountCode}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="监管账号"/>
+                                </f:facet>
+                                <h:outputText value="#{record.accountCode}"></h:outputText>
                             </p:column>
-                            <p:column headerText="companyid" style="display:none;">
-                                <h:outputText value="#{record.companyId}"/>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="公司"/>
+                                </f:facet>
+                                <h:outputText
+                                        value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
                             </p:column>
-                            <p:column headerText="预售许可证号" style="text-align:left">
-                                <h:outputText value="#{record.presellNo}"/>
+                            <p:column style="text-align:center;" sortBy="#{record.tradeDate}">
+                                <f:facet name="header">
+                                    <h:outputText value="交易时间"/>
+                                </f:facet>
+                                <h:outputText value="#{record.tradeDate}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" locale="cn" timeZone="GMT+8"/>
+                                </h:outputText>
                             </p:column>
-
-                            <p:column headerText="房产商" filterBy="#{flagStatusForMap.companyMap[record.companyId]}"
-                                      filterMatchMode="contains">
-                                <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"/>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="交易金额"/>
+                                </f:facet>
+                                <h:outputText style="float:right;" value="#{record.tradeAmt}">
+                                    <f:convertNumber pattern="###,##0.00"/>
+                                </h:outputText>
                             </p:column>
-
-                            <p:column headerText="监管账号" filterBy="#{record.accountCode}" filterMatchMode="contains">
-                                <h:outputText value="#{record.accountCode}"/>
-                            </p:column>
-
-                            <p:column headerText="账户名称" filterBy="#{record.accountCode}" filterMatchMode="contains">
-                                <h:outputText value="#{record.accountName}"/>
-                            </p:column>
-
-                            <p:column headerText="项目名称">
-                                <h:outputText value="#{record.proName}"/>
-                            </p:column>
-
-                            <p:column headerText="项目地址" style="text-align:left">
-                                <h:outputText value="#{record.proAddr}"/>
-                            </p:column>
-                            <p:column headerText="操作" style="text-align:center">
-                                <h:commandLink onclick="recordEdit(this);return false;" value="录入" style="color: blue"/>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="交易后余额"/>
+                                </f:facet>
+                                <h:outputText style="float:right;" value="#{record.balance}">
+                                    <f:convertNumber pattern="###,##0.00"/>
+                                </h:outputText>
                             </p:column>
                         </p:dataTable>
                     </h:form>
                 </p:tab>
-                <p:tab title="利息入账明细查询">
-                    <h:form id="qryForm">
-                        <p:dataTable id="pdt1" style="width:100%;"
-                                     dynamic="true" selectionMode="single"
-                                     value="#{accountTradeDetlAction.rsAccDetailsChk}" var="record"
+                <p:tab title="未发送记录清单">
+                    <p:growl id="msgs2" showDetail="false"/>
+                    <h:form id="sendForm">
+                        <p:menubar>
+                            <p:menuitem type="push" value="发送" icon="ui-icon ui-icon-document"
+                                        action="#{interestBookAction.onSend}" update="msgs2,pdt2"
+                                        ajax="true"/>
+                        </p:menubar>
+                        <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
+                        <p:dataTable id="pdt2" style="width:100%;"
+                                     dynamic="true" value="#{interestBookAction.rsAccDetailsSend}" var="record"
+                                     selection="#{interestBookAction.selectedRecordsSend}"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="10" paginatorPosition="bottom"
+                                     rowsPerPageTemplate="100,50,30,10,5"
+                                     emptyMessage="数据记录为空...">
+                            <p:column selectionMode="multiple"/>
+                            <p:column filterBy="#{record.accountCode}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="监管账号"/>
+                                </f:facet>
+                                <h:outputText value="#{record.accountCode}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="公司"/>
+                                </f:facet>
+                                <h:outputText
+                                        value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
+                            </p:column>
+                            <p:column style="text-align:center;" sortBy="#{record.tradeDate}">
+                                <f:facet name="header">
+                                    <h:outputText value="交易时间"/>
+                                </f:facet>
+                                <h:outputText value="#{record.tradeDate}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" locale="cn" timeZone="GMT+8"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="交易金额"/>
+                                </f:facet>
+                                <h:outputText style="float:right;" value="#{record.tradeAmt}">
+                                    <f:convertNumber pattern="###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="交易后余额"/>
+                                </f:facet>
+                                <h:outputText style="float:right;" value="#{record.balance}">
+                                    <f:convertNumber pattern="###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
+                <p:tab title="已发送记录清单">
+                    <h:form id="sendedForm">
+                        <p:dataTable id="pdt3" style="width:100%;"
+                                     dynamic="true" value="#{interestBookAction.rsAccDetailsSended}" var="record"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,10,5"
