@@ -17,6 +17,10 @@
                 text-align: right;
             }
 
+            .col_msg {
+                width: 100px;
+            }
+
             .col-input {
                 width: 30px;
             }
@@ -52,36 +56,53 @@
                 <h:outputText id="rntFlag" escape="false" value="#{accountTradeDetlAction.rtnFlag}"/>
                 <p:fieldset legend="缴款信息">
                     <h:panelGrid id="detailPanel1" columns="1" cellpadding="8" border="0" style="margin-top: 15px;">
-                        <h:panelGrid columns="4" cellpadding="2" border="0"
-                                     columnClasses="col-label,col-input,col-label2,col-input">
+                        <h:panelGrid columns="6" cellpadding="2" border="0"
+                                     columnClasses="col-label,col-input,col_msg,col-label,col-input,col_msg">
                             <h:outputLabel value="公司名:"/>
-                            <h:inputText style="width:150px;" readonly="true" value="#{flagStatusForMap.companyMap[param.companyid]}"/>
+                            <h:inputText style="width:150px;" readonly="true"
+                                         value="#{flagStatusForMap.companyMap[param.companyid]}"/>
+                            <h:outputLabel/>
                             <h:outputLabel value="监管账号:"/>
                             <h:inputText style="width:150px;" value="#{param.acctno}" readonly="true"/>
+                            <h:outputLabel/>
+                            <h:outputLabel value="监管账户:"/>
+                            <h:inputText style="width:150px;" value="#{param.acctname}" readonly="true"/>
+                            <h:outputLabel/>
                             <h:outputLabel value="缴款金额:"/>
-                            <h:inputText style="width:150px;" value="#{accountTradeDetlAction.rsAccDetail.tradeAmt}" size="16">
+                            <h:inputText id="txtTradeAmt" required="true" requiredMessage="不能为空" style="width:150px;"
+                                         value="#{accountTradeDetlAction.rsAccDetail.tradeAmt}" size="16">
                             </h:inputText>
+                            <p:message for="txtTradeAmt"/>
+
+                            <h:outputLabel value="缴款后余额:"/>
+                            <h:inputText id="txtBalance" required="true" requiredMessage="不能为空" style="width:150px;"
+                                         value="#{accountTradeDetlAction.rsAccDetail.balance}" size="16">
+                            </h:inputText>
+                            <p:message for="txtBalance"/>
                             <h:outputLabel value="缴款时间:"/>
-                            <p:calendar style="width:150px;" value="#{accountTradeDetlAction.rsAccDetail.tradeDate}">
+                            <p:calendar id="txtTradeDt" required="true" requiredMessage="不能为空" style="width:150px;"
+                                        value="#{accountTradeDetlAction.rsAccDetail.tradeDate}">
                                 <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+8" locale="cn"/>
                             </p:calendar>
+                            <p:message for="txtTradeDt"/>
                         </h:panelGrid>
 
                     </h:panelGrid>
                 </p:fieldset>
-                        <p:fieldset legend="操作">
+                <p:fieldset legend="操作">
 
-                        <h:panelGrid columns="2" cellpadding="5" border="0"
-                                     columnClasses="col-label,col-input,col-label2,col-input">
+                    <h:panelGrid columns="2" cellpadding="5" border="0"
+                                 columnClasses="col-label,col-input,col-label2,col-input">
 
-                            <h:commandButton id="btnSave" ajax="true" value="保存"
-                                             action="#{accountTradeDetlAction.onBtnSaveClick}"
-                                             style="margin-left:300px;width:90px">
-                            </h:commandButton>
-                            <h:commandButton ajax="true" immediate="true"
-                                             onclick="window.close();return false;" value="关闭" style="width:90px;margin-left:15px"/>
-                        </h:panelGrid>
-                        </p:fieldset>
+                        <h:commandButton id="btnSave" ajax="true" value="保存"
+                                         action="#{accountTradeDetlAction.onBtnSaveClick}"
+                                         style="margin-left:300px;width:90px">
+                        </h:commandButton>
+                        <h:commandButton ajax="true" immediate="true"
+                                         onclick="window.close();return false;" value="关闭"
+                                         style="width:90px;margin-left:15px"/>
+                    </h:panelGrid>
+                </p:fieldset>
             </h:form>
         </div>
     </ui:define>

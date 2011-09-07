@@ -60,7 +60,6 @@ public class AccountTradeDetlAction {
             rsAccDetail.setCompanyId(companyid);
             rsAccDetail.setStatusFlag("0");
             rsAccDetail.setInoutFlag("1");
-            //½»Ò×ºóÓà¶î
             rsAccDetail.setTradeType(TradeType.INTEREST.getCode());
             rsAccDetail.setCreatedBy(createBy);
             rsAccDetail.setCreatedDate(new Date());
