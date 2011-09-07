@@ -43,13 +43,14 @@ public class AccountTradeDetlAction {
         beginDate = cal.getTime();
         endDate = new Date();
         rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate, endDate);
-        rsAccDetailsChk = accountDetlService.selectedRecordsForChk("04","0");
+        rsAccDetailsChk = accountDetlService.selectedRecordsForChk("04", "0");
     }
 
     public void onBtnQueryClick() {
         rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate, endDate);
     }
 
+    //ÀûÏ¢Â¼Èë
     public String onBtnSaveClick() {
         try {
             String createBy = SystemService.getOperatorManager().getOperatorId();
@@ -70,7 +71,6 @@ public class AccountTradeDetlAction {
             return null;
         }
         rtnFlag = "<script language='javascript'>rtnScript('true');</script>";
-        init();
         return null;
     }
 
