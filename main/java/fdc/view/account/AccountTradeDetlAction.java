@@ -33,6 +33,7 @@ public class AccountTradeDetlAction {
     private List<RsAccDetail> rsAccDetails;
     private RsAccDetail rsAccDetail;
     private String rtnFlag;
+    private List<RsAccDetail> rsAccDetailsChk;
 
     @PostConstruct
     public void init() {
@@ -42,6 +43,7 @@ public class AccountTradeDetlAction {
         beginDate = cal.getTime();
         endDate = new Date();
         rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate, endDate);
+        rsAccDetailsChk = accountDetlService.selectedRecordsForChk("04","0");
     }
 
     public void onBtnQueryClick() {
@@ -69,7 +71,16 @@ public class AccountTradeDetlAction {
             return null;
         }
         rtnFlag = "<script language='javascript'>rtnScript('true');</script>";
+        init();
         return null;
+    }
+
+    public List<RsAccDetail> getRsAccDetailsChk() {
+        return rsAccDetailsChk;
+    }
+
+    public void setRsAccDetailsChk(List<RsAccDetail> rsAccDetailsChk) {
+        this.rsAccDetailsChk = rsAccDetailsChk;
     }
 
     public String getRtnFlag() {
