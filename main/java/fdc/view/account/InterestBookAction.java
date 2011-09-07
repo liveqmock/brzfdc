@@ -44,15 +44,16 @@ public class InterestBookAction {
 
     @PostConstruct
     public void init() {
-        rsAccDetailsChk = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(),TradeStatus.CHECKED.getCode());
+        rsAccDetailsChk = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(), TradeStatus.CHECKED.getCode());
         rsAccDetailsSend = accountDetlService.selectedRecordsForSend(TradeType.INTEREST.getCode(), TradeStatus.SUCCESS.getCode()
-                ,SendFlag.UN_SEND.getCode());
-        rsAccDetailsSended = accountDetlService.selectedRecordsForSend(TradeType.INTEREST.getCode(),TradeStatus.CHECKED.getCode()
-                ,SendFlag.SENT.getCode());
+                , SendFlag.UN_SEND.getCode());
+        rsAccDetailsSended = accountDetlService.selectedRecordsForSend(TradeType.INTEREST.getCode(), TradeStatus.CHECKED.getCode()
+                , SendFlag.SENT.getCode());
     }
 
     /**
-     * 监管账户利息入账*/
+     * 监管账户利息入账
+     */
     public String onBook() {
         if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("至少选择一笔数据记录！");
@@ -74,9 +75,9 @@ public class InterestBookAction {
                 } else {
                     throw new RuntimeException("入账失败！");
                 }
-                MessageUtil.addInfo("入账成功！");
-                init();
             }
+            MessageUtil.addInfo("入账成功！");
+            init();
         } catch (Exception e) {
             e.printStackTrace();
             MessageUtil.addError("操作失败." + e.getMessage());
