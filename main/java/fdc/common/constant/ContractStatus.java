@@ -11,6 +11,8 @@ import java.util.Hashtable;
  */
 public enum ContractStatus implements EnumApp {
     NORMAL("1", "正常进行"),
+    TRANS("6", "撤销待退款"),
+    CANCELING("7", "撤销中"),
     END("8", "交易完成"),
     CANCEL("9", "撤销终止");
 

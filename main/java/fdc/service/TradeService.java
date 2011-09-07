@@ -36,6 +36,8 @@ public class TradeService {
     private LockedaccDetailService lockedaccDetailService;
     @Autowired
     private ClientBiService clientBiService;
+    @Autowired
+    private RefundService refundService;
 
     // R-冲正 D-退票
     @Transactional
@@ -94,6 +96,7 @@ public class TradeService {
      * @param receive
      * @return
      */
+    @Transactional
     public int handleReceiveTrade(RsReceive receive) {
         // 查询未限制已监管未删除账户
         RsAccount account = accountService.selectNormalAccountByNo(receive.getAccountCode());
@@ -129,11 +132,55 @@ public class TradeService {
     }
 
     /**
+     * 处理合同退款交易
+     *
+     * @param refund
+     * @return
+     */
+    @Transactional
+    public int handleRefundTrade(RsRefund refund) {
+        // 查询未限制已监管未删除账户
+        RsAccount account = accountService.selectNormalAccountByNo(refund.getPayAccount());
+        // 检查余额
+        if (refund.getApAmount().compareTo(account.getBalanceUsable()) > 0) {
+            throw new RuntimeException("账户余额不足！");
+        }
+        //======== 开始付款 ===========
+        //--------------------------------------------------
+        // 新增交易明细
+        RsAccDetail accDetail = new RsAccDetail();
+        accDetail.setAccountCode(refund.getPayAccount());
+        accDetail.setAccountName(refund.getPayCompanyName());
+        accDetail.setToAccountCode(refund.getRecAccount());
+        accDetail.setToAccountName(refund.getRecCompanyName());
+        accDetail.setToHsBankName(refund.getRecBankName());
+        accDetail.setInoutFlag(InOutFlag.OUT.getCode());// 支出
+        Date today = new Date();
+        accDetail.setTradeDate(today);
+        accDetail.setTradeAmt(refund.getApAmount());
+        accDetail.setBalance(account.getBalance().subtract(accDetail.getTradeAmt()));
+        accDetail.setLocalSerial(refund.getSerial());
+        accDetail.setBankSerial(refund.getBankSerial());
+        accDetail.setTradeType(TradeType.TRANS_BACK.getCode());
+        accDetail.setContractNo(refund.getBusinessNo());
+        accDetail.setRemark(refund.getRemark());
+        accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
+        //-----------------------------------------------------
+        // 设置账户余额 和可用余额
+        account.setBalance(account.getBalance().subtract(refund.getApAmount()));
+        account.setBalanceUsable(account.getBalanceUsable().subtract(refund.getApAmount()));
+        int rtnCnt = accDetailService.insertAccDetail(accDetail)
+                + accountService.updateRecord(account) + refundService.updateRecord(refund);
+        return rtnCnt;
+    }
+
+    /**
      * 处理计划付款交易
      *
      * @param payout
      * @return
      */
+    @Transactional
     public int handlePayoutTrade(RsPayout payout) {
         // 查询未限制已监管未删除账户
         RsAccount account = accountService.selectNormalAccountByNo(payout.getPayAccount());
@@ -154,7 +201,7 @@ public class TradeService {
         accDetail.setToAccountCode(payout.getRecAccount());
         accDetail.setToAccountName(payout.getRecCompanyName());
         accDetail.setToHsBankName(payout.getRecBankName());
-        accDetail.setInoutFlag("0");// 支出
+        accDetail.setInoutFlag(InOutFlag.OUT.getCode());// 支出
         Date today = new Date();
         accDetail.setTradeDate(today);
         accDetail.setTradeAmt(payout.getApAmount());

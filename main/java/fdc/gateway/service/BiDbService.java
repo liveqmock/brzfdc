@@ -29,7 +29,7 @@ public class BiDbService {
     @Autowired
     private BiContractCloseMapper biContractCloseMapper;
     @Autowired
-    private RsAccDetailMapper rsAccDetailMapper;
+    private RsAccDetailMapper accDetailMapper;
     @Autowired
     private BiPlanMapper biPlanMapper;
     @Autowired
@@ -127,6 +127,7 @@ public class BiDbService {
      * @param contractClose
      * @return
      */
+    @Transactional
     public int insertBiContactClose(BiContractClose contractClose) {
         return biContractCloseMapper.insertSelective(contractClose);
     }
@@ -137,11 +138,12 @@ public class BiDbService {
      * @param contractClose
      * @return
      */
+    @Transactional
     public int updateContractToClose(BiContractClose contractClose) {
 
         RsContract rsContract = selectContractByCloseInfo(contractClose);
         if (rsContract != null) {
-            rsContract.setStatusFlag(ContractStatus.CANCEL.getCode());
+            rsContract.setStatusFlag(ContractStatus.TRANS.getCode());
             rsContract.setModificationNum(rsContract.getModificationNum() + 1);
             rsContract.setTransbuyeramt(contractClose.getTransAmt());
             return rsContractMapper.updateByPrimaryKey(rsContract);
@@ -176,10 +178,12 @@ public class BiDbService {
      * @param contract
      * @return
      */
+    @Transactional
     public int insertBiContract(BiContract contract) {
         return biContractMapper.insertSelective(contract);
     }
 
+    @Transactional
     public int insertOrUpdateRsContract(BiContract contract) {
         RsContractExample example = new RsContractExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andContractNoEqualTo(contract.getContractNo());
@@ -235,7 +239,7 @@ public class BiDbService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         example.createCriteria().andDeletedFlagEqualTo("0").andAccountCodeEqualTo(accountCode)
                 .andAccountNameEqualTo(accountName).andTradeDateBetween(sdf.parse(fromDate), sdf.parse(toDate));
-        return rsAccDetailMapper.selectByExample(example);
+        return accDetailMapper.selectByExample(example);
     }
 
     /**

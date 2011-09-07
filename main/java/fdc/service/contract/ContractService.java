@@ -1,13 +1,20 @@
 package fdc.service.contract;
 
 import fdc.common.constant.ContractRecvStatus;
+import fdc.common.constant.ContractStatus;
+import fdc.repository.dao.BiContractCloseMapper;
 import fdc.repository.dao.RsContractMapper;
+import fdc.repository.model.BiContractClose;
+import fdc.repository.model.BiContractCloseExample;
 import fdc.repository.model.RsContract;
 import fdc.repository.model.RsContractExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import platform.service.SystemService;
+import pub.platform.security.OperatorManager;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +29,8 @@ public class ContractService {
 
     @Autowired
     private RsContractMapper contractMapper;
+    @Autowired
+    private BiContractCloseMapper contractCloseMapper;
 
     public List<RsContract> selectContractList(){
         RsContractExample example = new RsContractExample();
@@ -37,9 +46,18 @@ public class ContractService {
             return null;
         }else return list.get(0);
     }
-    public List<RsContract> selectContractList(ContractRecvStatus recvStatus){
+    public BiContractClose selectCloseContractByNo(String contractNo) {
+        BiContractCloseExample example = new BiContractCloseExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andContractNoEqualTo(contractNo);
+        List<BiContractClose> list = contractCloseMapper.selectByExample(example);
+        if(list.isEmpty()) {
+            return null;
+        }else return list.get(0);
+    }
+
+    public List<RsContract> selectContractList(ContractStatus contractStatus){
         RsContractExample example = new RsContractExample();
-        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(recvStatus.getCode());
+        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(contractStatus.getCode());
         return  contractMapper.selectByExample(example);
     }
     public RsContract selectRecordContract(String pkid) {
@@ -47,7 +65,20 @@ public class ContractService {
     }
 
     @Transactional
+    public int updateRecord(RsContract contract) {
+        OperatorManager om = SystemService.getOperatorManager();
+        contract.setLastUpdBy(om.getOperatorId());
+        contract.setLastUpdDate(new Date());
+        RsContract originRecord = contractMapper.selectByPrimaryKey(contract.getPkId());
+        if(!originRecord.getModificationNum().equals(contract.getModificationNum())) {
+            throw new RuntimeException("并发更新冲突!");
+        }
+        return contractMapper.updateByPrimaryKeySelective(contract);
+    }
+
+    @Transactional
     public int insertContract(RsContract contract) {
          return contractMapper.insertSelective(contract);
     }
+
 }

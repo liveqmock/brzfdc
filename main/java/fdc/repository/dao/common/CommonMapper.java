@@ -1,5 +1,6 @@
 package fdc.repository.dao.common;
 
+import fdc.repository.model.RsContract;
 import fdc.repository.model.RsPayout;
 import fdc.view.payout.ParamPlan;
 import org.apache.ibatis.annotations.Select;
@@ -30,4 +31,7 @@ public interface CommonMapper {
 
      @Select("select nvl(max(SERIAL)+1,'100001') from rs_acc_detail")
     String selectMaxAccDetailSerial();
+
+    @Select("select nvl(max(SERIAL)+1,'100001') from rs_refund")
+    String selectMaxRefundSerial();
 }

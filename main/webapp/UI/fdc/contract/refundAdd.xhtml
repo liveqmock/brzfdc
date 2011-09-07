@@ -7,21 +7,17 @@
 
     <ui:define name="head">
         <script type="text/javascript">
-            function doPopupWindow(source) {
-                popupwindow = window.open("", "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+             function doPopupWindow(obj) {
+                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+                popupwindow = window.open("contractDetlForm.xhtml?pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
-                document.getElementById("hidden:go").onclick(null);
             }
-            function doPopupAddWindow(source) {
-                popupaddwindow = window.open("", "popupaddwindow", "height=400,width=800,left=300,top=200,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupaddwindow.focus;
-                document.getElementById("hiddenadd:go").onclick(null);
+            function doPopupAddWindow(obj) {
+                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+                popupwindow = window.open("refundAddForm.xhtml?pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                popupwindow.focus;
             }
-            function doPopupRecvWindow(source) {
-                popuprecvwindow = window.open("", "popuprecvwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popuprecvwindow.focus;
-                document.getElementById("hiddenrecv:go").onclick(null);
-            }
+
 
         </script>
         <style type="text/css">
@@ -73,6 +69,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
 
                             <p:column headerText="合同号" style="text-align:center" filterBy="#{record.contractNo}"
                                       filterMatchMode="contains">
@@ -100,85 +99,16 @@
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
-                                      filterOptions="#{refundAction.contractStatusOptions}"
-                                      filterMatchMode="exact">
+                            <p:column headerText="交易状态" style="text-align:center">
                                 <h:outputText
                                         value="#{refundAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
                             </p:column>
-                            <p:column headerText="详细" style="width:50px;text-align:center">
+                            <p:column headerText="操作" style="width:70px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"
-                                               oncomplete="doPopupWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{refundAction.selectedRecord}"/>
+                                               onclick="doPopupWindow(this);">
                                 </p:commandLink>
-                            </p:column>
-                            <p:column headerText="新增" style="width:50px;text-align:center">
-                                <p:commandLink style="color:blue;" value="新增" update="popupaddwindow"
-                                               oncomplete="doPopupAddWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{refundAction.selectedRecord}"/>
-                                </p:commandLink>
-                            </p:column>
-                        </p:dataTable>
-                    </h:form>
-                </p:tab>
-                <p:tab title="退款记录清单（待复核）">
-                    <p:messages id="msgs2" showDetail="false"/>
-                    <h:form id="form2">
-                        <p:menubar>
-                            <p:menuitem type="push" value="导出EXCEL" icon="ui-icon ui-icon-document"
-                                        action="#{refundAction.onPrint}" update="msgs2, pdt2" ajax="true"/>
-                        </p:menubar>
-                        <p:ajaxStatus style="height:18px;text-align:center">
-                            <f:facet name="start">
-                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
-                            </f:facet>
-                            <f:facet name="complete">
-                                <h:outputText value=""/>
-                            </f:facet>
-                        </p:ajaxStatus>
-                        <p:dataTable id="pdt2" style="width:100%;"
-                                     dynamic="true" selectionMode="single"
-                                     value="#{refundAction.pendChkList}" var="record"
-                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     paginator="true" rows="15" paginatorPosition="bottom"
-                                     rowsPerPageTemplate="100,50,30,15,5"
-                                     emptyMessage="数据记录为空...">
-
-                            <p:column headerText="单据号" style="text-align:center" >
-                                <h:outputText value="#{record.docNo}"/>
-                            </p:column>
-                            <p:column headerText="付款开发商" style="text-align:center" >
-                                <h:outputText value="#{record.businessNo}"/>
-                            </p:column>
-                            <p:column headerText="收款方户名" style="text-align:center" >
-                                <h:outputText value="#{record.businessNo}"/>
-                            </p:column>
-                            <p:column headerText="收款方帐号" style="text-align:center" >
-                                <h:outputText value="#{record.businessNo}"/>
-                            </p:column>
-
-                            <p:column headerText="退款金额">
-                                <h:outputText value="#{record.plAmount}" style="float: right">
-                                    <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column headerText="申请人" style="text-align:center" >
-                                <h:outputText value="#{record.applyUserName}"/>
-                            </p:column>
-                            <p:column headerText="申请日期" style="text-align:center" >
-                                <h:outputText value="#{record.applyDate}"/>
-                            </p:column>
-                            <p:column headerText="交易状态" style="text-align:center" >
-                                <h:outputText
-                                        value="#{refundAction.refundStatus.valueOfAlias(record.statusFlag).title}"/>
-                            </p:column>
-                            <p:column headerText="操作" style="width:50px;text-align:center">
-                                <p:commandLink style="color:blue;" value="详细" update="popupwindow"
-                                               oncomplete="doPopupRecvWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{refundAction.selectedRefundRecord}"/>
+                                <p:commandLink style="color:blue;" value="新增" update="popupwindow"
+                                               onclick="doPopupAddWindow(this);">
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
@@ -186,24 +116,7 @@
                 </p:tab>
             </p:tabView>
         </div>
-        <h:form id="hidden" target="popupwindow">
-            <h:commandLink id="go" actionListener="#{refundAction.showDetailListener}"
-                           action="contractDetlForm">
-                <f:attribute name="pkId" value="#{refundAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
-        <h:form id="hiddenadd" target="popupaddwindow">
-            <h:commandLink id="go" actionListener="#{refundAction.showDetailListener}"
-                           action="contractRecvAddForm">
-                <f:attribute name="pkId" value="#{refundAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
-        <h:form id="hiddenrecv" target="popuprecvwindow">
-            <h:commandLink id="go" actionListener="#{refundAction.showDetailListener}"
-                           action="contractRecvDetlForm">
-                <f:attribute name="pkId" value="#{refundAction.selectedRefundRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
+
     </ui:define>
 
 </ui:composition>

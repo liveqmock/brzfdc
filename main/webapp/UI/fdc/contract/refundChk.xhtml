@@ -7,15 +7,10 @@
 
     <ui:define name="head">
         <script type="text/javascript">
-            function doPopupWindow(source) {
-                popupwindow = window.open("", "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+            function doPopupRefundWindow(obj) {
+                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+                popupwindow = window.open("refundDetlForm.xhtml?action=query&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
-                document.getElementById("hidden:go").onclick(null);
-            }
-            function doPopupAddWindow(source) {
-                popupaddwindow = window.open("", "popupaddwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupaddwindow.focus;
-                document.getElementById("hiddenadd:go").onclick(null);
             }
         </script>
         <style type="text/css">
@@ -46,13 +41,13 @@
         <div style="margin:5px;">
             <p:tabView style="font-weight:normal;font-style:normal">
                 <p:tab title="待复核记录清单">
-                    <p:messages id="msgs2" showDetail="false"/>
+                    <p:growl id="msgs2" showDetail="false"/>
                     <h:form id="form2">
                         <p:menubar>
                             <p:menuitem type="push" value="复核通过" icon="ui-icon ui-icon-document"
-                                        action="#{refundAction.onPrint}" update="msgs2, pdt2" ajax="true"/>
+                                        action="#{refundAction.onCheck}" update="msgs2, pdt2" ajax="true"/>
                             <p:menuitem type="push" value="退回" icon="ui-icon ui-icon-document"
-                                        action="#{refundAction.onPrint}" update="msgs2, pdt2" ajax="true"/>
+                                        action="#{refundAction.onBack}" update="msgs2, pdt2" ajax="true"/>
                         </p:menubar>
                         <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
@@ -63,12 +58,15 @@
                             </f:facet>
                         </p:ajaxStatus>
                         <p:dataTable id="pdt2" style="width:100%;"
-                                     dynamic="true"
+                                     dynamic="true" selection="#{refundAction.selectedRefundRecords}"
                                      value="#{refundAction.pendChkList}" var="record"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
                             <p:column selectionMode="multiple"/>
                             <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}"
                                       filterMatchMode="contains">
@@ -76,15 +74,15 @@
                             </p:column>
                             <p:column headerText="付款开发商" style="text-align:center" filterBy="#{record.payCompanyName}"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{record.businessNo}"/>
+                                <h:outputText value="#{record.payCompanyName}"/>
                             </p:column>
                             <p:column headerText="收款方户名" style="text-align:center" filterBy="#{record.recCompanyName}"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{record.businessNo}"/>
+                                <h:outputText value="#{record.recCompanyName}"/>
                             </p:column>
                             <p:column headerText="收款方帐号" style="text-align:center" filterBy="#{record.recAccount}"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{record.businessNo}"/>
+                                <h:outputText value="#{record.recAccount}"/>
                             </p:column>
 
                             <p:column headerText="退款金额">
@@ -92,12 +90,14 @@
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="申请人" style="text-align:center" filterBy="#{record.applyUserName}"
+                            <!--<p:column headerText="申请人" style="text-align:center" filterBy="#{record.applyUserName}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.applyUserName}"/>
-                            </p:column>
-                            <p:column headerText="申请日期" style="text-align:center" >
-                                <h:outputText value="#{record.applyDate}"/>
+                            </p:column>-->
+                            <p:column headerText="申请日期" style="text-align:center">
+                                <h:outputText value="#{record.applyDate}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                                </h:outputText>
                             </p:column>
                             <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
                                       filterOptions="#{refundAction.refundStatusOptions}"
@@ -107,9 +107,7 @@
                             </p:column>
                             <p:column headerText="操作" style="width:50px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"
-                                               oncomplete="doPopupRecvWindow(this);return false;">
-                                    <f:setPropertyActionListener value="#{record}"
-                                                                 target="#{refundAction.selectedRefundRecord}"/>
+                                               onclick="doPopupRefundWindow(this);">
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
@@ -117,18 +115,7 @@
                 </p:tab>
             </p:tabView>
         </div>
-        <h:form id="hidden" target="popupwindow">
-            <h:commandLink id="go" actionListener="#{refundAction.showDetailListener}"
-                           action="contractRecvDetlForm">
-                <f:attribute name="pkId" value="#{refundAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
-        <h:form id="hiddenadd" target="popupaddwindow">
-            <h:commandLink id="go" actionListener="#{refundAction.showDetailListener}"
-                           action="#{refundAction.onShowDetail}">
-                <f:attribute name="pkId" value="#{refundAction.selectedRecord.pkId}"/>
-            </h:commandLink>
-        </h:form>
+
     </ui:define>
 
 </ui:composition>

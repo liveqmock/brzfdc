@@ -88,7 +88,14 @@ public class ContractRecvDetlAction implements Serializable {
     public String onSave() {
         try {
             selectedRecord.setApAmount(selectedRecord.getPlAmount());
-            if (contractRecvService.insertRecord(selectedRecord) == 1) {
+
+            contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
+            /*if (contract.getReceiveAmt().compareTo(contract.getTotalAmt()) > 0) {
+                MessageUtil.addError("ÉêÇë½É¿î½ð¶îÌ«¶à£¡");
+                return null;
+            }*/
+            if (contractRecvService.insertRecord(selectedRecord) == 1
+                    && contractService.updateRecord(contract) == 1) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);

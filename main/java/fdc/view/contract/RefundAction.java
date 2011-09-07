@@ -1,13 +1,17 @@
 package fdc.view.contract;
 
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import fdc.common.constant.*;
 import fdc.repository.model.RsContract;
 import fdc.repository.model.RsRefund;
+import fdc.service.ClientBiService;
 import fdc.service.ContractRecvService;
 import fdc.service.RefundService;
+import fdc.service.TradeService;
 import fdc.service.contract.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import platform.common.utils.MessageUtil;
 import platform.service.ToolsService;
 
 import javax.annotation.PostConstruct;
@@ -39,6 +43,10 @@ public class RefundAction implements Serializable {
     private ContractRecvService contractRecvService;
     @ManagedProperty(value = "#{refundService}")
     private RefundService refundService;
+    @ManagedProperty(value = "#{tradeService}")
+    private TradeService tradeService;
+    @ManagedProperty(value = "#{clientBiService}")
+    private ClientBiService clientBiService;
 
     @ManagedProperty(value = "#{toolsService}")
     private ToolsService toolsService;
@@ -50,6 +58,8 @@ public class RefundAction implements Serializable {
     private List<RsRefund> detlRefundList;
     private List<RsRefund> pendChkList;
     private List<RsRefund> pendActList;
+    private List<RsRefund> pendToSendList;
+    private List<RsRefund> pendSentList;
     private RsRefund[] selectedRefundRecords;
     private RsRefund selectedRefundRecord;
 
@@ -82,30 +92,93 @@ public class RefundAction implements Serializable {
     }
 
     private void initList() {
-        this.detlList = contractService.selectContractList();
-        this.pendChkList = refundService.selectRefundList(RefundStatus.INIT);
-        this.pendActList = refundService.selectRefundList(RefundStatus.CHECKED);
+        this.detlList = contractService.selectContractList(ContractStatus.TRANS);
+        this.pendChkList = refundService.selectRefundList(WorkResult.CREATE);
+        this.pendActList = refundService.selectRefundList(WorkResult.PASS);
+        this.pendToSendList = refundService.selectRefundList(WorkResult.COMMIT);
+        this.pendSentList = refundService.selectRefundList(WorkResult.SENT);
         this.detlRefundList = refundService.selectRefundList();
     }
 
-    public String onQuery() {
+    public String onCheck() {
+        if (selectedRefundRecords == null || selectedRefundRecords.length == 0) {
+            MessageUtil.addWarn("请至少选择一笔数据记录！");
+            return null;
+        }
+        try {
+            for (RsRefund record : selectedRefundRecords) {
+                record.setWorkResult(WorkResult.PASS.getCode());
+                if (refundService.updateRecord(record) != 1) {
+                    throw new RuntimeException("复核更新异常！");
+                }
+            }
+            MessageUtil.addInfo("复核完成！");
+            initList();
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败。" + e.getMessage());
+        }
         return null;
     }
 
-    public String onPrint() {
+    public String onBack() {
+         if (selectedRefundRecords == null || selectedRefundRecords.length == 0) {
+            MessageUtil.addWarn("请至少选择一笔数据记录！");
+            return null;
+        }
+        try {
+            for (RsRefund record : selectedRefundRecords) {
+                record.setWorkResult(WorkResult.NOTPASS.getCode());
+                if (refundService.updateRecord(record) != 1) {
+                    throw new RuntimeException("退回更新异常！");
+                }
+            }
+            MessageUtil.addInfo("退回完成！");
+            initList();
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败。" + e.getMessage());
+        }
         return null;
     }
 
-    public String onShowDetail() {
-        return "common/contractDetlForm.xhtml";
+    public String onExecAccount() {
+         if (selectedRefundRecords == null || selectedRefundRecords.length == 0) {
+            MessageUtil.addWarn("请至少选择一笔数据记录！");
+            return null;
+        }
+        try {
+            for (RsRefund record : selectedRefundRecords) {
+                record.setWorkResult(WorkResult.COMMIT.getCode());
+                if (tradeService.handleRefundTrade(record) != 3) {
+                    throw new RuntimeException("入账过程发生异常！");
+                }
+            }
+            MessageUtil.addInfo("入账完成！");
+            initList();
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败。" + e.getMessage());
+        }
+        return null;
     }
 
-    public void showDetailListener(ActionEvent event) {
-        String pkid = (String) event.getComponent().getAttributes().get("pkId");
-        Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        sessionMap.put("pkId", pkid);
+    public String onSend() {
+        if (selectedRefundRecords == null || selectedRefundRecords.length == 0) {
+            MessageUtil.addWarn("请至少选择一笔数据记录！");
+            return null;
+        }
+        try {
+            for (RsRefund record : selectedRefundRecords) {
+                record.setWorkResult(WorkResult.SENT.getCode());
+                if (clientBiService.sendRsRefundMsg(record, InOutFlag.OUT.getCode()) != 1) {
+                    throw new RuntimeException("发送过程发生异常！");
+                }
+            }
+            MessageUtil.addInfo("发送完成！");
+            initList();
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败。" + e.getMessage());
+        }
+        return null;
     }
-
 
     //================================================
 
@@ -115,6 +188,14 @@ public class RefundAction implements Serializable {
 
     public void setContractService(ContractService contractService) {
         this.contractService = contractService;
+    }
+
+    public ClientBiService getClientBiService() {
+        return clientBiService;
+    }
+
+    public void setClientBiService(ClientBiService clientBiService) {
+        this.clientBiService = clientBiService;
     }
 
     public List<RsContract> getDetlList() {
@@ -319,4 +400,27 @@ public class RefundAction implements Serializable {
         this.refundStatus = refundStatus;
     }
 
+    public TradeService getTradeService() {
+        return tradeService;
+    }
+
+    public void setTradeService(TradeService tradeService) {
+        this.tradeService = tradeService;
+    }
+
+    public List<RsRefund> getPendSentList() {
+        return pendSentList;
+    }
+
+    public void setPendSentList(List<RsRefund> pendSentList) {
+        this.pendSentList = pendSentList;
+    }
+
+    public List<RsRefund> getPendToSendList() {
+        return pendToSendList;
+    }
+
+    public void setPendToSendList(List<RsRefund> pendToSendList) {
+        this.pendToSendList = pendToSendList;
+    }
 }

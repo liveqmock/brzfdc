@@ -13,10 +13,7 @@ import fdc.gateway.domain.T200.T2005Req;
 import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.utils.StringUtil;
 import fdc.gateway.xsocket.client.XSocketComponent;
-import fdc.repository.model.RsAccDetail;
-import fdc.repository.model.RsLockedaccDetail;
-import fdc.repository.model.RsPayout;
-import fdc.repository.model.RsReceive;
+import fdc.repository.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +49,8 @@ public class ClientBiService {
     private ContractRecvService contractRecvService;
     @Autowired
     private LockedaccDetailService lockedaccDetailService;
+    @Autowired
+    private RefundService refundService;
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
@@ -150,7 +149,7 @@ public class ClientBiService {
         req.param.ToAcctName = record.getBuyerAccName();
         req.param.ToAcct = record.getBuyerAccCode();
         req.param.ToBankName = record.getBuyerBankName();
-        req.param.Amt = StringUtil.toBiformatAmt(record.getPlAmount());
+        req.param.Amt = StringUtil.toBiformatAmt(record.getApAmount());
         req.param.Purpose = record.getPurpose() + TradeType.HOUSE_INCOME.getTitle();
         String dataGram = req.toFDCDatagram();                // 报文
 
@@ -159,6 +158,38 @@ public class ClientBiService {
             return -1;
         } else {
             return contractRecvService.updateRsReceiveToWorkResult(record, WorkResult.SENT);
+        }
+    }
+
+     /**
+     * 2005- 发送预售房合同退款记录
+     *
+     * @param record , flag 收支标志
+     * @return
+     */
+    public int sendRsRefundMsg(RsRefund record, String flag) throws Exception {
+        T2005Req req = new T2005Req();
+        req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
+        req.param.Acct = record.getPayAccount();
+        req.param.AcctName = record.getPayCompanyName();
+        req.param.ContractNum = record.getBusinessNo();
+        req.param.BankSerial = record.getBankSerial();
+        req.param.Date = sdfdate8.format(record.getTradeDate());
+        req.param.Time = sdftime6.format(record.getTradeDate());
+        req.param.Flag = flag;   // 1-收入  2-支出
+        req.param.Type = TradeType.TRANS_BACK.getCode();
+        req.param.ToAcctName = record.getRecCompanyName();
+        req.param.ToAcct = record.getRecAccount();
+        req.param.ToBankName = record.getRecBankName();
+        req.param.Amt = StringUtil.toBiformatAmt(record.getApAmount());
+        req.param.Purpose = record.getPurpose() + TradeType.TRANS_BACK.getTitle();
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            return refundService.updateRecord(record);
         }
     }
 
