@@ -256,15 +256,7 @@ public class ServerMessageService implements IMessageService {
                 biPlan.setPlanNo(t2008Req.param.PlanNO);
                 biPlan.setPlanAmount(new BigDecimal(t2008Req.param.PlanAmt).divide(new BigDecimal(100)));
                 biPlan.setPlanNum(Integer.parseInt(t2008Req.param.PlanNum));
-                try {
-                    biPlan.setSubmitDate(sdfdate.parse(t2008Req.param.SubmitDate));
-                } catch (ParseException e) {
-                    t2008Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FORMAT_ERROR.getCode();
-                    t2008Res.head.RetMsg = "日期格式错误。";
-                    logger.error("日期格式错误！", e);
-                    responseMsg = t2008Res.toFDCDatagram();
-                    break;
-                }
+                biPlan.setSubmitDate(t2008Req.param.SubmitDate);
                 int planDetailCnt = t2008Req.param.recordList.size();
 
                 if (!t2008Req.param.PlanNum.equalsIgnoreCase(String.valueOf(planDetailCnt))) {
@@ -289,7 +281,7 @@ public class ServerMessageService implements IMessageService {
                             planDetail.setToAccountCode(record.ToAcct);
                             planDetail.setToHsBankName(record.ToBankName);
                             planDetail.setPlAmount(new BigDecimal(record.Amt).divide(new BigDecimal(100)));
-                            planDetail.setPlanDate(sdfdate.parse(record.PlanDate));
+                            planDetail.setPlanDate(record.PlanDate);
                             planDetail.setPlanDesc(record.Purpose);
                             planDetail.setRemark(record.Remark);
                             biPlanDetailList.add(planDetail);
@@ -299,12 +291,6 @@ public class ServerMessageService implements IMessageService {
                         }
                     } else throw new RuntimeException("计划明细为空！");
 
-                } catch (ParseException e) {
-                    t2008Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FORMAT_ERROR.getCode();
-                    t2008Res.head.RetMsg = wrngRecordNo + "计划明细日期格式错误。";
-                    logger.error(wrngRecordNo + "计划明细日期格式错误！", e);
-                    responseMsg = t2008Res.toFDCDatagram();
-                    break;
                 } catch (Exception e) {
                     t2008Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
                     t2008Res.head.RetMsg = e.getMessage() + "操作失败，请重试。";

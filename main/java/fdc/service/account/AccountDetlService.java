@@ -26,7 +26,7 @@ public class AccountDetlService {
     @Autowired
     private RsAccDetailMapper rsAccDetailMapper;
 
-    public List<RsAccDetail> selectedRecordsByTradeDate(Date beginDate, Date endDate) {
+    public List<RsAccDetail> selectedRecordsByTradeDate(String beginDate, String endDate) {
         RsAccDetailExample example = new RsAccDetailExample();
         if (beginDate != null && endDate != null) {
             example.createCriteria().andTradeDateBetween(beginDate, endDate).andDeletedFlagEqualTo("0");

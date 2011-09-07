@@ -238,7 +238,7 @@ public class BiDbService {
         RsAccDetailExample example = new RsAccDetailExample();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         example.createCriteria().andDeletedFlagEqualTo("0").andAccountCodeEqualTo(accountCode)
-                .andAccountNameEqualTo(accountName).andTradeDateBetween(sdf.parse(fromDate), sdf.parse(toDate));
+                .andAccountNameEqualTo(accountName).andTradeDateBetween(fromDate, toDate);
         return accDetailMapper.selectByExample(example);
     }
 

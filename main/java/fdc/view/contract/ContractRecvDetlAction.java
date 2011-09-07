@@ -22,6 +22,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class ContractRecvDetlAction implements Serializable {
 
     private List<SelectItem> recvTypeOptions;
     private ReceiveType receiveType = ReceiveType.OTHER;
+    private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
     @PostConstruct
     public void init() {
@@ -75,14 +77,14 @@ public class ContractRecvDetlAction implements Serializable {
         selectedRecord.setBuyerCertNo(contract.getBuyerCertNo());
         selectedRecord.setBuyerName(contract.getBuyerName());
         selectedRecord.setBuyerBankName(contract.getBuyerBankName());
-        selectedRecord.setApplyDate(new Date());
+        selectedRecord.setApplyDate(sdf10.format(new Date()));
         selectedRecord.setWorkResult(WorkResult.CREATE.getCode());
 
         selectedRecord.setTradeAccCode(selectedRecord.getBuyerAccCode());
         selectedRecord.setTradeAccName(selectedRecord.getBuyerAccName());
         selectedRecord.setTradeBankName(selectedRecord.getBuyerBankName());
         selectedRecord.setExecUserName(selectedRecord.getBuyerName());
-        selectedRecord.setExecDate(new Date());
+        selectedRecord.setExecDate(sdf10.format(new Date()));
     }
 
     public String onSave() {
@@ -90,6 +92,7 @@ public class ContractRecvDetlAction implements Serializable {
             selectedRecord.setApAmount(selectedRecord.getPlAmount());
 
             contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
+            // TODO 交易完成判断
             /*if (contract.getReceiveAmt().compareTo(contract.getTotalAmt()) > 0) {
                 MessageUtil.addError("申请缴款金额太多！");
                 return null;

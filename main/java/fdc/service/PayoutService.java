@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
+import sun.java2d.pipe.SpanShapeRenderer;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class PayoutService {
     private ExpensesPlanService expensesPlanService;
     @Autowired
     private TradeService tradeService;
+    private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
     public RsPayout selectPayoutByPkid(String pkid) {
         return rsPayoutMapper.selectByPrimaryKey(pkid);
@@ -63,7 +66,7 @@ public class PayoutService {
         OperatorManager om = SystemService.getOperatorManager();
         rsPayout.setApplyUserId(om.getOperatorId());
         rsPayout.setApplyUserName(om.getOperatorName());
-        rsPayout.setApplyDate(new Date());
+        rsPayout.setApplyDate(sdf10.format(new Date()));
         rsPayout.setCreatedBy(om.getOperatorId());
         rsPayout.setCreatedDate(new Date());
         return rsPayoutMapper.insertSelective(rsPayout);
@@ -74,7 +77,7 @@ public class PayoutService {
         OperatorManager om = SystemService.getOperatorManager();
         String operId = om.getOperatorId();
         String operName = om.getOperatorName();
-        Date operDate = new Date();
+        String operDate = sdf10.format(new Date());
         int rtnFlag = 1;
         for (RsPayout rsPayout : rsPayoutList) {
             rsPayout.setAuditDate(operDate);
@@ -89,13 +92,12 @@ public class PayoutService {
         return rtnFlag;
     }
 
-    // TODO 入账
     @Transactional
     public int updateRsPayoutToExec(RsPayout rsPayout) {
         OperatorManager om = SystemService.getOperatorManager();
         String operId = om.getOperatorId();
         String operName = om.getOperatorName();
-        Date operDate = new Date();
+        String operDate = sdf10.format(new Date());
         rsPayout.setExecUserId(operId);
         rsPayout.setExecUserName(operName);
         rsPayout.setExecDate(operDate);
@@ -103,7 +105,6 @@ public class PayoutService {
         rsPayout.setWorkResult(WorkResult.COMMIT.getCode());
         rsPayout.setSerial(SystemService.getDatetime14());
         rsPayout.setBankSerial(rsPayout.getSerial());
-        // TODO 银行流水 接口2004用
         return tradeService.handlePayoutTrade(rsPayout) + updateRsPayout(rsPayout);
     }
 

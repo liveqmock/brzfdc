@@ -20,12 +20,12 @@ public class SystemService {
     static private SimpleDateFormat sdfdatetime14 = new SimpleDateFormat("yyyyMMddHHmmss");
     static private SimpleDateFormat sdfdatetime18 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static Date getTodayAddDays(int days) throws ParseException {
+    public static String getTodayAddDays(int days) throws ParseException {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(new Date());
         cal.add(GregorianCalendar.DATE, days);
         Date thatDate = cal.getTime();
-        return sdfdate10.parse(sdfdate10.format(thatDate));
+        return sdfdate10.format(thatDate);
     }
 
     public static OperatorManager getOperatorManager(){

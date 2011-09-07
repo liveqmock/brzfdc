@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -32,13 +33,14 @@ public class RefundService {
     private RsRefundMapper refundMapper;
     @Autowired
     private CommonMapper commonMapper;
+    private SimpleDateFormat sdf10 = new SimpleDateFormat();
 
     @Transactional
     public int insertRecord(RsRefund record) {
         OperatorManager om = SystemService.getOperatorManager();
         record.setCreatedBy(om.getOperatorId());
         record.setCreatedDate(new Date());
-        record.setApplyDate(new Date());
+        record.setApplyDate(sdf10.format(new Date()));
         record.setApplyUserId(om.getOperatorId());
         record.setApplyUserName(om.getOperatorName());
         String serial = commonMapper.selectMaxRefundSerial();

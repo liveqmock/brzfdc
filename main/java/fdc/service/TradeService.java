@@ -12,6 +12,7 @@ import platform.common.utils.BeanHelper;
 import platform.service.SystemService;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -38,6 +39,7 @@ public class TradeService {
     private ClientBiService clientBiService;
     @Autowired
     private RefundService refundService;
+    private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
     // R-冲正 D-退票
     @Transactional
@@ -58,7 +60,7 @@ public class TradeService {
         accDetail.setToHsBankName(record.getToHsBankName());
         accDetail.setTradeType(TradeType.OTHERS.getCode());
         accDetail.setTradeAmt(record.getTradeAmt());
-        accDetail.setTradeDate(new Date());
+        accDetail.setTradeDate(sdf10.format(new Date()));
         accDetail.setContractNo(record.getContractNo());
         accDetail.setChangeFlag(changeFlag.getCode());      // 标记: R-冲正 D-退票
         record.setChangeFlag(changeFlag.getCode());
@@ -112,8 +114,7 @@ public class TradeService {
         accDetail.setToAccountName(receive.getTradeAccName());
         accDetail.setToHsBankName(receive.getTradeBankName());
         accDetail.setInoutFlag(InOutFlag.IN.getCode());// 收入
-        Date today = new Date();
-        accDetail.setTradeDate(today);
+        accDetail.setTradeDate(sdf10.format(new Date()));
         accDetail.setTradeAmt(receive.getApAmount());
         accDetail.setBalance(account.getBalance().add(accDetail.getTradeAmt()));
         accDetail.setLocalSerial(receive.getSerial());
@@ -155,8 +156,7 @@ public class TradeService {
         accDetail.setToAccountName(refund.getRecCompanyName());
         accDetail.setToHsBankName(refund.getRecBankName());
         accDetail.setInoutFlag(InOutFlag.OUT.getCode());// 支出
-        Date today = new Date();
-        accDetail.setTradeDate(today);
+        accDetail.setTradeDate(sdf10.format(new Date()));
         accDetail.setTradeAmt(refund.getApAmount());
         accDetail.setBalance(account.getBalance().subtract(accDetail.getTradeAmt()));
         accDetail.setLocalSerial(refund.getSerial());
@@ -202,8 +202,7 @@ public class TradeService {
         accDetail.setToAccountName(payout.getRecCompanyName());
         accDetail.setToHsBankName(payout.getRecBankName());
         accDetail.setInoutFlag(InOutFlag.OUT.getCode());// 支出
-        Date today = new Date();
-        accDetail.setTradeDate(today);
+        accDetail.setTradeDate(sdf10.format(new Date()));
         accDetail.setTradeAmt(payout.getApAmount());
         accDetail.setBalance(account.getBalance().subtract(accDetail.getTradeAmt()));
         accDetail.setLocalSerial(payout.getSerial());

@@ -33,6 +33,7 @@ public class RsAccDetailService {
     private RsAccDetailMapper accDetailMapper;
     @Autowired
     private CommonMapper commonMapper;
+    private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
     public RsAccDetail selectAccDetailByPkid(String pkid) {
         return accDetailMapper.selectByPrimaryKey(pkid);
@@ -46,18 +47,10 @@ public class RsAccDetailService {
 
     // 冲正交易
      public List<RsAccDetail> selectCancelAccDetails() {
-         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-         Date date = null;
-         try {
-             date = sdf.parse(sdf.format(new Date()));
-         } catch (ParseException e) {
-             throw new RuntimeException("日期转换错误！");
-         }
          RsAccDetailExample example = new RsAccDetailExample();
         example.createCriteria().andDeletedFlagEqualTo("0")
                 .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
-                .andTradeDateGreaterThanOrEqualTo(date);
+                .andTradeDateGreaterThanOrEqualTo(sdf10.format(new Date()));
         //example.setOrderByClause("TradeDate");
         return accDetailMapper.selectByExample(example);
     }

@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -34,6 +35,7 @@ public class AccountTradeDetlAction {
     private RsAccDetail rsAccDetail;
     private String rtnFlag;
     private List<RsAccDetail> rsAccDetailsChk;
+    private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
     @PostConstruct
     public void init() {
@@ -42,12 +44,14 @@ public class AccountTradeDetlAction {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         beginDate = cal.getTime();
         endDate = new Date();
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate, endDate);
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(
+                sdf10.format(beginDate), sdf10.format(endDate));
         rsAccDetailsChk = accountDetlService.selectedRecordsForChk("04", "0");
     }
 
     public void onBtnQueryClick() {
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(beginDate, endDate);
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(
+                sdf10.format(beginDate), sdf10.format(endDate));
     }
 
     //ÀûÏ¢Â¼Èë
