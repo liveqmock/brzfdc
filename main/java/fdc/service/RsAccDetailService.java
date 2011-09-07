@@ -1,6 +1,8 @@
 package fdc.service;
 
+import fdc.common.constant.InOutFlag;
 import fdc.common.constant.TradeStatus;
+import fdc.common.constant.TradeType;
 import fdc.repository.dao.RsAccDetailMapper;
 import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsAccDetail;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +43,40 @@ public class RsAccDetailService {
         example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(tradeStatus.getCode());
         return accDetailMapper.selectByExample(example);
     }
+
+    // 冲正交易
+     public List<RsAccDetail> selectCancelAccDetails() {
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+         Date date = null;
+         try {
+             date = sdf.parse(sdf.format(new Date()));
+         } catch (ParseException e) {
+             throw new RuntimeException("日期转换错误！");
+         }
+         RsAccDetailExample example = new RsAccDetailExample();
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
+                .andTradeDateGreaterThanOrEqualTo(date);
+        //example.setOrderByClause("TradeDate");
+        return accDetailMapper.selectByExample(example);
+    }
+
+    // 退票交易
+     public List<RsAccDetail> selectBackAccDetails() {
+        RsAccDetailExample example = new RsAccDetailExample();
+         try {
+             example.createCriteria().andDeletedFlagEqualTo("0")
+                     .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
+                     .andInoutFlagEqualTo(InOutFlag.OUT.getCode())
+                     .andTradeDateGreaterThan(SystemService.getTodayAddDays(-7));
+         } catch (ParseException e) {
+             throw new RuntimeException("日期转换错误！");
+         }
+       //  example.setOrderByClause("TradeDate");
+        return accDetailMapper.selectByExample(example);
+    }
+
     public int insertAccDetail(RsAccDetail rsAccDetail) {
         OperatorManager om = SystemService.getOperatorManager();
         String operId = om.getOperatorId();

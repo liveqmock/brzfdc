@@ -26,10 +26,10 @@ import java.util.List;
  * Time: 下午3:37
  * To change this template use File | Settings | File Templates.
  */
-// 冲正
+// 退票
 @ManagedBean
 @ViewScoped
-public class AccDetailCancelAction {
+public class AccDetailBackAction {
 
     @ManagedProperty(value = "#{rsAccDetailService}")
     private RsAccDetailService accDetailService;
@@ -46,21 +46,20 @@ public class AccDetailCancelAction {
     public void init() {
         FacesContext context = FacesContext.getCurrentInstance();
         String pkid = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
-        // String action = (String) context.getExternalContext().getRequestParameterMap().get("action");
         if (!StringUtils.isEmpty(pkid)) {
             accDetail = accDetailService.selectAccDetailByPkid(pkid);
         } else {
-            accDetailList = accDetailService.selectCancelAccDetails();
+            accDetailList = accDetailService.selectBackAccDetails();
         }
     }
 
     public String onCancel() {
         try {
-            if (tradeService.handleCancelAccDetail(accDetail, ChangeFlag.CANCEL) == 2) {
+            if (tradeService.handleCancelAccDetail(accDetail, ChangeFlag.BACK) == 2) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);
-                MessageUtil.addInfo("交易冲正成功！");
+                MessageUtil.addInfo("交易退票成功！");
             }
         } catch (Exception e) {
             MessageUtil.addError("操作失败." + e.getMessage());

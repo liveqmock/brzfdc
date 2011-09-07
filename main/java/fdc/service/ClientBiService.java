@@ -6,6 +6,7 @@ import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
 import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.T0003Req;
+import fdc.gateway.domain.T000.T0004Req;
 import fdc.gateway.domain.T000.T0006Req;
 import fdc.gateway.domain.T200.T2004Req;
 import fdc.gateway.domain.T200.T2005Req;
@@ -55,6 +56,24 @@ public class ClientBiService {
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
 
+    public int sendAccDetailBack(RsAccDetail record) throws IOException {
+        T0004Req req = new T0004Req();
+        req.head.OpCode = "0004";
+        req.param.Acct = record.getAccountCode();
+        req.param.AcctName = record.getAccountName();
+        req.param.BankSerial = record.getBankSerial();
+        req.param.Reason = "退票";
+        req.param.Date = sdfdate8.format(record.getTradeDate());
+        req.param.Time = sdftime6.format(record.getTradeDate());
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
     /**
      * 发送冲正交易   0003
      *

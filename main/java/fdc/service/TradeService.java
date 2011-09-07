@@ -4,6 +4,7 @@ import fdc.common.constant.*;
 import fdc.repository.model.*;
 import fdc.service.account.AccountService;
 import fdc.service.expensesplan.ExpensesPlanService;
+import org.apache.ibatis.migration.Change;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +37,9 @@ public class TradeService {
     @Autowired
     private ClientBiService clientBiService;
 
-    // 冲正
+    // R-冲正 D-退票
     @Transactional
-    public int handleCancelAccDetail(RsAccDetail record) throws IOException {
+    public int handleCancelAccDetail(RsAccDetail record, ChangeFlag changeFlag) throws IOException {
         // 查询未限制已监管未删除账户
         RsAccount account = accountService.selectNormalAccountByNo(record.getAccountCode());
         if (account == null) {
@@ -57,8 +58,8 @@ public class TradeService {
         accDetail.setTradeAmt(record.getTradeAmt());
         accDetail.setTradeDate(new Date());
         accDetail.setContractNo(record.getContractNo());
-        accDetail.setChangeFlag("R");      // 冲正标记
-        record.setChangeFlag("R");
+        accDetail.setChangeFlag(changeFlag.getCode());      // 标记: R-冲正 D-退票
+        record.setChangeFlag(changeFlag.getCode());
         accDetail.setPlanCtrlNo(record.getPlanCtrlNo());
         accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
         if (InOutFlag.IN.getCode().equalsIgnoreCase(record.getInoutFlag())) {
@@ -75,8 +76,14 @@ public class TradeService {
 
         int rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
                 + accountService.updateRecord(account);
-        if (clientBiService.sendAccDetailCancel(record) == -1) {
-            throw new RuntimeException("发送冲正交易记录失败!");
+        if (ChangeFlag.CANCEL.getCode().equalsIgnoreCase(changeFlag.getCode())) {  // 冲正
+            if (clientBiService.sendAccDetailCancel(accDetail) == -1) {
+                throw new RuntimeException("发送冲正交易记录失败!");
+            }
+        }else if(ChangeFlag.BACK.getCode().equalsIgnoreCase(changeFlag.getCode())) {   // 退票
+             if (clientBiService.sendAccDetailBack(accDetail) == -1) {
+                throw new RuntimeException("发送退票交易记录失败!");
+            }
         }
         return rtnCnt;
     }

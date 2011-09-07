@@ -6,8 +6,10 @@ import pub.platform.security.OperatorManager;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class SystemService {
 
@@ -17,6 +19,14 @@ public class SystemService {
     static private SimpleDateFormat sdftime8 = new SimpleDateFormat("HH:mm:ss");
     static private SimpleDateFormat sdfdatetime14 = new SimpleDateFormat("yyyyMMddHHmmss");
     static private SimpleDateFormat sdfdatetime18 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static Date getTodayAddDays(int days) throws ParseException {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+        cal.add(GregorianCalendar.DATE, days);
+        Date thatDate = cal.getTime();
+        return sdfdate10.parse(sdfdate10.format(thatDate));
+    }
 
     public static OperatorManager getOperatorManager(){
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
