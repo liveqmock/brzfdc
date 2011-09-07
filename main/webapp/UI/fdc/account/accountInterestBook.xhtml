@@ -173,7 +173,7 @@
                     </f:facet>
                     <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
                 </p:column>
-                <p:column style="text-align:center;">
+                <p:column style="text-align:center;" sortBy="#{record.tradeDate}">
                     <f:facet name="header">
                         <h:outputText value="交易时间"/>
                     </f:facet>

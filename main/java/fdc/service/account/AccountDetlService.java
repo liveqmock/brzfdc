@@ -39,8 +39,10 @@ public class AccountDetlService {
     public List<RsAccDetail> selectedRecordsForChk(String tradeType, String statusflag) {
         RsAccDetailExample example = new RsAccDetailExample();
         if (tradeType != null && !StringUtils.isEmpty(tradeType.trim())) {
-            example.createCriteria().andDeletedFlagEqualTo("0").andTradeTypeEqualTo(tradeType).andStatusFlagEqualTo(statusflag);
+            example.createCriteria().andDeletedFlagEqualTo("0").andTradeTypeEqualTo(tradeType)
+                    .andStatusFlagEqualTo(statusflag);
         }
+        example.setOrderByClause("trade_Date desc");
         return rsAccDetailMapper.selectByExample(example);
     }
 

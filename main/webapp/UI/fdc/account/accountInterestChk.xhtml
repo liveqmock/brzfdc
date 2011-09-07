@@ -41,8 +41,6 @@
                         <p:menubar>
                             <p:menuitem type="push" value="复核通过" icon="ui-icon ui-icon-document"
                                         action="#{interestBookChkAction.onCheck}" update="msgs1, pdt1, pdt2" ajax="true"/>
-                            <p:menuitem type="push" value="退回" icon="ui-icon ui-icon-document"
-                                        action="#{interestBookChkAction.onBack}" update="msgs1, pdt1, pdt2" ajax="true"/>
                         </p:menubar>
                        <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
@@ -73,7 +71,7 @@
                                     <h:outputText
                                             value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
                                 </p:column>
-                                <p:column style="text-align:center;">
+                                <p:column style="text-align:center;" sortBy="#{record.tradeDate}">
                                     <f:facet name="header">
                                         <h:outputText value="交易时间"/>
                                     </f:facet>
