@@ -1,6 +1,7 @@
 package fdc.view.account;
 
 import fdc.common.constant.TradeStatus;
+import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsReceive;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,8 +40,13 @@ public class InterestBookChkAction {
 
     @PostConstruct
     public void init() {
-        rsAccDetails = accountDetlService.selectedRecordsForChk("04", "0");
-        rsAccDetailsChk = accountDetlService.selectedRecordsForChk("04","2");
+        List<String> statusfalg_init = new ArrayList<String>();
+        statusfalg_init.add(0, TradeStatus.CANCEL.getCode());
+        //´ý¸´ºË¼ÇÂ¼
+        rsAccDetails = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(),statusfalg_init);
+        List<String> statusfalg_checked = new ArrayList<String>();
+        statusfalg_checked.add(0, TradeStatus.CHECKED.getCode());
+        rsAccDetailsChk = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(),statusfalg_checked);
     }
 
     public String onCheck() {

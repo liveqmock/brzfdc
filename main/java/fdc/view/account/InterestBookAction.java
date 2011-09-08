@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,10 +45,12 @@ public class InterestBookAction {
 
     @PostConstruct
     public void init() {
-        rsAccDetailsChk = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(), TradeStatus.CHECKED.getCode());
+        List<String> statusfalgs = new ArrayList<String>();
+        statusfalgs.add(0, TradeStatus.CHECKED.getCode());
+        rsAccDetailsChk = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(),statusfalgs);
         rsAccDetailsSend = accountDetlService.selectedRecordsForSend(TradeType.INTEREST.getCode(), TradeStatus.SUCCESS.getCode()
                 , SendFlag.UN_SEND.getCode());
-        rsAccDetailsSended = accountDetlService.selectedRecordsForSend(TradeType.INTEREST.getCode(), TradeStatus.CHECKED.getCode()
+        rsAccDetailsSended = accountDetlService.selectedRecordsForSend(TradeType.INTEREST.getCode(), TradeStatus.SUCCESS.getCode()
                 , SendFlag.SENT.getCode());
     }
 

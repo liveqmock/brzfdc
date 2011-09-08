@@ -63,8 +63,8 @@
 
     <ui:define name="content">
         <div class="entry" id="top">
-            <p:tabView style="font-weight:normal;font-style:normal" cache="false" dynamic="true">
-                <p:tab title="监管账户录入">
+            <p:tabView style="font-weight:normal;font-style:normal"  dynamic="true" cache="false">
+                <p:tab title="监管账户利息录入">
                     <p:growl id="msgs" showDetail="false"/>
                     <h:form id="actqueryForm">
                         <p:commandButton id="btnQuery" style="display:none" action="#{accountTradeDetlAction.init}"/>
@@ -111,11 +111,11 @@
                         </p:dataTable>
                     </h:form>
                 </p:tab>
-                <p:tab title="利息入账明细查询">
+                <p:tab title="利息录入修改">
                     <h:form id="qryForm">
                         <p:dataTable id="pdt1" style="width:100%;"
                                      dynamic="true" selectionMode="single"
-                                     value="#{accountTradeDetlAction.rsAccDetailsChk}" var="record"
+                                     value="#{accountTradeDetlAction.rsAccDetailsInit}" var="record"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,10,5"
@@ -155,6 +155,16 @@
                                 <h:outputText style="float:right;" value="#{record.balance}">
                                     <f:convertNumber pattern="###,##0.00"/>
                                 </h:outputText>
+                            </p:column>
+                            <p:column style="text-align:center;" filterBy="#{record.statusFlag}"
+                                      filterOptions="#{accountTradeDetlAction.actDetlStatusOptions}">
+                                <f:facet name="header">
+                                    <h:outputText value="交易状态"/>
+                                </f:facet>
+                                <h:outputText value="#{flagStatusForMap.actDetlStatusFlagMap[record.statusFlag]}"/>
+                            </p:column>
+                            <p:column headerText="操作" style="text-align:center">
+                                <h:commandLink value="修改" style="color: blue"/>
                             </p:column>
                         </p:dataTable>
                     </h:form>

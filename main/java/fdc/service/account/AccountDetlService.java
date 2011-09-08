@@ -45,15 +45,17 @@ public class AccountDetlService {
         rsAccDetailMapper.insertSelective(rsAccDetail);
     }
 
-    public List<RsAccDetail> selectedRecordsForChk(String tradeType, String statusflag) {
+    /**
+     * 未发送前数据(包括退回)*/
+    public List<RsAccDetail> selectedRecordsForChk(String tradeType, List<String> statusflags) {
         RsAccDetailExample example = new RsAccDetailExample();
         example.clear();
         RsAccDetailExample.Criteria criteria = example.createCriteria();
         if (tradeType != null && !StringUtils.isEmpty(tradeType.trim())) {
             criteria.andTradeTypeEqualTo(tradeType);
         }
-        if (statusflag != null && !StringUtils.isEmpty(tradeType.trim())) {
-            criteria.andStatusFlagEqualTo(statusflag);
+        if (statusflags != null && statusflags.size()>0) {
+            criteria.andStatusFlagIn(statusflags);
         }
         example.setOrderByClause("trade_Date desc");
         return rsAccDetailMapper.selectByExample(example);
