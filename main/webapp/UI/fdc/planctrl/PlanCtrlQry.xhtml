@@ -52,7 +52,6 @@
                                  <h:outputLabel value="计划日期:" for="planDate"/>
                                 <p:inputMask id="planDate" size="25"
                                              value="#{expensesPlanQryAction.rsPlanCtrl.planDate}" mask="9999-99-99">
-                                <f:convertDateTime pattern="yyyy-MM-dd"/>
                                 </p:inputMask>
                                  <h:outputLabel value="用款说明:" for="planDesc"/>
                                 <h:inputText id="planDesc" size="30"
@@ -112,7 +111,6 @@
 
                     <p:column headerText="计划日期" style="text-align:center">
                         <h:outputText value="#{record.planDate}">
-                        <f:convertDateTime pattern="yyyy-MM-dd"/>
                         </h:outputText>
                     </p:column>
 

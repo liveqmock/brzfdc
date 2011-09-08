@@ -95,7 +95,6 @@
                             </p:column>-->
                             <p:column headerText="申请日期" style="text-align:center">
                                 <h:outputText value="#{record.applyDate}">
-                                    <f:convertDateTime pattern="yyyy-MM-dd"/>
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"

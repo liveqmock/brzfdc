@@ -82,7 +82,6 @@
                             <h:outputLabel value="缴款时间:"/>
                             <p:calendar id="txtTradeDt" required="true" requiredMessage="不能为空" style="width:150px;"
                                         value="#{accountTradeDetlAction.rsAccDetail.tradeDate}">
-                                <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT+8" locale="cn"/>
                             </p:calendar>
                             <p:message for="txtTradeDt"/>
                         </h:panelGrid>

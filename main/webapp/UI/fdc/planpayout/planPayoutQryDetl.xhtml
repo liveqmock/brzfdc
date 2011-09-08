@@ -128,7 +128,6 @@
                                         <h:outputLabel value="申请时间:" for="applyDate"/>
                                         <p:inputText autocomplete="off" id="applyDate" style="width:160px;"
                                                      readonly="true" value="#{payoutAction.rsPayout.applyDate}">
-                                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </p:inputText>
 
                                         <h:outputLabel value="审核人:" for="auditPerson"/>
@@ -139,7 +138,6 @@
                                         <h:outputLabel value="审核时间:" for="auditDate"/>
                                         <p:inputText autocomplete="off" id="auditDate" style="width:160px;"
                                                      readonly="true" value="#{payoutAction.rsPayout.auditDate}">
-                                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
                                         </p:inputText>
 
                                     </h:panelGrid>

@@ -55,7 +55,6 @@
                             <h:outputLabel value="申请时间:"/>
                             <h:inputText value="#{contractRecvDetlAction.selectedRecord.applyDate}" size="30"
                                          disabled="true">
-                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
                                     </h:inputText>
                             <h:outputLabel value="缴款类型:"/>
                             <h:outputText value="#{contractRecvDetlAction.receiveType.valueOfAlias(contractRecvDetlAction.selectedRecord.receiveType).title}" size="30"
