@@ -1,5 +1,6 @@
 package fdc.gateway.service;
 
+import fdc.common.constant.ChangeFlag;
 import fdc.common.constant.ContractStatus;
 import fdc.repository.dao.*;
 import fdc.repository.model.*;
@@ -225,7 +226,7 @@ public class BiDbService {
     }
 
     /**
-     * 查询时间段内账户交易记录
+     * 查询时间段内账户交易记录 去除冲正
      *
      * @param accountCode
      * @param accountName
@@ -236,9 +237,11 @@ public class BiDbService {
      */
     public List<RsAccDetail> selectAccDetailsByCodeNameDate(String accountCode, String accountName, String fromDate, String toDate) throws ParseException {
         RsAccDetailExample example = new RsAccDetailExample();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        example.createCriteria().andDeletedFlagEqualTo("0").andAccountCodeEqualTo(accountCode)
-                .andAccountNameEqualTo(accountName).andTradeDateBetween(fromDate, toDate);
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
+                .andAccountCodeEqualTo(accountCode)
+                .andAccountNameEqualTo(accountName).
+                andTradeDateBetween(fromDate, toDate);
         return accDetailMapper.selectByExample(example);
     }
 

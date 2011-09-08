@@ -63,4 +63,12 @@ public class StringUtil {
         return toStr;
     }
 
+    public static String transDate10ToDate8(String strDate10) {
+        return strDate10.substring(0, 4) + strDate10.substring(5, 7) + strDate10.substring(8, 10);
+    }
+
+    public static String transDate8ToDate10(String strDate8) {
+        return strDate8.substring(0, 4) + "-" + strDate8.substring(4, 6) + "-" + strDate8.substring(6, 8);
+    }
+
 }

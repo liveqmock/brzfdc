@@ -8,6 +8,7 @@ import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.T0003Req;
 import fdc.gateway.domain.T000.T0004Req;
 import fdc.gateway.domain.T000.T0006Req;
+import fdc.gateway.domain.T000.T0007Req;
 import fdc.gateway.domain.T200.T2004Req;
 import fdc.gateway.domain.T200.T2005Req;
 import fdc.gateway.service.impl.ClientMessageService;
@@ -23,6 +24,7 @@ import platform.common.utils.MessageUtil;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,10 +53,49 @@ public class ClientBiService {
     private LockedaccDetailService lockedaccDetailService;
     @Autowired
     private RefundService refundService;
+    @Autowired
+    private RsAccDetailService accDetailService;
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
 
+    public int sendTodayAccDetails(List<RsAccDetail> accDetailList) throws IOException {
+        T0007Req req = new T0007Req();
+        req.head.OpCode = "0007";
+        for(RsAccDetail accDetail : accDetailList) {
+            T0007Req.Param.Record record = T0007Req.getRecord();
+            record.BankSerial = accDetail.getBankSerial();
+            record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
+            record.Time = "121212";
+            record.Flag = accDetail.getInoutFlag();
+            record.Type = accDetail.getTradeType();
+            record.ContractNum = accDetail.getContractNo();
+            record.PlanDetailNO = accDetail.getPlanCtrlNo();
+            record.AcctName = accDetail.getAccountName();
+            record.Acct = accDetail.getAccountCode();
+            record.ToName = accDetail.getToAccountName();
+            record.ToAcct = accDetail.getToAccountCode();
+            record.ToBankName = accDetail.getToHsBankName();
+            record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
+            record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
+            req.param.recordList.add(record);
+        }
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * 0003 0004 退票 和冲正 发送
+     * @param record
+     * @return
+     * @throws IOException
+     */
     public int sendAccDetailBack(RsAccDetail record) throws IOException {
         T0004Req req = new T0004Req();
         req.head.OpCode = "0004";

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import platform.service.SystemService;
+import pub.platform.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -37,8 +38,6 @@ import java.util.List;
 public class ServerMessageService implements IMessageService {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerMessageService.class);
-    private static SimpleDateFormat sdfdate = new SimpleDateFormat("yyyyMMdd");
-    private static SimpleDateFormat sdftime = new SimpleDateFormat("HHmmss");
     @Autowired
     private BiDbService biDbService;
 
@@ -92,8 +91,9 @@ public class ServerMessageService implements IMessageService {
                         t0002Res.param.DetailNum = String.valueOf(accDetailList.size());
                         for (RsAccDetail accDetail : accDetailList) {
                             T0002Res.Param.Record record = T0002Res.getRecord();
-                            record.Date = sdfdate.format(accDetail.getTradeDate());
-                            record.Time = sdftime.format(accDetail.getTradeDate());
+                            record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
+                            record.Time = "121212";
+
                             record.Flag = accDetail.getInoutFlag();
                             record.Type = accDetail.getTradeType();
                             record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
@@ -256,7 +256,12 @@ public class ServerMessageService implements IMessageService {
                 biPlan.setPlanNo(t2008Req.param.PlanNO);
                 biPlan.setPlanAmount(new BigDecimal(t2008Req.param.PlanAmt).divide(new BigDecimal(100)));
                 biPlan.setPlanNum(Integer.parseInt(t2008Req.param.PlanNum));
-                biPlan.setSubmitDate(t2008Req.param.SubmitDate);
+                if (!org.apache.commons.lang.StringUtils.isEmpty(t2008Req.param.SubmitDate)
+                        && t2008Req.param.SubmitDate.length() >= 8) {
+                    biPlan.setSubmitDate(StringUtil.transDate8ToDate10(t2008Req.param.SubmitDate));
+                } else {
+                    biPlan.setSubmitDate(t2008Req.param.SubmitDate);
+                }
                 int planDetailCnt = t2008Req.param.recordList.size();
 
                 if (!t2008Req.param.PlanNum.equalsIgnoreCase(String.valueOf(planDetailCnt))) {
@@ -281,6 +286,12 @@ public class ServerMessageService implements IMessageService {
                             planDetail.setToAccountCode(record.ToAcct);
                             planDetail.setToHsBankName(record.ToBankName);
                             planDetail.setPlAmount(new BigDecimal(record.Amt).divide(new BigDecimal(100)));
+                            if (!org.apache.commons.lang.StringUtils.isEmpty(record.PlanDate)
+                                    && record.PlanDate.length() >= 8) {
+                                planDetail.setPlanDate(StringUtil.transDate8ToDate10(record.PlanDate));
+                            } else {
+                                planDetail.setPlanDate(record.PlanDate);
+                            }
                             planDetail.setPlanDate(record.PlanDate);
                             planDetail.setPlanDesc(record.Purpose);
                             planDetail.setRemark(record.Remark);

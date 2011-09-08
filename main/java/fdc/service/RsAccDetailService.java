@@ -1,5 +1,6 @@
 package fdc.service;
 
+import fdc.common.constant.ChangeFlag;
 import fdc.common.constant.InOutFlag;
 import fdc.common.constant.TradeStatus;
 import fdc.common.constant.TradeType;
@@ -35,6 +36,15 @@ public class RsAccDetailService {
     private CommonMapper commonMapper;
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
+    public List<RsAccDetail> selectTodayAccDetails(){
+       RsAccDetailExample example = new RsAccDetailExample();
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
+                .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
+                .andTradeDateEqualTo(sdf10.format(new Date()));
+        return accDetailMapper.selectByExample(example);
+    }
+
     public RsAccDetail selectAccDetailByPkid(String pkid) {
         return accDetailMapper.selectByPrimaryKey(pkid);
     }
@@ -51,7 +61,7 @@ public class RsAccDetailService {
         example.createCriteria().andDeletedFlagEqualTo("0")
                 .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                 .andTradeDateGreaterThanOrEqualTo(sdf10.format(new Date()));
-        //example.setOrderByClause("TradeDate");
+        example.setOrderByClause("Trade_Date desc");
         return accDetailMapper.selectByExample(example);
     }
 
@@ -66,7 +76,7 @@ public class RsAccDetailService {
          } catch (ParseException e) {
              throw new RuntimeException("ÈÕÆÚ×ª»»´íÎó£¡");
          }
-       //  example.setOrderByClause("TradeDate");
+        example.setOrderByClause("Trade_Date desc");
         return accDetailMapper.selectByExample(example);
     }
 
