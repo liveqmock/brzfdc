@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
@@ -19,6 +20,7 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
+@ViewScoped
 public class ContractDetlAction implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ContractDetlAction.class);
     @ManagedProperty(value = "#{contractService}")
@@ -29,9 +31,8 @@ public class ContractDetlAction implements Serializable {
     @PostConstruct
     public void init() {
         FacesContext context = FacesContext.getCurrentInstance();
-//        String paramPk_id = (String)context.getExternalContext().getSessionMap().get("pkId");
-        String paramPk_id = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
-        contractDetlQry(paramPk_id);
+        String pkid = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
+        contractDetlQry(pkid);
     }
 
     private void contractDetlQry(String pkid) {
