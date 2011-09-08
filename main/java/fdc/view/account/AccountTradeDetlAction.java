@@ -13,6 +13,7 @@ import pub.platform.utils.BusinessDate;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -27,7 +28,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class AccountTradeDetlAction {
     private static final Logger logger = LoggerFactory.getLogger(AccountTradeDetlAction.class);
     @ManagedProperty(value = "#{accountDetlService}")
@@ -38,7 +39,6 @@ public class AccountTradeDetlAction {
     private Date endDate;
     private List<RsAccDetail> rsAccDetails;
     private RsAccDetail rsAccDetail;
-    private String rtnFlag;
     private List<RsAccDetail> rsAccDetailsInit;
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
     private List<SelectItem> actDetlStatusOptions;
@@ -77,44 +77,12 @@ public class AccountTradeDetlAction {
                 sdf10.format(beginDate), sdf10.format(endDate));
     }
 
-    //ÀûÏ¢Â¼Èë
-    public String onBtnSaveClick() {
-        try {
-            String createBy = SystemService.getOperatorManager().getOperatorId();
-            FacesContext context = FacesContext.getCurrentInstance();
-            String accountno = (String) context.getExternalContext().getRequestParameterMap().get("acctno");
-            String companyid = (String) context.getExternalContext().getRequestParameterMap().get("companyid");
-            rsAccDetail.setAccountCode(accountno);
-            rsAccDetail.setCompanyId(companyid);
-            rsAccDetail.setStatusFlag("0");
-            rsAccDetail.setInoutFlag("1");
-            rsAccDetail.setTradeType(TradeType.INTEREST.getCode());
-            rsAccDetail.setCreatedBy(createBy);
-            rsAccDetail.setCreatedDate(new Date());
-            accountDetlService.insertSelectedRecord(rsAccDetail);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            rtnFlag = "<script language='javascript'>rtnScript('false');</script>";
-            return null;
-        }
-        rtnFlag = "<script language='javascript'>rtnScript('true');</script>";
-        return null;
-    }
-
     public List<RsAccDetail> getRsAccDetailsInit() {
         return rsAccDetailsInit;
     }
 
     public void setRsAccDetailsInit(List<RsAccDetail> rsAccDetailsInit) {
         this.rsAccDetailsInit = rsAccDetailsInit;
-    }
-
-    public String getRtnFlag() {
-        return rtnFlag;
-    }
-
-    public void setRtnFlag(String rtnFlag) {
-        this.rtnFlag = rtnFlag;
     }
 
     public RsAccDetail getRsAccDetail() {

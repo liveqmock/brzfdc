@@ -53,7 +53,7 @@
     <ui:define name="content">
         <div style="margin:5px;">
             <h:form id="form">
-                <h:outputText id="rntFlag" escape="false" value="#{accountTradeDetlAction.rtnFlag}"/>
+                <h:outputText id="rntFlag" escape="false" value="#{interestEditAction.rtnFlag}"/>
                 <p:fieldset legend="缴款信息">
                     <h:panelGrid id="detailPanel1" columns="1" cellpadding="8" border="0" style="margin-top: 15px;">
                         <h:panelGrid columns="6" cellpadding="2" border="0"
@@ -70,18 +70,18 @@
                             <h:outputLabel/>
                             <h:outputLabel value="缴款金额:"/>
                             <h:inputText id="txtTradeAmt" required="true" requiredMessage="不能为空" style="width:150px;"
-                                         value="#{accountTradeDetlAction.rsAccDetail.tradeAmt}" size="16">
+                                         value="#{interestEditAction.rsAccDetail.tradeAmt}" size="16">
                             </h:inputText>
                             <p:message for="txtTradeAmt"/>
 
                             <h:outputLabel value="缴款后余额:"/>
                             <h:inputText id="txtBalance" required="true" requiredMessage="不能为空" style="width:150px;"
-                                         value="#{accountTradeDetlAction.rsAccDetail.balance}" size="16">
+                                         value="#{interestEditAction.rsAccDetail.balance}" size="16">
                             </h:inputText>
                             <p:message for="txtBalance"/>
                             <h:outputLabel value="缴款时间:"/>
                             <p:inputMask mask="9999-99-99" id="txtTradeDt" required="true" requiredMessage="不能为空" style="width:150px;"
-                                         value="#{accountTradeDetlAction.rsAccDetail.tradeDate}"></p:inputMask>
+                                         value="#{interestEditAction.rsAccDetail.tradeDate}"></p:inputMask>
                             <p:message for="txtTradeDt"/>
                         </h:panelGrid>
 
@@ -92,8 +92,12 @@
                     <h:panelGrid columns="2" cellpadding="5" border="0"
                                  columnClasses="col-label,col-input,col-label2,col-input">
 
-                        <h:commandButton id="btnSave" ajax="true" value="保存"
-                                         action="#{accountTradeDetlAction.onBtnSaveClick}"
+                        <h:commandButton rendered="#{interestEditAction.operation.equals('add')}" id="btnSaveAdd" ajax="true" value="保存"
+                                         action="#{interestEditAction.onBtnSaveClick}"
+                                         style="margin-left:300px;width:90px">
+                        </h:commandButton>
+                        <h:commandButton  rendered="#{interestEditAction.operation.equals('edit')}" id="btnSaveEdit" ajax="true" value="保存"
+                                         action="#{interestEditAction.onBtnSaveClick_Edit}"
                                          style="margin-left:300px;width:90px">
                         </h:commandButton>
                         <h:commandButton ajax="true" immediate="true"

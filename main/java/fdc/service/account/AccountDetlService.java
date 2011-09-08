@@ -78,6 +78,10 @@ public class AccountDetlService {
         return rsAccDetailMapper.selectByExample(example);
     }
 
+    public RsAccDetail selectedByPK(String pkid) {
+        return rsAccDetailMapper.selectByPrimaryKey(pkid);
+    }
+
     public boolean isChecked(RsAccDetail rsAccDetail) {
         String orgn_statusflag = rsAccDetailMapper.selectByPrimaryKey(rsAccDetail.getPkId()).getStatusFlag();
         if (orgn_statusflag.equalsIgnoreCase(rsAccDetail.getStatusFlag())) {

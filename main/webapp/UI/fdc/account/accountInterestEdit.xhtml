@@ -38,9 +38,10 @@
                 }
             }
             function recordEdit(obj) {
-                var acctno = obj.parentNode.parentNode.children[4].innerHTML;
-                var acctname = obj.parentNode.parentNode.children[5].innerHTML;
-                var companyid = obj.parentNode.parentNode.children[1].innerHTML;
+                var pkid = obj.parentNode.parentNode.children[9].innerHTML;
+                var acctno = obj.parentNode.parentNode.children[2].innerHTML;
+                var acctname = obj.parentNode.parentNode.children[1].innerHTML;
+                var companyid = obj.parentNode.parentNode.children[10].innerHTML;
                 var statusflag = obj.parentNode.parentNode.children[0].innerHTML;
                 if (statusflag != "0") {
                     alert("账户不在监管中。");
@@ -48,12 +49,14 @@
                 }
                 var sfeature = "dialogwidth:800px; dialogheight:520px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
                 var arg = new Object();
-                arg.doType = "add";
+                arg.doType = "edit";
                 arg.companyid = companyid;
                 arg.acctno = acctno;
-                var rtn = dialog("interestBook.xhtml?acctno=" + acctno + "&amp;acctname=" + acctname + "&amp;companyid=" + companyid + "&amp;doType=add", arg, sfeature);
+                arg.pkid = pkid;
+                var rtn = dialog("interestBook.xhtml?acctno=" + acctno + "&amp;acctname=" + acctname + "&amp;companyid=" + companyid
+                        + "&amp;doType=edit" + "&amp;pkid=" + pkid, arg, sfeature);
                 if (rtn == "1") {
-                    document.getElementById("actqueryForm:btnQuery").click();
+                    document.getElementById("editForm:btnQuery").click();
                 }
             }
         </script>
@@ -62,56 +65,10 @@
 
     <ui:define name="content">
         <div class="entry" id="top">
-            <p:tabView style="font-weight:normal;font-style:normal"  dynamic="true" cache="false">
-                <p:tab title="监管账户利息录入">
-                    <p:growl id="msgs" showDetail="false"/>
-                    <h:form id="actqueryForm">
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
+                <p:tab title="利息录入修改">
+                    <h:form id="editForm">
                         <p:commandButton id="btnQuery" style="display:none" action="#{accountTradeDetlAction.init}"/>
-                        <p:dataTable id="pdt" style="width:100%;"
-                                     dynamic="true" selectionMode="single"
-                                     value="#{accountAction.accountList}" var="record"
-                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     paginator="true" rows="10" paginatorPosition="bottom"
-                                     rowsPerPageTemplate="100,50,30,10,5"
-                                     emptyMessage="数据记录为空...">
-                            <p:column headerText="statusflag" style="display:none;">
-                                <h:outputText value="#{record.statusFlag}"/>
-                            </p:column>
-                            <p:column headerText="companyid" style="display:none;">
-                                <h:outputText value="#{record.companyId}"/>
-                            </p:column>
-                            <p:column headerText="预售许可证号" style="text-align:left">
-                                <h:outputText value="#{record.presellNo}"/>
-                            </p:column>
-
-                            <p:column headerText="房产商" filterBy="#{flagStatusForMap.companyMap[record.companyId]}"
-                                      filterMatchMode="contains">
-                                <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"/>
-                            </p:column>
-
-                            <p:column headerText="监管账号" filterBy="#{record.accountCode}" filterMatchMode="contains">
-                                <h:outputText value="#{record.accountCode}"/>
-                            </p:column>
-
-                            <p:column headerText="账户名称" filterBy="#{record.accountName}" filterMatchMode="contains">
-                                <h:outputText value="#{record.accountName}"/>
-                            </p:column>
-
-                            <p:column headerText="项目名称">
-                                <h:outputText value="#{record.proName}"/>
-                            </p:column>
-
-                            <p:column headerText="项目地址" style="text-align:left">
-                                <h:outputText value="#{record.proAddr}"/>
-                            </p:column>
-                            <p:column headerText="操作" style="text-align:center">
-                                <h:commandLink onclick="recordEdit(this);return false;" value="录入" style="color: blue"/>
-                            </p:column>
-                        </p:dataTable>
-                    </h:form>
-                </p:tab>
-                <p:tab title="利息交易明细">
-                    <h:form id="qryForm">
                         <p:dataTable id="pdt1" style="width:100%;"
                                      dynamic="true" selectionMode="single"
                                      value="#{accountTradeDetlAction.rsAccDetailsInit}" var="record"
@@ -119,6 +76,12 @@
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,10,5"
                                      emptyMessage="数据记录为空...">
+                            <p:column headerText="statusflag" style="display:none;">
+                                <h:outputText value="#{record.statusFlag}"/>
+                            </p:column>
+                            <p:column headerText="账户名称" filterBy="#{record.accountName}" filterMatchMode="contains">
+                                <h:outputText value="#{record.accountName}"/>
+                            </p:column>
                             <p:column filterBy="#{record.accountCode}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="监管账号"/>
@@ -155,11 +118,21 @@
                                     <f:convertNumber pattern="###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column style="text-align:center;">
+                            <p:column style="text-align:center;" filterBy="#{record.statusFlag}"
+                                      filterOptions="#{accountTradeDetlAction.actDetlStatusOptions}">
                                 <f:facet name="header">
                                     <h:outputText value="交易状态"/>
                                 </f:facet>
                                 <h:outputText value="#{flagStatusForMap.actDetlStatusFlagMap[record.statusFlag]}"/>
+                            </p:column>
+                            <p:column headerText="操作" style="text-align:center">
+                                <h:commandLink onclick="recordEdit(this)" value="修改" style="color: blue"/>
+                            </p:column>
+                            <p:column headerText="pkid" style="display:none">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
+                            <p:column headerText="companyid" style="display:none;">
+                                <h:outputText value="#{record.companyId}"/>
                             </p:column>
                         </p:dataTable>
                     </h:form>
