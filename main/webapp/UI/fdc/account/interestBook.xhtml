@@ -80,9 +80,8 @@
                             </h:inputText>
                             <p:message for="txtBalance"/>
                             <h:outputLabel value="缴款时间:"/>
-                            <p:calendar id="txtTradeDt" required="true" requiredMessage="不能为空" style="width:150px;"
-                                        value="#{accountTradeDetlAction.rsAccDetail.tradeDate}">
-                            </p:calendar>
+                            <p:inputMask mask="9999-99-99" id="txtTradeDt" required="true" requiredMessage="不能为空" style="width:150px;"
+                                         value="#{accountTradeDetlAction.rsAccDetail.tradeDate}"></p:inputMask>
                             <p:message for="txtTradeDt"/>
                         </h:panelGrid>
 
