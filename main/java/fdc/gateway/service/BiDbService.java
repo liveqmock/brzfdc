@@ -42,21 +42,20 @@ public class BiDbService {
 
     @Transactional
     public int storeFdcAllPlanInfos(BiPlan biPlan, List<BiPlanDetail> biPlanDetailList) {
-        BiPlanExample planExample = new BiPlanExample();
-        planExample.createCriteria().andDeletedFlagEqualTo("0").andPlanNoEqualTo(biPlan.getPlanNo());
-        if(biPlanMapper.countByExample(planExample) >= 1) {
-            BiPlanDetailExample planDetailExample = new BiPlanDetailExample();
-            planDetailExample.createCriteria().andDeletedFlagEqualTo("0").andPlanIdEqualTo(biPlan.getPlanNo());
-            for (BiPlanDetail originPlanDetail : biPlanDetailMapper.selectByExample(planDetailExample)) {
-                if(deletePlanCtlByDetail(originPlanDetail) == -1) {
-                    return -1;
-                }
-            }
-        }
+
         if (insertBiPlan(biPlan) == 1) {
             RsPlanCtrl rsPlanCtrl = null;
+            boolean isUpdate = false;
             for (BiPlanDetail biPlanDetail : biPlanDetailList) {
-                rsPlanCtrl = new RsPlanCtrl();
+                if (isExistPlanCtlNo(biPlanDetail)) {
+                    RsPlanCtrlExample example = new RsPlanCtrlExample();
+                    example.createCriteria().andDeletedFlagEqualTo("0").andPlanCtrlNoEqualTo(biPlanDetail.getPlanCtrlNo());
+                    rsPlanCtrl = rsPlanCtrlMapper.selectByExample(example).get(0);
+                    isUpdate = true;
+                } else {
+                    rsPlanCtrl = new RsPlanCtrl();
+                    isUpdate = false;
+                }
                 rsPlanCtrl.setAccountCode(biPlan.getAccountCode());
                 rsPlanCtrl.setAcceptDate(biPlan.getSubmitDate());
                 rsPlanCtrl.setPlanCtrlNo(biPlanDetail.getPlanCtrlNo());
@@ -68,8 +67,15 @@ public class BiDbService {
                 rsPlanCtrl.setPlanDate(biPlanDetail.getPlanDate());
                 rsPlanCtrl.setPlanDesc(biPlanDetail.getPlanDesc());
                 rsPlanCtrl.setRemark(biPlanDetail.getRemark());
-                if (insertBiPlanDetail(biPlanDetail) != 1 || rsPlanCtrlMapper.insertSelective(rsPlanCtrl) != 1) {
-                    return -1;
+
+                if (isUpdate) {
+                    if (insertBiPlanDetail(biPlanDetail) != 1 || rsPlanCtrlMapper.updateByPrimaryKeySelective(rsPlanCtrl) != 1) {
+                        return -1;
+                    }
+                } else {
+                    if (insertBiPlanDetail(biPlanDetail) != 1 || rsPlanCtrlMapper.insertSelective(rsPlanCtrl) != 1) {
+                        return -1;
+                    }
                 }
             }
             return 1;
@@ -77,16 +83,13 @@ public class BiDbService {
         return -1;
     }
 
-    private int deletePlanCtlByDetail(BiPlanDetail biPlanDetail) {
+    private boolean isExistPlanCtlNo(BiPlanDetail planDetail) {
         RsPlanCtrlExample example = new RsPlanCtrlExample();
-        example.createCriteria().andDeletedFlagEqualTo("0").andPlanCtrlNoEqualTo(biPlanDetail.getPlanId());
-        List<RsPlanCtrl> rsPlanCtrlList = rsPlanCtrlMapper.selectByExample(example);
-        if(rsPlanCtrlList.isEmpty()) return 1;
-        else {
-          RsPlanCtrl rsPlanCtrl = rsPlanCtrlList.get(0);
-          rsPlanCtrl.setDeletedFlag("1");
-          return rsPlanCtrlMapper.updateByPrimaryKey(rsPlanCtrl);
+        example.createCriteria().andDeletedFlagEqualTo("0").andPlanCtrlNoEqualTo(planDetail.getPlanCtrlNo());
+        if (rsPlanCtrlMapper.countByExample(example) >= 1) {
+            return true;
         }
+        return false;
     }
 
     /**
@@ -128,7 +131,6 @@ public class BiDbService {
      * @param contractClose
      * @return
      */
-    @Transactional
     public int insertBiContactClose(BiContractClose contractClose) {
         return biContractCloseMapper.insertSelective(contractClose);
     }
@@ -139,7 +141,6 @@ public class BiDbService {
      * @param contractClose
      * @return
      */
-    @Transactional
     public int updateContractToClose(BiContractClose contractClose) {
 
         RsContract rsContract = selectContractByCloseInfo(contractClose);
@@ -155,10 +156,7 @@ public class BiDbService {
     private RsContract selectContractByCloseInfo(BiContractClose contractClose) {
         RsContractExample example = new RsContractExample();
         example.createCriteria().andContractNoEqualTo(contractClose.getContractNo()).andAccountCodeEqualTo(contractClose.getAccountCode())
-                .andAccountNameEqualTo(contractClose.getAccountName()).andBuyerAccCodeEqualTo(contractClose.getBuyerAccCode())
-                .andBuyerNameEqualTo(contractClose.getBuyerName()).andBuyerBankNameEqualTo(contractClose.getBuyerBankName())
-                .andBuyerCertTypeEqualTo(contractClose.getBuyerCertType()).andBuyerCertNoEqualTo(contractClose.getBuyerCertNo())
-                .andTotalAmtEqualTo(contractClose.getTotalAmt());
+                .andDeletedFlagEqualTo("0");
         List<RsContract> rsContractList = rsContractMapper.selectByExample(example);
         if (rsContractList.isEmpty() || rsContractList.size() > 1) {
             return null;

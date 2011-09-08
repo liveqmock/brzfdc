@@ -86,7 +86,8 @@ public class ServerMessageService implements IMessageService {
                         break;
                     }
                     List<RsAccDetail> accDetailList = biDbService.selectAccDetailsByCodeNameDate(t0002Req.param.Acct,
-                            t0002Req.param.AcctName, t0002Req.param.BeginDate, t0002Req.param.EndDate);
+                            t0002Req.param.AcctName, StringUtil.transDate8ToDate10(t0002Req.param.BeginDate),
+                            StringUtil.transDate8ToDate10(t0002Req.param.EndDate));
                     if (!accDetailList.isEmpty()) {
                         t0002Res.param.DetailNum = String.valueOf(accDetailList.size());
                         for (RsAccDetail accDetail : accDetailList) {
@@ -105,6 +106,9 @@ public class ServerMessageService implements IMessageService {
                             record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
                             t0002Res.param.recordList.add(record);
                         }
+                    }else {
+                        t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
+                        t0002Res.head.RetMsg = "交易明细记录为空！";
                     }
                 } catch (ParseException e) {
                     t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FORMAT_ERROR.getCode();
@@ -276,9 +280,8 @@ public class ServerMessageService implements IMessageService {
                 try {
                     if (planDetailCnt >= 1) {
                         biPlanDetailList = new ArrayList<BiPlanDetail>();
-                        BiPlanDetail planDetail = null;
                         for (T2008Req.Param.Record record : t2008Req.param.recordList) {
-                            planDetail = new BiPlanDetail();
+                            BiPlanDetail planDetail = new BiPlanDetail();
                             wrngRecordNo = record.PlanDetailNO;
                             planDetail.setPlanId(t2008Req.param.PlanNO);
                             planDetail.setPlanCtrlNo(record.PlanDetailNO);
@@ -298,7 +301,7 @@ public class ServerMessageService implements IMessageService {
                             biPlanDetailList.add(planDetail);
                         }
                         if (biDbService.storeFdcAllPlanInfos(biPlan, biPlanDetailList) == -1) {
-                            throw new RuntimeException("数据库保存数据操作失败！");
+                            throw new RuntimeException("接收保存数据操作失败！");
                         }
                     } else throw new RuntimeException("计划明细为空！");
 

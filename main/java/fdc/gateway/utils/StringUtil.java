@@ -28,17 +28,16 @@ public class StringUtil {
      * @param amt
      * @return
      */
-    public static String toBiformatAmt(BigDecimal amt) {
-        double dblAmt = amt.doubleValue();
+   public static String toBiformatAmt(BigDecimal amt) {
         String rtnStrAmt = "";
-        if (dblAmt < 1) {
-            if (dblAmt > 0.1) {
-                rtnStrAmt = "0" + String.valueOf(dblAmt * 100);
+        if (amt.compareTo(new BigDecimal(1)) < 0) {
+            if (amt.compareTo(new BigDecimal(0.1)) > 0) {
+                rtnStrAmt = "0" + String.valueOf(amt.multiply(new BigDecimal(100)));
             } else {
-                rtnStrAmt = "00" + String.valueOf(dblAmt * 100);
+                rtnStrAmt = "00" + String.valueOf(amt.multiply(new BigDecimal(100)));
             }
         } else {
-            rtnStrAmt = String.valueOf(dblAmt * 100);
+            rtnStrAmt = String.valueOf(amt.multiply(new BigDecimal(100)));
         }
         return rtnStrAmt.split("\\.")[0];
     }

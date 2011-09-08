@@ -62,6 +62,7 @@ public class ContractRecvActAction {
             MessageUtil.addInfo("入账成功！");
             init();
         } catch (Exception e) {
+            e.printStackTrace();
             MessageUtil.addError("操作失败." + e.getMessage());
         }
         return null;

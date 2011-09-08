@@ -263,8 +263,8 @@ public class ClientBiService {
 
     private CommonRes sendMsgAndRecvRes(String dataGram) throws IOException {
         // TODO TEST-ing
-        //String recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
-        String recvMsg = new CommonRes().toXml();
+        String recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
+        //String recvMsg = new CommonRes().toXml();
         CommonRes resBean = clientMessageService.transMsgToBean(recvMsg);
         return resBean;
     }
