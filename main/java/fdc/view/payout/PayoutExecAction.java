@@ -134,7 +134,6 @@ public class PayoutExecAction {
                 MessageUtil.addInfo("发送完成！");
             } catch (Exception e) {
                 logger.error("操作失败." + e.getMessage());
-                e.printStackTrace();
                 MessageUtil.addError("操作失败." + e.getMessage());
                 return null;
             }

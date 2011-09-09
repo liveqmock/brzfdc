@@ -52,23 +52,23 @@
 
                         <p:fieldset legend="用款计划">
                             <h:panelGrid columns="1">
-                            <h:panelGrid columns="4" cellpadding="2" columnClasses="col-95,col-5,col-95,col-5"
-                                         style="width: 100%">
-                                <h:outputLabel value="计划编号:" for="planNo" style="margin-left: 28px;"/>
-                                <p:inputText id="planNo" value="#{payoutAction.rsPayout.businessNo}"
-                                             readonly="true" style="width:160px;"/>
-                                <h:outputLabel value="计划金额:" for="planAmt" style="margin-left: 30px;"/>
-                                <p:inputText id="planAmt" value="#{payoutAction.planCtrl.plAmount}"
-                                            readonly="true"  style="width:260px;">
-                                <f:convertNumber pattern="#,###,###,###,##0.00"/>
-                                </p:inputText>
-                                <h:outputLabel value="可用金额:" for="avAmt" style="margin-left: 28px;"/>
-                                <p:inputText id="avAmt" value="#{payoutAction.planCtrl.avAmount}"
-                                           readonly="true"   style="width:160px;">
-                                <f:convertNumber pattern="#,###,###,###,##0.00"/>
-                                </p:inputText>
-                                <h:outputLabel/><h:outputLabel/>
-                            </h:panelGrid>
+                                <h:panelGrid columns="4" cellpadding="2" columnClasses="col-95,col-5,col-95,col-5"
+                                             style="width: 100%">
+                                    <h:outputLabel value="计划编号:" for="planNo" style="margin-left: 28px;"/>
+                                    <p:inputText id="planNo" value="#{payoutAction.rsPayout.businessNo}"
+                                                 readonly="true" style="width:160px;"/>
+                                    <h:outputLabel value="计划金额:" for="planAmt" style="margin-left: 30px;"/>
+                                    <p:inputText id="planAmt" value="#{payoutAction.planCtrl.plAmount}"
+                                                 readonly="true" style="width:260px;">
+                                        <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                                    </p:inputText>
+                                    <h:outputLabel value="可用金额:" for="avAmt" style="margin-left: 28px;"/>
+                                    <p:inputText id="avAmt" value="#{payoutAction.planCtrl.avAmount}"
+                                                 readonly="true" style="width:160px;">
+                                        <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                                    </p:inputText>
+                                    <h:outputLabel/><h:outputLabel/>
+                                </h:panelGrid>
                             </h:panelGrid>
                         </p:fieldset>
 
@@ -78,48 +78,53 @@
                                              style="width: 100%">
                                     <h:outputLabel value="收款方账号:" for="toAccountCode" style="margin-left: 16px;"/>
                                     <p:inputText id="toAccountCode" value="#{payoutAction.rsPayout.recAccount}"
-                                                readonly="true" style="width:160px;"/>
+                                                 readonly="false" style="width:160px;" required="true"
+                                                 requiredMessage="必须输入收款方账号！"/>
                                     <h:outputLabel value="收款方户名:" for="toAccountName" style="margin-left: 17px;"/>
                                     <p:inputText id="toAccountName" value="#{payoutAction.rsPayout.recCompanyName}"
-                                                readonly="true" style="width:260px;"/>
+                                                 readonly="false" required="true" requiredMessage="必须输入收款方户名！"
+                                                 style="width:260px;"/>
 
-                                    <h:outputLabel value="【收款行】:" for="toBankCode" style="color:blue;margin-left: 16px;"/>
+                                    <h:outputLabel value="【收款行】:" for="toBankCode"
+                                                   style="color:blue;margin-left: 16px;"/>
                                     <p:inputText id="toBankCode" value="#{payoutAction.rsPayout.recBankCode}"
-                                               readonly="true"  style="width:160px;"/>
+                                                 readonly="false" required="true" requiredMessage="必须输入收款行代号！"
+                                                 style="width:160px;"/>
                                     <h:outputLabel value="收款行全称:" for="toBankName" style="margin-left: 17px;"/>
                                     <p:inputText id="toBankName" value="#{payoutAction.rsPayout.recBankName}"
-                                              readonly="true"   style="width:260px;"/>
+                                                 readonly="false" required="true" requiredMessage="必须输入收款行名称！"
+                                                 style="width:260px;"/>
                                 </h:panelGrid>
 
                             </h:panelGrid>
                         </p:fieldset>
-                         <p:fieldset legend="付款方信息">
+                        <p:fieldset legend="付款方信息">
                             <h:panelGrid columns="1">
                                 <h:panelGrid columns="4" cellspacing="2" style="width: 100%"
                                              columnClasses="col-95,col-5,col-95,col-5">
 
                                     <h:outputLabel value="付款房产商:" for="companyName" style="margin-left:20px;"/>
-                                    <h:inputText autocomplete="off" id="companyName" style="width:160px;" readonly="true"
+                                    <h:inputText autocomplete="off" id="companyName" style="width:160px;"
+                                                 readonly="false" required="true" requiredMessage="必须输入付款开发商！"
                                                  value="#{payoutAction.rsPayout.payCompanyName}">
                                     </h:inputText>
 
                                     <h:outputLabel value="付款监管账号:" for="accountCode"/>
-                                    <p:inputText autocomplete="off" id="accountCode" style="width:250px;" readonly="true"
+                                    <p:inputText autocomplete="off" id="accountCode" style="width:250px;"
+                                                 readonly="true"
                                                  value="#{payoutAction.rsPayout.payAccount}">
                                     </p:inputText>
 
                                     <h:outputLabel value="【单据号】:" for="docNo"/>
                                     <p:inputText id="docNo" value="#{payoutAction.rsPayout.docNo}" required="true"
-                                                requiredMessage="必须输入单据号！" style="width:160px;" onfocus="this.select()"/>
+                                                 requiredMessage="必须输入单据号！" style="width:160px;"
+                                                 onfocus="this.select()"/>
 
                                     <h:outputLabel value="【申请金额】:" for="applyAmt" style="margin-left:20px"/>
                                     <p:inputText autocomplete="off" id="applyAmt" style="width:250px;"
                                                  required="true"
                                                  requiredMessage="必须输入申请金额！"
                                                  value="#{payoutAction.rsPayout.plAmount}">
-<!--
-                                        <f:convertNumber pattern="#,###,###,###,##0.00"/>
--->
                                     </p:inputText>
                                 </h:panelGrid>
                                 <h:panelGrid columns="2" cellspacing="2" style="width: 100%"
@@ -138,14 +143,14 @@
                             </h:panelGrid>
                         </p:fieldset>
                     </h:panelGrid>
-                    <h:panelGrid style="width: 20%" columns="2" >
+                    <h:panelGrid style="width: 20%" columns="2">
                         <p:commandButton id="saveBtn" ajax="true" value="保存"
                                          action="#{payoutAction.onSave}"
                                          style="margin-left:235px;width:90px"
                                          update="input,pdt,msgs">
                             <p:collector value="#{payoutAction.rsPayout}" addTo="#{payoutAction.rsPayoutList}"/>
                         </p:commandButton>
-                        <p:commandButton ajax="true" id="clsBtn" value="关闭"  onclick="window.close();"
+                        <p:commandButton ajax="true" id="clsBtn" value="关闭" onclick="window.close();"
                                          style="width:90px;margin-left:15px" update="input,msgs"/>
                     </h:panelGrid>
                 </h:panelGrid>

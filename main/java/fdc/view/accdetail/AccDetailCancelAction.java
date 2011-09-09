@@ -56,13 +56,16 @@ public class AccDetailCancelAction {
 
     public String onCancel() {
         try {
-            if (tradeService.handleCancelAccDetail(accDetail, ChangeFlag.CANCEL) == 2) {
+            if (tradeService.handleCancelAccDetail(accDetail, ChangeFlag.CANCEL) == 3) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);
                 MessageUtil.addInfo("交易冲正成功！");
+            }else {
+                MessageUtil.addError("交易冲正失败！");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             MessageUtil.addError("操作失败." + e.getMessage());
         }
         return null;

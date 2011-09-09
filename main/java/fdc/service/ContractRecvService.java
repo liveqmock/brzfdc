@@ -54,6 +54,7 @@ public class ContractRecvService {
             String operId = om.getOperatorId();
             String operName = om.getOperatorName();
             Date operDate = new Date();
+            rsReceive.setTradeDate(SystemService.getSdfdate10());
             rsReceive.setLastUpdBy(operId);
             rsReceive.setLastUpdDate(operDate);
             rsReceive.setWorkResult(workResult.getCode());

@@ -89,6 +89,15 @@ public class InterestBookAction {
     }
 
     public String onSend() {
+        if(rsAccDetailsSend.isEmpty()) {
+            MessageUtil.addWarn("没有待发送记录！");
+            return null;
+        }
+        try {
+
+        }catch (Exception e) {
+           MessageUtil.addError("操作失败." + e.getMessage());
+        }
         return null;
     }
 

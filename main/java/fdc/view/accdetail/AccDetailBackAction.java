@@ -53,13 +53,15 @@ public class AccDetailBackAction {
         }
     }
 
-    public String onCancel() {
+    public String onBack() {
         try {
-            if (tradeService.handleCancelAccDetail(accDetail, ChangeFlag.BACK) == 2) {
+            if (tradeService.handleCancelAccDetail(accDetail, ChangeFlag.BACK) == 3) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);
                 MessageUtil.addInfo("交易退票成功！");
+            }else {
+                MessageUtil.addError("交易退票失败！");
             }
         } catch (Exception e) {
             MessageUtil.addError("操作失败." + e.getMessage());

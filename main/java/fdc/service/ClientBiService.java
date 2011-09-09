@@ -103,8 +103,8 @@ public class ClientBiService {
         req.param.AcctName = record.getAccountName();
         req.param.BankSerial = record.getBankSerial();
         req.param.Reason = "退票";
-        req.param.Date = sdfdate8.format(record.getTradeDate());
-        req.param.Time = sdftime6.format(record.getTradeDate());
+        req.param.Date = StringUtil.transDate10ToDate8(record.getTradeDate());
+        req.param.Time = "121212";
         String dataGram = req.toFDCDatagram();                // 报文
 
         CommonRes res = sendMsgAndRecvRes(dataGram);
@@ -150,8 +150,8 @@ public class ClientBiService {
         req.param.Acct = record.getPayAccount();
         req.param.AcctName = record.getPayCompanyName();
         req.param.BankSerial = record.getBankSerial();
-        req.param.Date = sdfdate8.format(record.getExecDate());
-        req.param.Time = sdftime6.format(record.getExecDate());
+        req.param.Date = StringUtil.transDate10ToDate8(record.getExecDate());
+        req.param.Time = "121212";
         req.param.Flag = "0";
         req.param.Type = TradeType.PLAN_PAYOUT.getCode();
         req.param.ToAcctName = record.getRecCompanyName();
@@ -183,8 +183,8 @@ public class ClientBiService {
         req.param.AcctName = record.getCompanyName();
         req.param.ContractNum = record.getBusinessNo();
         req.param.BankSerial = record.getBankSerial();
-        req.param.Date = sdfdate8.format(record.getTradeDate());
-        req.param.Time = sdftime6.format(record.getTradeDate());
+        req.param.Date = StringUtil.transDate10ToDate8(record.getTradeDate());
+        req.param.Time = "121212";
         req.param.Flag = flag;   // 1-收入  2-支出
         req.param.Type = TradeType.HOUSE_INCOME.getCode();
         req.param.ToAcctName = record.getBuyerAccName();
@@ -215,15 +215,16 @@ public class ClientBiService {
         req.param.AcctName = record.getPayCompanyName();
         req.param.ContractNum = record.getBusinessNo();
         req.param.BankSerial = record.getBankSerial();
-        req.param.Date = sdfdate8.format(record.getTradeDate());
-        req.param.Time = sdftime6.format(record.getTradeDate());
+        req.param.Date = StringUtil.transDate10ToDate8(record.getTradeDate());
+        req.param.Time = "121212";
         req.param.Flag = flag;   // 1-收入  2-支出
         req.param.Type = TradeType.TRANS_BACK.getCode();
         req.param.ToAcctName = record.getRecCompanyName();
         req.param.ToAcct = record.getRecAccount();
         req.param.ToBankName = record.getRecBankName();
         req.param.Amt = StringUtil.toBiformatAmt(record.getApAmount());
-        req.param.Purpose = record.getPurpose() + TradeType.TRANS_BACK.getTitle();
+        req.param.Purpose = record.getPurpose()==null?
+                TradeType.TRANS_BACK.getTitle():record.getPurpose() + TradeType.TRANS_BACK.getTitle();
         String dataGram = req.toFDCDatagram();                // 报文
 
         CommonRes res = sendMsgAndRecvRes(dataGram);

@@ -2,6 +2,7 @@ package fdc.view.contract;
 
 import fdc.common.constant.ContractRecvStatus;
 import fdc.common.constant.ContractStatus;
+import fdc.common.constant.InOutFlag;
 import fdc.common.constant.WorkResult;
 import fdc.repository.model.RsReceive;
 import fdc.service.ClientBiService;
@@ -75,13 +76,14 @@ public class ContractRecvActAction {
         }
         try {
             for (RsReceive record : selectedRecords) {
-                if (clientBiService.sendRsReceiveMsg(record, "1") != 1) {
+                if (clientBiService.sendRsReceiveMsg(record, InOutFlag.IN.getCode()) != 1) {
                     throw new RuntimeException("·¢ËÍÊ§°Ü£¡ÕËºÅ£º" + record.getAccountCode());
                 }
             }
             MessageUtil.addInfo("·¢ËÍ³É¹¦£¡");
             init();
         } catch (Exception e) {
+            e.printStackTrace();
             MessageUtil.addError("²Ù×÷Ê§°Ü." + e.getMessage());
         }
         return null;
