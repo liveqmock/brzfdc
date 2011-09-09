@@ -5,16 +5,20 @@ import fdc.common.constant.TradeStatus;
 import fdc.common.constant.TradeType;
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsAccount;
+import fdc.service.ClientBiService;
 import fdc.service.account.AccountDetlService;
 import fdc.service.account.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
+import sun.plugin2.message.Message;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.behavior.ClientBehavior;
+import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +37,8 @@ public class InterestBookAction {
     private AccountDetlService accountDetlService;
     @ManagedProperty(value = "#{accountService}")
     private AccountService accountService;
+    @ManagedProperty(value = "#{clientBiService}")
+    private ClientBiService clientBiService;
     //已复核数据 待入账
     private List<RsAccDetail> rsAccDetailsChk;
     private RsAccDetail[] selectedRecords;
@@ -94,9 +100,16 @@ public class InterestBookAction {
             return null;
         }
         try {
-
+            for(RsAccDetail record : rsAccDetailsSend) {
+                if(clientBiService.sendInterestRecord(record) != 1) {
+                   throw new RuntimeException("发送失败！出错记录账号："+record.getAccountCode());
+                }
+            }
+            MessageUtil.addInfo("发送完成！");
+            init();
         }catch (Exception e) {
            MessageUtil.addError("操作失败." + e.getMessage());
+           logger.error("操作失败", e.getMessage());
         }
         return null;
     }
@@ -163,6 +176,14 @@ public class InterestBookAction {
 
     public void setSelectedRecordsSended(RsAccDetail[] selectedRecordsSended) {
         this.selectedRecordsSended = selectedRecordsSended;
+    }
+
+    public ClientBiService getClientBiService() {
+        return clientBiService;
+    }
+
+    public void setClientBiService(ClientBiService clientBiService) {
+        this.clientBiService = clientBiService;
     }
 }
 

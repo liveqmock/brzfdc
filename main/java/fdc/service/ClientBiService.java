@@ -5,10 +5,7 @@ import fdc.common.constant.SendFlag;
 import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
 import fdc.gateway.domain.CommonRes;
-import fdc.gateway.domain.T000.T0003Req;
-import fdc.gateway.domain.T000.T0004Req;
-import fdc.gateway.domain.T000.T0006Req;
-import fdc.gateway.domain.T000.T0007Req;
+import fdc.gateway.domain.T000.*;
 import fdc.gateway.domain.T200.T2004Req;
 import fdc.gateway.domain.T200.T2005Req;
 import fdc.gateway.service.impl.ClientMessageService;
@@ -87,6 +84,28 @@ public class ClientBiService {
             return -1;
         } else {
             return 1;
+        }
+    }
+
+    public int sendInterestRecord(RsAccDetail record) throws IOException {
+        T0005Req req = new T0005Req();
+        req.head.OpCode = "0005";
+        req.param.Acct = record.getAccountCode();
+        req.param.AcctName = record.getAccountName();
+        req.param.BankSerial = record.getBankSerial();
+        req.param.Amt = StringUtil.toBiformatAmt(record.getTradeAmt());
+        req.param.Purpose = "利息";
+        // TODO 结息日期
+        req.param.Date = "20110920";
+        req.param.Time = "121212";
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            record.setSendFlag(SendFlag.SENT.getCode());
+            return accDetailService.updateAccDetail(record);
         }
     }
 
