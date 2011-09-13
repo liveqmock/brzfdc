@@ -158,7 +158,7 @@
                                       filterOptions="#{contractRecvAction.recvStatusOptions}"
                                       filterMatchMode="exact">
                                 <h:outputText
-                                        value="#{contractRecvAction.recvStatus.valueOfAlias(record.receiveType).title}"/>
+                                        value="#{contractRecvAction.workResult.valueOfAlias(record.workResult).title}"/>
                             </p:column>
                             <p:column headerText="缴款金额">
                                 <h:outputText value="#{record.plAmount}" style="float: right">
