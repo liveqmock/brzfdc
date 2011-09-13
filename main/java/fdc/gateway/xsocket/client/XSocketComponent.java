@@ -3,6 +3,8 @@ package fdc.gateway.xsocket.client;
 import fdc.gateway.domain.CommonRes;
 import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.xsocket.client.impl.ClientFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +26,10 @@ public class XSocketComponent {
      * @return
      * @throws java.io.IOException
      */
+    private Logger logger = LoggerFactory.getLogger(XSocketComponent.class);
+
     public String sendAndRecvDataByBlockConn(String datagram) throws IOException {
+
         IBlockConnect client = ClientFactory.XSocket.getBlockClient();
         String recvDatagram = client.sendDataUntilRcv(datagram);
         client.close();

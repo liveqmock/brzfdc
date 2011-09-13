@@ -56,10 +56,21 @@ public class ClientBiService {
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
 
+    /**
+     * 0007
+     *
+     * @param accDetailList
+     * @return
+     * @throws IOException
+     */
     public int sendTodayAccDetails(List<RsAccDetail> accDetailList) throws IOException {
         T0007Req req = new T0007Req();
         req.head.OpCode = "0007";
-        for(RsAccDetail accDetail : accDetailList) {
+        for (RsAccDetail accDetail : accDetailList) {
+            RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(accDetail.getPkId());
+            if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
+                continue;
+            }
             T0007Req.Param.Record record = T0007Req.getRecord();
             record.BankSerial = accDetail.getBankSerial();
             record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
@@ -83,11 +94,26 @@ public class ClientBiService {
         if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
             return -1;
         } else {
+            for (RsAccDetail record : accDetailList) {
+                record.setSendFlag(SendFlag.SENT.getCode());
+                accDetailService.updateAccDetail(record);
+            }
             return 1;
         }
     }
 
+    /**
+     * 0005
+     *
+     * @param record
+     * @return
+     * @throws IOException
+     */
     public int sendInterestRecord(RsAccDetail record) throws IOException {
+        RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(record.getPkId());
+        if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
+            return 1;
+        }
         T0005Req req = new T0005Req();
         req.head.OpCode = "0005";
         req.param.Acct = record.getAccountCode();
@@ -110,12 +136,17 @@ public class ClientBiService {
     }
 
     /**
-     * 0003 0004 退票 和冲正 发送
+     *  0004 退票
+     *
      * @param record
      * @return
      * @throws IOException
      */
     public int sendAccDetailBack(RsAccDetail record) throws IOException {
+        RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(record.getPkId());
+        if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
+            return 1;
+        }
         T0004Req req = new T0004Req();
         req.head.OpCode = "0004";
         req.param.Acct = record.getAccountCode();
@@ -133,6 +164,7 @@ public class ClientBiService {
             return 1;
         }
     }
+
     /**
      * 发送冲正交易   0003
      *
@@ -140,6 +172,10 @@ public class ClientBiService {
      * @return
      */
     public int sendAccDetailCancel(RsAccDetail record) throws IOException {
+        RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(record.getPkId());
+        if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
+            return 1;
+        }
         T0003Req req = new T0003Req();
         req.head.OpCode = "0003";
         req.param.Acct = record.getAccountCode();
@@ -164,6 +200,10 @@ public class ClientBiService {
      * @throws IOException
      */
     public int sendRsPayoutMsg(RsPayout record) throws IOException {
+        RsPayout originRecord = payoutService.selectPayoutByPkid(record.getPkId());
+        if (WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
+            return 1;
+        }
         T2004Req req = new T2004Req();
         req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
         req.param.Acct = record.getPayAccount();
@@ -196,6 +236,11 @@ public class ClientBiService {
      * @return
      */
     public int sendRsReceiveMsg(RsReceive record, String flag) throws Exception {
+
+        RsReceive originRecord = contractRecvService.selectContractRecv(record.getPkId());
+        if(WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
+            return 1;
+        }
         T2005Req req = new T2005Req();
         req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
         req.param.Acct = record.getAccountCode();
@@ -221,13 +266,19 @@ public class ClientBiService {
         }
     }
 
-     /**
+    /**
      * 2005- 发送预售房合同退款记录
      *
      * @param record , flag 收支标志
      * @return
      */
     public int sendRsRefundMsg(RsRefund record, String flag) throws Exception {
+
+        RsRefund originRecord = refundService.selectRefundByPkid(record.getPkId());
+        if(WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
+            return 1;
+        }
+
         T2005Req req = new T2005Req();
         req.head.OpCode = req.getClass().getSimpleName().substring(1, 5);
         req.param.Acct = record.getPayAccount();
@@ -242,8 +293,8 @@ public class ClientBiService {
         req.param.ToAcct = record.getRecAccount();
         req.param.ToBankName = record.getRecBankName();
         req.param.Amt = StringUtil.toBiformatAmt(record.getApAmount());
-        req.param.Purpose = record.getPurpose()==null?
-                TradeType.TRANS_BACK.getTitle():record.getPurpose() + TradeType.TRANS_BACK.getTitle();
+        req.param.Purpose = record.getPurpose() == null ?
+                TradeType.TRANS_BACK.getTitle() : record.getPurpose() + TradeType.TRANS_BACK.getTitle();
         String dataGram = req.toFDCDatagram();                // 报文
 
         CommonRes res = sendMsgAndRecvRes(dataGram);

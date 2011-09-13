@@ -56,7 +56,7 @@
     </ui:define>
 
     <ui:define name="content">
-         <div  class="entry" id="top">
+        <div class="entry" id="top">
             <p:growl id="msgs" showDetail="false"/>
             <h:form id="actqueryForm">
                 <p:panel id="query" header="【监管账户信息】查询">
@@ -64,12 +64,14 @@
                         <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5">
 
                             <h:outputLabel value="预售许可证号:" for="presellNo"/>
-                            <h:inputText autocomplete="off" id="presellNo" style="width:192px;" value="#{accountAction.account.presellNo}"
+                            <h:inputText autocomplete="off" id="presellNo" style="width:192px;"
+                                         value="#{accountAction.account.presellNo}"
                                          onfocus="this.select()">
                             </h:inputText>
 
                             <h:outputLabel value="监管账号:" for="accountCode"/>
-                            <h:inputText autocomplete="off" id="accountCode" style="width:192px;" value="#{accountAction.account.accountCode}">
+                            <h:inputText autocomplete="off" id="accountCode" style="width:192px;"
+                                         value="#{accountAction.account.accountCode}">
                             </h:inputText>
 
                             <h:outputLabel value="账户名称:" for="accountName"/>
@@ -77,10 +79,11 @@
                                          style="width:192px;"/>
                         </h:panelGrid>
                         <h:panelGrid style="width:20%">
-                            <p:commandButton style="margin-left:15px;width:90px" ajax="false" action="#{accountAction.onBtnQueryClick}" id="btnQuery" value="查询">
+                            <p:commandButton style="margin-left:15px;width:90px" ajax="false"
+                                             action="#{accountAction.onBtnQueryClick}" id="btnQuery" value="查询">
                             </p:commandButton>
                             <p:commandButton type="reset" id="resetBtn" value="重置"
-                                                 style="width:90px;margin-left:15px"/>
+                                             style="width:90px;margin-left:15px"/>
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:panel>
@@ -106,29 +109,43 @@
                     <p:column headerText="statusflag" style="display:none;">
                         <h:outputText value="#{record.statusFlag}"/>
                     </p:column>
-                    <p:column headerText="预售许可证号" style="text-align:left">
-                        <h:outputText value="#{record.presellNo}"/>
+                    <p:column headerText="预售许可证号" style="text-align:center">
+                        <h:outputText value="#{record.presellNo}" style="text-align: center;"/>
                     </p:column>
 
                     <p:column headerText="房产商" style="text-align:center">
-                        <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"/>
+                        <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"
+                                      style="text-align: right"/>
                     </p:column>
 
-                    <p:column headerText="监管账号" style="text-align:left">
-                        <h:outputText value="#{record.accountCode}"/>
+                    <p:column headerText="监管账号" style="text-align:center">
+                        <h:outputText value="#{record.accountCode}" style="text-align: center;"/>
                     </p:column>
 
-                    <p:column headerText="账户名称" style="text-align:left">
-                        <h:outputText value="#{record.accountName}"/>
+                    <p:column headerText="账户名称" style="text-align:center">
+                        <h:outputText value="#{record.accountName}" style="text-align: right"/>
                     </p:column>
 
-                    <p:column headerText="项目名称" style="text-align:left">
-                        <h:outputText value="#{record.proName}"/>
+                    <p:column headerText="项目名称" style="text-align:center">
+                        <h:outputText value="#{record.proName}" style="text-align: right"/>
                     </p:column>
 
-                    <p:column headerText="项目地址" style="text-align:left">
-                        <h:outputText value="#{record.proAddr}"/>
+                    <p:column headerText="项目地址" style="text-align:center">
+                        <h:outputText value="#{record.proAddr}" style="text-align: right"/>
                     </p:column>
+
+                    <p:column headerText="余额" style="text-align:center">
+                        <h:outputText value="#{record.balance}" style="float: right">
+                            <f:convertNumber pattern="###,###,###,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="可用余额" style="text-align:center">
+                        <h:outputText value="#{record.balanceUsable}" style="float: right;">
+                            <f:convertNumber pattern="###,###,###,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+
                     <p:column headerText="操作" style="text-align:center">
                         <h:commandLink onclick="recordEdit(this)" value="修改" style="color: blue"/>
                     </p:column>

@@ -1,9 +1,6 @@
 package fdc.service;
 
-import fdc.common.constant.ChangeFlag;
-import fdc.common.constant.InOutFlag;
-import fdc.common.constant.TradeStatus;
-import fdc.common.constant.TradeType;
+import fdc.common.constant.*;
 import fdc.repository.dao.RsAccDetailMapper;
 import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsAccDetail;
@@ -41,6 +38,7 @@ public class RsAccDetailService {
         example.createCriteria().andDeletedFlagEqualTo("0")
                 .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                 .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
+                .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
                 .andTradeDateEqualTo(sdf10.format(new Date()));
         return accDetailMapper.selectByExample(example);
     }

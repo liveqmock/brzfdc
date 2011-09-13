@@ -2,6 +2,7 @@ package fdc.view.account;
 
 import fdc.repository.model.RsAccount;
 import fdc.service.account.AccountService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -54,6 +55,11 @@ public class AccountAction {
     // 增
     public String insertRecord() {
         try {
+            if(StringUtils.isEmpty(account.getCompanyId())) {
+              MessageUtil.addError("请选择房地产商！");
+              return null;
+            }
+
             if(!confirmAccountNo.equalsIgnoreCase(account.getAccountCode())) {
               MessageUtil.addError("两次输入的监管账户号不一致！");
               return null;
