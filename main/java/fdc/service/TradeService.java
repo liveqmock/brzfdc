@@ -45,7 +45,7 @@ public class TradeService {
     @Transactional
     public int handleCancelAccDetail(RsAccDetail record, ChangeFlag changeFlag) throws IOException {
         // 查询未限制已监管未删除账户
-        RsAccount account = accountService.selectNormalAccountByNo(record.getAccountCode());
+        RsAccount account = accountService.selectCanPayAccountByNo(record.getAccountCode());
         if (account == null) {
             throw new RuntimeException("监管账号不存在！");
         }
@@ -101,7 +101,7 @@ public class TradeService {
     @Transactional
     public int handleReceiveTrade(RsReceive receive) {
         // 查询未限制已监管未删除账户
-        RsAccount account = accountService.selectNormalAccountByNo(receive.getAccountCode());
+        RsAccount account = accountService.selectCanRecvAccountByNo(receive.getAccountCode());
         if (account == null) {
             throw new RuntimeException("监管账号不存在！");
         }
@@ -141,7 +141,7 @@ public class TradeService {
     @Transactional
     public int handleRefundTrade(RsRefund refund) {
         // 查询未限制已监管未删除账户
-        RsAccount account = accountService.selectNormalAccountByNo(refund.getPayAccount());
+        RsAccount account = accountService.selectCanPayAccountByNo(refund.getPayAccount());
         // 检查余额
         if (refund.getApAmount().compareTo(account.getBalanceUsable()) > 0) {
             throw new RuntimeException("账户余额不足！");
@@ -183,7 +183,7 @@ public class TradeService {
     @Transactional
     public int handlePayoutTrade(RsPayout payout) {
         // 查询未限制已监管未删除账户
-        RsAccount account = accountService.selectNormalAccountByNo(payout.getPayAccount());
+        RsAccount account = accountService.selectCanPayAccountByNo(payout.getPayAccount());
         // 检查余额
         if (payout.getApAmount().compareTo(account.getBalanceUsable()) > 0) {
             throw new RuntimeException("账户余额不足！");

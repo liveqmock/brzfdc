@@ -43,10 +43,7 @@
                 <p:tab title="缴款记录清单">
                     <p:messages id="msgs2" showDetail="false"/>
                     <h:form id="form2">
-                        <p:menubar>
-                            <p:menuitem type="push" value="导出EXCEL" icon="ui-icon ui-icon-document"
-                                        action="#{contractRecvAction.onPrint}" update="msgs2, pdt2" ajax="true"/>
-                        </p:menubar>
+
                         <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
                                 <h:graphicImage value="/images/ajaxloadingbar.gif"/>

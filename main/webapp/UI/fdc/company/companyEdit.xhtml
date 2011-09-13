@@ -8,12 +8,12 @@
     <ui:define name="head">
         <style type="text/css">
             .col-label {
-                width: 100px;
+                width: 130px;
                 text-align: right;
             }
 
             .col-label2 {
-                width: 200px;
+                width: 130px;
                 text-align: right;
             }
 
@@ -79,27 +79,27 @@
                         <h:panelGrid columns="4" cellpadding="2"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="* 房产商名称:"/>
-                            <h:inputText autocomplete="off" id="companyName" style="width:260px;" required="true"
+                            <h:inputText autocomplete="off" id="companyName" size="40" required="true"
                                          requiredMessage="房产商名称不能为空！"
                                          value="#{companyEditAction.fdccompany.companyName}"
                                          onfocus="this.select()"/>
                             <h:outputLabel value="房产商简称:" for="shortName"/>
-                            <p:inputText autocomplete="off" id="shortName" style="width:260px;"
+                            <h:inputText autocomplete="off" id="shortName" size="40"
                                          value="#{companyEditAction.fdccompany.companyShrtName}">
-                            </p:inputText>
+                            </h:inputText>
 
-                            <h:outputLabel value="* 法定代表人:" for="mngrName"/>
-                            <h:inputText autocomplete="off" id="mngrName" style="width:260px;" required="true"
-                                         requiredMessage="法定代表人不能为空！" value="#{companyEditAction.fdccompany.mngrName}">
+                            <h:outputLabel value="法定代表人:" for="mngrName"/>
+                            <h:inputText autocomplete="off" id="mngrName" size="40" value="#{companyEditAction.fdccompany.mngrName}">
                             </h:inputText>
 
                             <h:outputLabel value="营业执照:"/>
-                            <p:inputText id="tradLicenceNo" value="#{companyEditAction.fdccompany.tradLicenceNo}"
-                                         style="width:260px;"/>
+                            <h:inputText id="tradLicenceNo" value="#{companyEditAction.fdccompany.tradLicenceNo}"
+                                         size="40"/>
 
                             <h:outputLabel value="公司地址:"/>
-                            <p:inputText id="address" value="#{companyEditAction.fdccompany.address}"
-                                         style="width:260px;"/>
+                            <h:inputText id="address" value="#{companyEditAction.fdccompany.address}"
+                                         size="40"/>
+                            <h:outputLabel/><h:outputLabel/>
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:fieldset>
@@ -108,7 +108,7 @@
                         <h:panelGroup>
                             <h:commandButton id="btnSave" rendered="true"
                                              action="#{companyEditAction.onBtnSaveClick}" value="保存"/>
-                            <h:commandButton immediate="true" rendered="true" value="取消"
+                            <h:commandButton immediate="true" rendered="true" value="取消" style="margin-left: 10px"
                                              onclick="window.close();return false;"/>
                             <!--<h:commandButton rendered="" immediate="true" action-->
                         </h:panelGroup>

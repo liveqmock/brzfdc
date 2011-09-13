@@ -35,7 +35,18 @@ public class AccountService {
         return accountMapper.selectByPrimaryKey(pkId);
     }
 
-    public RsAccount selectNormalAccountByNo(String accountNo) {
+    public RsAccount selectCanRecvAccountByNo(String accountNo) {
+        RsAccountExample accountExample = new RsAccountExample();
+        accountExample.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(AccountStatus.WATCH.getCode())
+                .andAccountCodeEqualTo(accountNo);
+        List<RsAccount> accountList = accountMapper.selectByExample(accountExample);
+        if (accountList.isEmpty()) {
+            throw new RuntimeException("没有查询到已监管账户！请确认该账户已开启监管！");
+        }
+        return accountList.get(0);
+    }
+
+    public RsAccount selectCanPayAccountByNo(String accountNo) {
         RsAccountExample accountExample = new RsAccountExample();
         accountExample.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(AccountStatus.WATCH.getCode())
                 .andLimitFlagEqualTo(LimitStatus.NOT_LIMIT.getCode()).andAccountCodeEqualTo(accountNo);

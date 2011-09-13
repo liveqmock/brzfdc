@@ -137,9 +137,11 @@
     <tr width="100%" height="50px" style="margin-bottom: 0px;margin-top:0px;margin:0px;padding:0px">
         <td width="50%" style="height:50" colspan="4">
             &nbsp;&nbsp;
-            <%--<img  src="../../images/brzlogo.png" width="50px" height="50px" />
+           <%-- <img  src="../../images/brzlogo.png" width="50px" height="50px" />
             <img src="../../images/brzfdc_zh.png" height="50px"/>--%>
+
             <img src="../../images/top_logo_haierfip.gif" height="50px"/>
+
         </td>
         <td width="50%" style="height:50;text-align:right" colspan="1">
             <font color="#5F6A78"> <span>ฤ๚บร,<%=username%>! </span> </font>

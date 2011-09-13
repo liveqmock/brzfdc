@@ -50,10 +50,7 @@
                 <p:tab title="合同记录清单">
                     <p:messages id="msgs" showDetail="false"/>
                     <h:form id="form">
-                        <p:menubar>
-                            <p:menuitem type="push" value="导出EXCEL" icon="ui-icon ui-icon-document"
-                                        action="#{refundAction.onPrint}" update="msgs, pdt" ajax="true"/>
-                        </p:menubar>
+
                         <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
                                 <h:graphicImage value="/images/ajaxloadingbar.gif"/>

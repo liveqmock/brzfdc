@@ -97,7 +97,7 @@ public class PayoutAction {
     }
 
     public String onSave() {
-        RsAccount account = accountService.selectNormalAccountByNo(rsPayout.getPayAccount());
+        RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
         if(account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())){
             MessageUtil.addError("该账户已被限制付款！");
             return null;

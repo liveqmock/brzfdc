@@ -43,10 +43,7 @@
                 <p:tab title="合同记录清单">
                     <p:messages id="msgs" showDetail="false"/>
                     <h:form id="form">
-                        <p:menubar>
-                            <p:menuitem type="push" value="导出EXCEL" icon="ui-icon ui-icon-document"
-                                        action="#{contractAction.onPrint}" update="msgs, pdt" ajax="true"/>
-                        </p:menubar>
+
                         <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
                                 <h:graphicImage value="/images/ajaxloadingbar.gif"/>
@@ -62,6 +59,9 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
+                            <f:facet name="header">
+                                    当前合同记录清单
+                                </f:facet>
                             <p:column style="display:none;" headerText="pkid">
                                 <h:outputText value="#{record.pkId}"/>
                             </p:column>
