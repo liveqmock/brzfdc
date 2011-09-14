@@ -36,6 +36,7 @@ public class InterestBookChkAction {
     private List<RsAccDetail> rsAccDetails;
     private RsAccDetail[] selectedRecords;
     private List<RsAccDetail> rsAccDetailsChk;
+    private RsAccDetail[] selectedRecordsChk;
 
 
     @PostConstruct
@@ -43,10 +44,11 @@ public class InterestBookChkAction {
         List<String> statusfalg_init = new ArrayList<String>();
         statusfalg_init.add(0, TradeStatus.CANCEL.getCode());
         //待复核记录
-        rsAccDetails = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(),statusfalg_init);
+        rsAccDetails = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(), statusfalg_init);
         List<String> statusfalg_checked = new ArrayList<String>();
         statusfalg_checked.add(0, TradeStatus.CHECKED.getCode());
-        rsAccDetailsChk = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(),statusfalg_checked);
+        //已复核记录
+        rsAccDetailsChk = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(), statusfalg_checked);
     }
 
     public String onCheck() {
@@ -69,7 +71,51 @@ public class InterestBookChkAction {
         return null;
     }
 
+    /**
+     * 待复核数据退回
+     */
     public String onBack() {
+        if (selectedRecords == null || selectedRecords.length == 0) {
+            MessageUtil.addWarn("至少选择一笔数据记录！");
+            return null;
+        }
+        try {
+            for (RsAccDetail record : selectedRecords) {
+                record.setStatusFlag(TradeStatus.BACK.getCode());
+                if (accountDetlService.updateSelectedRecord(record) != 1) {
+                    throw new RuntimeException("退回失败！");
+                }
+            }
+            MessageUtil.addInfo("退回成功！");
+            init();
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败." + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * 已复核记录退回
+     */
+
+    public String onBackForChk() {
+        if (selectedRecordsChk ==null || selectedRecordsChk.length == 0){
+            MessageUtil.addWarn("至少选择一笔数据记录！");
+            return null;
+        }
+
+        try {
+            for (RsAccDetail record : selectedRecordsChk) {
+                record.setStatusFlag(TradeStatus.BACK.getCode());
+                if (accountDetlService.updateSelectedRecord(record) != 1) {
+                    throw new RuntimeException("退回失败！");
+                }
+            }
+            MessageUtil.addInfo("退回成功！");
+            init();
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败." + e.getMessage());
+        }
         return null;
     }
 
@@ -103,5 +149,13 @@ public class InterestBookChkAction {
 
     public void setSelectedRecords(RsAccDetail[] selectedRecords) {
         this.selectedRecords = selectedRecords;
+    }
+
+    public RsAccDetail[] getSelectedRecordsChk() {
+        return selectedRecordsChk;
+    }
+
+    public void setSelectedRecordsChk(RsAccDetail[] selectedRecordsChk) {
+        this.selectedRecordsChk = selectedRecordsChk;
     }
 }
