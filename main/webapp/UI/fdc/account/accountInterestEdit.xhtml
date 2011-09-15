@@ -38,10 +38,10 @@
                 }
             }
             function recordEdit(obj) {
-                var pkid = obj.parentNode.parentNode.children[9].innerHTML;
+                var pkid = obj.parentNode.parentNode.children[8].innerHTML;
                 var acctno = obj.parentNode.parentNode.children[2].innerHTML;
                 var acctname = obj.parentNode.parentNode.children[1].innerHTML;
-                var companyid = obj.parentNode.parentNode.children[10].innerHTML;
+                var companyid = obj.parentNode.parentNode.children[9].innerHTML;
                 var statusflag = obj.parentNode.parentNode.children[0].innerHTML;
                 if (statusflag != "0") {
                     alert("账户不在监管中。");
@@ -107,14 +107,6 @@
                                     <h:outputText value="交易金额"/>
                                 </f:facet>
                                 <h:outputText style="float:right;" value="#{record.tradeAmt}">
-                                    <f:convertNumber pattern="###,##0.00"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="交易后余额"/>
-                                </f:facet>
-                                <h:outputText style="float:right;" value="#{record.balance}">
                                     <f:convertNumber pattern="###,##0.00"/>
                                 </h:outputText>
                             </p:column>
