@@ -38,10 +38,10 @@
                 }
             }
             function recordEdit(obj) {
-                var acctno = obj.parentNode.parentNode.children[4].innerHTML;
-                var acctname = obj.parentNode.parentNode.children[5].innerHTML;
-                var companyid = obj.parentNode.parentNode.children[1].innerHTML;
-                var statusflag = obj.parentNode.parentNode.children[0].innerHTML;
+                var acctno = obj.parentNode.parentNode.children[5].innerHTML;
+                var pkid = obj.parentNode.parentNode.children[0].innerHTML;
+                var companyid = obj.parentNode.parentNode.children[2].innerHTML;
+                var statusflag = obj.parentNode.parentNode.children[1].innerHTML;
                 if (statusflag != "0") {
                     alert("账户不在监管中。");
                     return false;
@@ -51,7 +51,7 @@
                 arg.doType = "add";
                 arg.companyid = companyid;
                 arg.acctno = acctno;
-                var rtn = dialog("interestBook.xhtml?acctno=" + acctno + "&amp;acctname=" + acctname + "&amp;companyid=" + companyid + "&amp;doType=add", arg, sfeature);
+                var rtn = dialog("interestBook.xhtml?acctno=" + acctno + "&amp;acctPkid=" + pkid + "&amp;companyid=" + companyid + "&amp;doType=add", arg, sfeature);
                 if (rtn == "1") {
                     document.getElementById("actqueryForm:btnQuery").click();
                 }
@@ -62,7 +62,7 @@
 
     <ui:define name="content">
         <div class="entry" id="top">
-            <p:tabView style="font-weight:normal;font-style:normal"  dynamic="true" cache="false">
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
                 <p:tab title="监管账户利息录入">
                     <p:growl id="msgs" showDetail="false"/>
                     <h:form id="actqueryForm">
@@ -74,6 +74,9 @@
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,10,5"
                                      emptyMessage="数据记录为空...">
+                            <p:column headerText="pkid" style="display:none;">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
                             <p:column headerText="statusflag" style="display:none;">
                                 <h:outputText value="#{record.statusFlag}"/>
                             </p:column>
