@@ -57,6 +57,7 @@ public class BiDbService {
                     isUpdate = false;
                 }
                 rsPlanCtrl.setAccountCode(biPlan.getAccountCode());
+                rsPlanCtrl.setCompanyName(biPlan.getAccountName());
                 rsPlanCtrl.setAcceptDate(biPlan.getSubmitDate());
                 rsPlanCtrl.setPlanCtrlNo(biPlanDetail.getPlanCtrlNo());
                 rsPlanCtrl.setToAccountName(biPlanDetail.getToAccountName());
@@ -198,6 +199,7 @@ public class BiDbService {
         rsContract.setAccountCode(contract.getAccountCode());                               // 监管账号
         rsContract.setAccountName(contract.getAccountName());                              // 监管账户户名
         rsContract.setBuyerName(contract.getBuyerName());                                   // 购房人姓名
+        rsContract.setBuyerAccName(contract.getBuyerName());
         rsContract.setBuyerAccCode(contract.getBuyerAccCode());                          // 购房人个人结算账号
         rsContract.setBuyerBankName(contract.getBuyerBankName());                    // 购房人账户开户行
         rsContract.setBuyerCertType(contract.getBuyerCertType());                         //购房人证件类型

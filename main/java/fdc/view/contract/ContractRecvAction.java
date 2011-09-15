@@ -73,6 +73,7 @@ public class ContractRecvAction implements Serializable {
         this.loanTypeOptions = toolsService.getEnuSelectItemList("LOAN_TYPE", true, false);
         this.payupFlagOptions = toolsService.getEnuSelectItemList("PAYUP_FLAG", true, false);
         this.workResultOptions = toolsService.getEnuSelectItemList("WORK_RESULT", true, false);
+        // TODO
         this.recvStatusOptions = toolsService.getEnuSelectItemList("WORK_RESULT", true, false);
         this.receiveTypeOptions = toolsService.getEnuSelectItemList("RECEIVE_TYPE", true, false);
         initList();

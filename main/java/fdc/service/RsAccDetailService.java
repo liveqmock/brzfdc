@@ -70,7 +70,8 @@ public class RsAccDetailService {
              example.createCriteria().andDeletedFlagEqualTo("0")
                      .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                      .andInoutFlagEqualTo(InOutFlag.OUT.getCode())
-                     .andTradeDateGreaterThan(SystemService.getTodayAddDays(-7));
+                     .andTradeDateGreaterThan(SystemService.getTodayAddDays(-7))
+                     .andTradeDateLessThan(sdf10.format(new Date()));
          } catch (ParseException e) {
              throw new RuntimeException("ÈÕÆÚ×ª»»´íÎó£¡");
          }

@@ -71,8 +71,8 @@
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.businessNo}"/>
                             </p:column>
-                            <p:column headerText="处理过程" style="text-align:center" filterBy="#{record.receiveType}"
-                                      filterOptions="#{contractRecvAction.recvStatusOptions}"
+                            <p:column headerText="处理过程" style="text-align:center" filterBy="#{record.workResult}"
+                                      filterOptions="#{contractRecvAction.workResultOptions}"
                                       filterMatchMode="exact">
                                 <h:outputText
                                         value="#{contractRecvAction.workResult.valueOfAlias(record.workResult).title}"/>

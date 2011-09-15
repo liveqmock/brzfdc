@@ -69,7 +69,7 @@ public class ContractRecvDetlAction implements Serializable {
 
     private void copyFieldsFromContract() {
         selectedRecord.setBusinessNo(contract.getContractNo());
-        selectedRecord.setCompanyName(contract.getCompanyName());
+        selectedRecord.setCompanyName(contract.getAccountName());
         selectedRecord.setAccountCode(contract.getAccountCode());
         selectedRecord.setBuyerAccCode(contract.getBuyerAccCode());
         selectedRecord.setBuyerAccName(contract.getBuyerAccName());

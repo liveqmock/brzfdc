@@ -14,6 +14,7 @@ import org.primefaces.component.commandbutton.CommandButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
+import platform.service.ToolsService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -21,6 +22,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,11 +45,14 @@ public class PayoutAction {
     private ExpensesPlanService expensesPlanService;
     @ManagedProperty(value = "#{accountService}")
     private AccountService accountService;
+    @ManagedProperty(value = "#{toolsService}")
+    private ToolsService toolsService;
     private List<RsPayout> rsPayoutList;
     private List<RsPayout> chkPayoutList;
     private List<RsPayout> passPayoutList;
     private List<RsPayout> refusePayoutList;
     private List<RsPlanCtrl> rsPlanCtrlList;
+    private List<SelectItem> bankCodeList;
 
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
@@ -75,12 +80,10 @@ public class PayoutAction {
             rsPayout.setBusinessNo(planCtrl.getPlanCtrlNo());
             rsPayout.setRecAccount(planCtrl.getToAccountCode());
             rsPayout.setRecCompanyName(planCtrl.getToAccountName());
-            // TODO  ÒøÐÐ´úÂë
-            rsPayout.setRecBankCode("313");
             rsPayout.setRecBankName(planCtrl.getToHsBankName());
             rsPayout.setPayCompanyName(planCtrl.getCompanyName());
             rsPayout.setPayAccount(planCtrl.getAccountCode());
-
+            bankCodeList = toolsService.getEnuSelectItemList("BANK_CODE", false, false);
             return true;
         } else if (!StringUtils.isEmpty(pkid) && "query".equalsIgnoreCase(action)) {
             rsPayout = payoutService.selectPayoutByPkid(pkid);
@@ -173,6 +176,22 @@ public class PayoutAction {
 
     public PayoutService getPayoutService() {
         return payoutService;
+    }
+
+    public List<SelectItem> getBankCodeList() {
+        return bankCodeList;
+    }
+
+    public void setBankCodeList(List<SelectItem> bankCodeList) {
+        this.bankCodeList = bankCodeList;
+    }
+
+    public ToolsService getToolsService() {
+        return toolsService;
+    }
+
+    public void setToolsService(ToolsService toolsService) {
+        this.toolsService = toolsService;
     }
 
     public void setPayoutService(PayoutService payoutService) {
