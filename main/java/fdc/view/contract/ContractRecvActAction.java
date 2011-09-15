@@ -39,6 +39,7 @@ public class ContractRecvActAction {
     private RsReceive[] selectedRecords;
     private ContractStatus contractStatus = ContractStatus.NORMAL;
     private ContractRecvStatus recvStatus = ContractRecvStatus.BACK;
+    private WorkResult workResult = WorkResult.CREATE;
 
     @PostConstruct
     public void init() {
@@ -97,6 +98,14 @@ public class ContractRecvActAction {
 
     public void setContractRecvService(ContractRecvService contractRecvService) {
         this.contractRecvService = contractRecvService;
+    }
+
+    public WorkResult getWorkResult() {
+        return workResult;
+    }
+
+    public void setWorkResult(WorkResult workResult) {
+        this.workResult = workResult;
     }
 
     public List<RsReceive> getPendChkoverList() {

@@ -130,10 +130,6 @@
                         <h:outputText value="#{record.proName}" style="text-align: right"/>
                     </p:column>
 
-                    <p:column headerText="项目地址" style="text-align:center">
-                        <h:outputText value="#{record.proAddr}" style="text-align: right"/>
-                    </p:column>
-
                     <p:column headerText="余额" style="text-align:center">
                         <h:outputText value="#{record.balance}" style="float: right">
                             <f:convertNumber pattern="###,###,###,##0.00"/>
@@ -146,10 +142,17 @@
                         </h:outputText>
                     </p:column>
 
+                    <p:column headerText="状态" style="text-align:center">
+                        <h:outputText value="#{accountAction.accountStatus.valueOfAlias(record.statusFlag).title}"/>
+                    </p:column>
+
+                     <p:column headerText="限制付款" style="text-align:center">
+                        <h:outputText value="#{accountAction.limitStatus.valueOfAlias(record.limitFlag).title}"/>
+                    </p:column>
+
                     <p:column headerText="操作" style="text-align:center">
                         <h:commandLink onclick="recordEdit(this)" value="修改" style="color: blue"/>
                     </p:column>
-
 
                 </p:dataTable>
             </h:form>

@@ -59,7 +59,7 @@ public class ContractRecvAction implements Serializable {
     private List<SelectItem> receiveTypeOptions;
 
     private ContractStatus contractStatus = ContractStatus.NORMAL;
-    private ContractRecvStatus recvStatus = ContractRecvStatus.BACK;
+   // private ContractRecvStatus recvStatus = ContractRecvStatus.BACK;
     private WorkResult workResult = WorkResult.NOTPASS;
     private HouseType houseType = HouseType.NORMAL;
     private LoanType loanType = LoanType.SHANG_YE;
@@ -73,7 +73,7 @@ public class ContractRecvAction implements Serializable {
         this.loanTypeOptions = toolsService.getEnuSelectItemList("LOAN_TYPE", true, false);
         this.payupFlagOptions = toolsService.getEnuSelectItemList("PAYUP_FLAG", true, false);
         this.workResultOptions = toolsService.getEnuSelectItemList("WORK_RESULT", true, false);
-        this.recvStatusOptions = toolsService.getEnuSelectItemList("CONTRACT_RECV_STATUS", true, false);
+        this.recvStatusOptions = toolsService.getEnuSelectItemList("WORK_RESULT", true, false);
         this.receiveTypeOptions = toolsService.getEnuSelectItemList("RECEIVE_TYPE", true, false);
         initList();
     }
@@ -248,13 +248,13 @@ public class ContractRecvAction implements Serializable {
         this.workResultOptions = workResultOptions;
     }
 
-    public ContractRecvStatus getRecvStatus() {
+  /*  public ContractRecvStatus getRecvStatus() {
         return recvStatus;
     }
 
     public void setRecvStatus(ContractRecvStatus recvStatus) {
         this.recvStatus = recvStatus;
-    }
+    }*/
 
     public WorkResult getWorkResult() {
         return workResult;

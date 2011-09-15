@@ -135,7 +135,7 @@
                     </p:column>
 
                      <p:column headerText="状态" style="text-align:center">
-                        <h:outputText value="#{record.statusFlag}"/>
+                        <h:outputText value="#{accountAction.accountStatus.valueOfAlias(record.statusFlag).title}"/>
                     </p:column>
 
                      <p:column headerText="限制付款" style="text-align:center">

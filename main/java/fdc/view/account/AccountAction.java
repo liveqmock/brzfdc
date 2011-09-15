@@ -1,5 +1,7 @@
 package fdc.view.account;
 
+import fdc.common.constant.AccountStatus;
+import fdc.common.constant.LimitStatus;
 import fdc.repository.model.RsAccount;
 import fdc.service.account.AccountService;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +33,8 @@ public class AccountAction {
     private RsAccount account;
     private List<RsAccount> accountList;
     private String confirmAccountNo;
+    private AccountStatus accountStatus = AccountStatus.INIT;
+    private LimitStatus limitStatus = LimitStatus.NOT_LIMIT;
 
     @PostConstruct
     public void init() {
@@ -116,5 +120,21 @@ public class AccountAction {
 
     public void setConfirmAccountNo(String confirmAccountNo) {
         this.confirmAccountNo = confirmAccountNo;
+    }
+
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
+    }
+
+    public LimitStatus getLimitStatus() {
+        return limitStatus;
+    }
+
+    public void setLimitStatus(LimitStatus limitStatus) {
+        this.limitStatus = limitStatus;
     }
 }
