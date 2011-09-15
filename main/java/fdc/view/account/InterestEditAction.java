@@ -9,12 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.service.SystemService;
 import platform.service.ToolsService;
+import pub.platform.utils.BusinessDate;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,8 @@ public class InterestEditAction {
             rsAccDetail.setStatusFlag("0");
             rsAccDetail.setInoutFlag("1");
             rsAccDetail.setTradeType(TradeType.INTEREST.getCode());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            rsAccDetail.setTradeDate(sdf.format(new Date()));
             accountDetlService.insertSelectedRecord(rsAccDetail);
         } catch (Exception ex) {
             ex.printStackTrace();
