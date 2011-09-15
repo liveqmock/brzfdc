@@ -11,14 +11,11 @@ import fdc.service.account.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
-import sun.plugin2.message.Message;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,8 +74,10 @@ public class InterestBookAction {
                 rsAccount.setBalance(record.getTradeAmt());
                 //更新监管账户余额
                 if (accountService.updateRecordBalance(rsAccount) == 1) {
+                    //更新账户明细余额字段、状态字段
                     record.setStatusFlag(TradeStatus.SUCCESS.getCode());
-                    if (accountDetlService.updateSelectedRecord(record) != 1) {
+                    rsAccount = accountService.selectCanRecvAccountByNo(record.getAccountCode());
+                    if (accountDetlService.updateSelectedRecordBook(record,rsAccount) != 1) {
                         throw new RuntimeException("入账失败！");
                     }
                 } else {

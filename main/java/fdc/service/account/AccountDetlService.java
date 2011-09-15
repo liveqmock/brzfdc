@@ -3,6 +3,8 @@ package fdc.service.account;
 import fdc.repository.dao.RsAccDetailMapper;
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsAccDetailExample;
+import fdc.repository.model.RsAccount;
+import fdc.repository.model.RsAccountExample;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +97,16 @@ public class AccountDetlService {
         OperatorManager om = SystemService.getOperatorManager();
         rsAccDetail.setLastUpdBy(om.getOperatorId());
         rsAccDetail.setLastUpdDate(new Date());
+        return rsAccDetailMapper.updateByPrimaryKeySelective(rsAccDetail);
+    }
+
+    /**
+     * ÈëÕË¸üÐÂ*/
+    public int updateSelectedRecordBook(RsAccDetail rsAccDetail,RsAccount rsAccount) {
+        OperatorManager om = SystemService.getOperatorManager();
+        rsAccDetail.setLastUpdBy(om.getOperatorId());
+        rsAccDetail.setLastUpdDate(new Date());
+        rsAccDetail.setBalance(rsAccount.getBalance());
         return rsAccDetailMapper.updateByPrimaryKeySelective(rsAccDetail);
     }
 
