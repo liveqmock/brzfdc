@@ -26,6 +26,15 @@ public class LockedaccDetailService {
     @Autowired
     private RsLockedaccDetailMapper lockedaccDetailMapper;
 
+    public boolean isHasUnSend() {
+        RsLockedaccDetailExample example = new RsLockedaccDetailExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andSendFlagEqualTo(SendFlag.UN_SEND.getCode());
+        if (lockedaccDetailMapper.countByExample(example) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     @Transactional
     public int insertRecord(RsLockedaccDetail record) {
         OperatorManager om = SystemService.getOperatorManager();
@@ -55,7 +64,7 @@ public class LockedaccDetailService {
 
     public boolean isSent(RsLockedaccDetail record) {
         RsLockedaccDetail originRecord = lockedaccDetailMapper.selectByPrimaryKey(record.getPkId());
-        if(SendFlag.SENT.getCode().equalsIgnoreCase(originRecord.getSendFlag())) {
+        if (SendFlag.SENT.getCode().equalsIgnoreCase(originRecord.getSendFlag())) {
             return true;
         }
         return false;
@@ -63,8 +72,8 @@ public class LockedaccDetailService {
 
     public int updateRecord(RsLockedaccDetail record) {
         RsLockedaccDetail originRecord = lockedaccDetailMapper.selectByPrimaryKey(record.getPkId());
-        if(!record.getModificationNum().equals(originRecord.getModificationNum())) {
-            throw new RuntimeException("并发更新异常！待冻结账号 ："+record.getAccountCode());
+        if (!record.getModificationNum().equals(originRecord.getModificationNum())) {
+            throw new RuntimeException("并发更新异常！待冻结账号 ：" + record.getAccountCode());
         }
         record.setModificationNum(record.getModificationNum() + 1);
         return lockedaccDetailMapper.updateByPrimaryKeySelective(record);

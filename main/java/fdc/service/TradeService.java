@@ -4,14 +4,16 @@ import fdc.common.constant.*;
 import fdc.repository.model.*;
 import fdc.service.account.AccountService;
 import fdc.service.expensesplan.ExpensesPlanService;
-import org.apache.ibatis.migration.Change;
+import org.apache.commons.lang.StringUtils;
+import org.apache.ecs.html.Big;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import platform.common.utils.BeanHelper;
-import platform.service.SystemService;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,6 +41,9 @@ public class TradeService {
     private ClientBiService clientBiService;
     @Autowired
     private RefundService refundService;
+    @Autowired
+    private ContractRecvService receiveService;
+
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
     // R-冲正 D-退票
@@ -77,19 +82,80 @@ public class TradeService {
             account.setBalance(account.getBalance().add(record.getTradeAmt()));
             account.setBalanceUsable(account.getBalanceUsable().add(record.getTradeAmt()));
         }
-
-        int rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
-                + accountService.updateRecord(account);
+        int rtnCnt = 0;
         if (ChangeFlag.CANCEL.getCode().equalsIgnoreCase(changeFlag.getCode())) {  // 冲正
+
+            // TODO 处理冲正业务回退
+            if (handleCancelBiBack(record) == 1) {
+                rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
+                        + accountService.updateRecord(account);
+            }
             if (clientBiService.sendAccDetailCancel(accDetail) == -1) {
                 throw new RuntimeException("发送冲正交易记录失败!");
             }
-        }else if(ChangeFlag.BACK.getCode().equalsIgnoreCase(changeFlag.getCode())) {   // 退票
-             if (clientBiService.sendAccDetailBack(accDetail) == -1) {
+
+        } else if (ChangeFlag.BACK.getCode().equalsIgnoreCase(changeFlag.getCode())) {   // 退票
+
+            // TODO 处理退票业务回退
+            if (handleCancelBiBack(record) == 1) {
+                rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
+                        + accountService.updateRecord(account);
+            }
+            if (clientBiService.sendAccDetailBack(accDetail) == -1) {
                 throw new RuntimeException("发送退票交易记录失败!");
             }
+
         }
         return rtnCnt;
+    }
+
+    // TODO 处理业务回退
+
+    private int handleCancelBiBack(RsAccDetail record) {
+        // 计划付款回退
+        if (StringUtils.isEmpty(record.getContractNo()) && !StringUtils.isEmpty(record.getPlanCtrlNo())) {
+            RsPayout origiPayout = payoutService.selectRecordByAccDetail(record);
+            RsPayout payout = new RsPayout();
+            BeanHelper.copy(payout, origiPayout);
+            payout.setPkId(null);
+            payout.setApAmount(payout.getApAmount().multiply(new BigDecimal("-1")));
+            payout.setPlAmount(payout.getPlAmount().multiply(new BigDecimal("-1")));
+            payout.setWorkResult(WorkResult.SENT.getCode());
+
+            RsPlanCtrl planCtrl = expensesPlanService.selectPlanCtrlByPlanNo(record.getPlanCtrlNo());
+            planCtrl.setAvAmount(planCtrl.getAvAmount().add(record.getTradeAmt()));
+            if (payoutService.insertRsPayout(payout) == 1) {
+                return expensesPlanService.updatePlanCtrl(planCtrl);
+            } else {
+                throw new RuntimeException("计划付款记录回退失败！");
+            }
+        }
+        // 合同收款
+        else if (!StringUtils.isEmpty(record.getContractNo()) && StringUtils.isEmpty(record.getPlanCtrlNo())
+                && InOutFlag.IN.getCode().equalsIgnoreCase(record.getInoutFlag())) {
+            RsReceive OrigiReceive = receiveService.selectRecordByAccDetail(record);
+            RsReceive newReceive = new RsReceive();
+            BeanHelper.copy(newReceive, OrigiReceive);
+            newReceive.setPkId(null);
+            newReceive.setWorkResult(WorkResult.SENT.getCode());
+            newReceive.setApAmount(newReceive.getApAmount().multiply(new BigDecimal("-1")));
+            newReceive.setPlAmount(newReceive.getPlAmount().multiply(new BigDecimal("-1")));
+            return receiveService.insertRecord(newReceive);
+
+        }
+        // 合同退款
+        else if (!StringUtils.isEmpty(record.getContractNo()) && StringUtils.isEmpty(record.getPlanCtrlNo())
+                && InOutFlag.OUT.getCode().equalsIgnoreCase(record.getInoutFlag())) {
+            RsRefund originRefund = refundService.selectRecordByAccDetail(record);
+            RsRefund newRefund = new RsRefund();
+            BeanHelper.copy(newRefund, originRefund);
+            newRefund.setPkId(null);
+            newRefund.setWorkResult(WorkResult.SENT.getCode());
+            newRefund.setApAmount(newRefund.getApAmount().multiply(new BigDecimal("-1")));
+            newRefund.setPlAmount(newRefund.getPlAmount().multiply(new BigDecimal("-1")));
+            return refundService.insertRecord(newRefund);
+        }
+        return -1;
     }
 
     /**
@@ -247,5 +313,25 @@ public class TradeService {
         rsAccount.setBalanceUsable(rsAccount.getBalance().subtract(rsAccount.getBalanceLock()));
         rsLockedaccDetail.setStatusFlag(LockAccStatus.UN_LOCK.getCode());
         return accountService.updateRecord(rsAccount) + lockedaccDetailService.insertRecord(rsLockedaccDetail);
+    }
+
+    // 检查是否有入账未发送的交易
+    public boolean isHasUnsendTrade() {
+        if (receiveService.isHasUnsend()) {
+            throw new RuntimeException("有已入账但未发送的合同交款记录,请先发送！");
+        }
+        if (lockedaccDetailService.isHasUnSend()) {
+            throw new RuntimeException("有待发送的冻结或解冻记录，请先发送！");
+        }
+        if (payoutService.isHasUnSend()) {
+            throw new RuntimeException("有已入账但未发送的计划付款记录，请先发送！");
+        }
+        if (accDetailService.isHasUnSendCancelRecord()) {
+            throw new RuntimeException("有未发送的退票或冲正记录，请先发送！");
+        }
+        if (refundService.isHasUnsend()) {
+            throw new RuntimeException("有未发送的已入账合同退款记录，请先发送！");
+        }
+        return false;
     }
 }

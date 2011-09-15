@@ -5,6 +5,7 @@ import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsPayoutMapper;
 import fdc.repository.dao.common.CommonMapper;
+import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPayoutExample;
 import fdc.repository.model.RsPlanCtrl;
@@ -42,6 +43,15 @@ public class PayoutService {
 
     public RsPayout selectPayoutByPkid(String pkid) {
         return rsPayoutMapper.selectByPrimaryKey(pkid);
+    }
+
+    public boolean isHasUnSend() {
+        RsPayoutExample example = new RsPayoutExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.COMMIT.getCode());
+        if (rsPayoutMapper.countByExample(example) > 0) {
+            return true;
+        }
+        return false;
     }
 
     private int updateRsPayout(RsPayout rsPayout) {
@@ -122,5 +132,19 @@ public class PayoutService {
     public int updateRsPayoutSent(RsPayout rsPayout) {
         rsPayout.setWorkResult(WorkResult.SENT.getCode());
         return updateRsPayout(rsPayout);
+    }
+
+    public RsPayout selectRecordByAccDetail(RsAccDetail record) {
+        RsPayoutExample example = new RsPayoutExample();
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andPayAccountEqualTo(record.getAccountCode()).andRecAccountEqualTo(record.getToAccountCode())
+                .andApAmountEqualTo(record.getTradeAmt()).andTradeDateEqualTo(record.getTradeDate());
+        List<RsPayout> payoutList = rsPayoutMapper.selectByExample(example);
+        if(payoutList.size() > 0) {
+            return payoutList.get(0);
+        }else {
+            throw new RuntimeException("没有查询到该笔计划付款记录！");
+        }
+
     }
 }

@@ -37,6 +37,7 @@ public class AccDetailBackAction {
     private TradeService tradeService;
     private RsAccDetail accDetail;
     private List<RsAccDetail> accDetailList;
+    private List<RsAccDetail> accDetailApList;
     private InOutFlag inoutFlag = InOutFlag.IN;
     private TradeType tradeType = TradeType.HOUSE_INCOME;
     private TradeStatus tradeStatus = TradeStatus.SUCCESS;
@@ -50,7 +51,25 @@ public class AccDetailBackAction {
             accDetail = accDetailService.selectAccDetailByPkid(pkid);
         } else {
             accDetailList = accDetailService.selectBackAccDetails();
+            accDetailApList = accDetailService.selectAPBackAccDetails();
         }
+    }
+
+    public String onApplyBack() {
+        try {
+            accDetail.setChangeFlag(ChangeFlag.AP_BACK.getCode());
+            if (accDetailService.updateAccDetail(accDetail) == 1) {
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
+                MessageUtil.addInfo("½»Ò×ÍËÆ±ÉêÇë³É¹¦£¡");
+            }else {
+                MessageUtil.addError("½»Ò×ÍËÆ±ÉêÇëÊ§°Ü£¡");
+            }
+        } catch (Exception e) {
+            MessageUtil.addError("²Ù×÷Ê§°Ü." + e.getMessage());
+        }
+        return null;
     }
 
     public String onBack() {
@@ -126,5 +145,13 @@ public class AccDetailBackAction {
 
     public void setTradeService(TradeService tradeService) {
         this.tradeService = tradeService;
+    }
+
+    public List<RsAccDetail> getAccDetailApList() {
+        return accDetailApList;
+    }
+
+    public void setAccDetailApList(List<RsAccDetail> accDetailApList) {
+        this.accDetailApList = accDetailApList;
     }
 }

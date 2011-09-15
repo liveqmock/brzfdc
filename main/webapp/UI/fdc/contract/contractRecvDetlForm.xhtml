@@ -69,6 +69,10 @@
                             <h:outputLabel value="合同号:"/>
                             <h:inputText value="#{contractRecvDetlAction.contract.contractNo}"
                                          size="30" disabled="true"/>
+                            <h:outputLabel value="累计交款:"/>
+                            <h:inputText value="#{contractRecvDetlAction.contract.receiveAmt}" size="30" disabled="true">
+                                <f:convertNumber pattern="###,##0.00"/>
+                            </h:inputText>
                         </h:panelGrid>
                         <p:separator/>
                         <h:panelGrid columns="4" cellpadding="2"
@@ -141,6 +145,7 @@
                             <h:inputText value="#{contractRecvDetlAction.contract.loanAmt}" size="30" disabled="true">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
+
                         </h:panelGrid>
                         <h:panelGrid columns="4" cellpadding="2"
                                      columnClasses="col-label,col-input,col-label2,col-input">

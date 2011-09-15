@@ -81,13 +81,22 @@
                         <h:outputText value="#{record.toAccountName}"/>
                     </p:column>
 
-                    <p:column headerText="收款方开户行" filterBy="#{record.toHsBankName}">
-                        <h:outputText value="#{record.toHsBankName}"/>
-                    </p:column>
-
                     <p:column headerText="用款说明" filterBy="#{record.planDesc}">
                         <h:outputText value="#{record.planDesc}"/>
                     </p:column>
+
+                    <p:column headerText="计划金额">
+                        <h:outputText value="#{record.plAmount}" style="float: right">
+                            <f:convertNumber pattern="#,###,###,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="可用金额">
+                        <h:outputText value="#{record.avAmount}" style="float: right">
+                            <f:convertNumber pattern="#,###,###,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+
 
                     <!--  <p:column headerText="计划使用日期" filterBy="#{record.planDate}">
                         <h:outputText value="#{not empty record.planDate}">

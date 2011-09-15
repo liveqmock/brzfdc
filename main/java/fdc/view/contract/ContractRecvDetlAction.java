@@ -92,11 +92,11 @@ public class ContractRecvDetlAction implements Serializable {
             selectedRecord.setApAmount(selectedRecord.getPlAmount());
 
             contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
-            // TODO 交易完成判断
-            /*if (contract.getReceiveAmt().compareTo(contract.getTotalAmt()) > 0) {
-                MessageUtil.addError("申请缴款金额太多！");
+
+            if (contract.getReceiveAmt().compareTo(contract.getTotalAmt()) > 0) {
+                MessageUtil.addError("申请缴款金额不得大于房屋总价！");
                 return null;
-            }*/
+            }
             if (contractRecvService.insertRecord(selectedRecord) == 1
                     && contractService.updateRecord(contract) == 1) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();

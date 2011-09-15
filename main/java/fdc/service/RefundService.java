@@ -5,6 +5,7 @@ import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsContractMapper;
 import fdc.repository.dao.RsRefundMapper;
 import fdc.repository.dao.common.CommonMapper;
+import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsRefund;
 import fdc.repository.model.RsRefundExample;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 主要对应合同收款.
  * User: zhanrui
  * Date: 11-8-25
  * Time: 下午2:30
@@ -55,13 +55,35 @@ public class RefundService {
         return refundMapper.selectByExample(example);
     }
 
+    public RsRefund selectRecordByAccDetail(RsAccDetail record) {
+        RsRefundExample example = new RsRefundExample();
+        example.createCriteria().andPayAccountEqualTo(record.getAccountCode())
+                .andRecAccountEqualTo(record.getToAccountCode()).andDeletedFlagEqualTo("0")
+                .andApAmountEqualTo(record.getTradeAmt()).andTradeDateEqualTo(record.getTradeDate());
+        List<RsRefund> recordList =  refundMapper.selectByExample(example);
+        if(recordList.size() > 0) {
+            return recordList.get(0);
+        }else {
+            throw new RuntimeException("没有查询到该笔合同退款记录");
+        }
+    }
+
+    public boolean isHasUnsend() {
+        RsRefundExample example = new RsRefundExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.COMMIT.getCode());
+        if (refundMapper.countByExample(example) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public List<RsRefund> selectRefundList(RefundStatus status) {
         RsRefundExample example = new RsRefundExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(status.getCode());
         return refundMapper.selectByExample(example);
     }
 
-     public List<RsRefund> selectRefundList(WorkResult status) {
+    public List<RsRefund> selectRefundList(WorkResult status) {
         RsRefundExample example = new RsRefundExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(status.getCode());
         return refundMapper.selectByExample(example);
@@ -74,7 +96,7 @@ public class RefundService {
     @Transactional
     public int updateRecord(RsRefund record) {
         RsRefund originRecord = selectRefundByPkid(record.getPkId());
-        if(!record.getModificationNum().equals(originRecord.getModificationNum())) {
+        if (!record.getModificationNum().equals(originRecord.getModificationNum())) {
             throw new RuntimeException("并发更新冲突！");
         }
         OperatorManager om = SystemService.getOperatorManager();

@@ -64,8 +64,8 @@
                                                  action="#{expensesPlanQryAction.onQuery}"
                                                  update="pdt,msgs">
                                 </p:commandButton>
-                                <p:commandButton ajax="false" id="btnprt" value="导出"
-                                                 action="#{expensesPlanQryAction.onPrint}"
+                                <p:commandButton ajax="false" id="btnprt" value="重置"
+                                                 type="reset"
                                                  style="width:80px;"/>
                             </h:panelGrid>
                         </h:panelGrid>
@@ -105,9 +105,9 @@
                         <h:outputText value="#{record.planCtrlNo}"/>
                     </p:column>
 
-                    <p:column headerText="付款合同号" style="text-align:center">
+                   <!-- <p:column headerText="付款合同号" style="text-align:center">
                         <h:outputText value="#{record.payContractNo}"/>
-                    </p:column>
+                    </p:column>-->
 
                     <p:column headerText="计划日期" style="text-align:center">
                         <h:outputText value="#{record.planDate}">

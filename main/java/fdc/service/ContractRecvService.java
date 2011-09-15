@@ -7,6 +7,7 @@ import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsContractMapper;
 import fdc.repository.dao.RsReceiveMapper;
 import fdc.repository.dao.common.CommonMapper;
+import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsReceive;
 import fdc.repository.model.RsReceiveExample;
@@ -35,7 +36,16 @@ public class ContractRecvService {
     @Autowired
     private CommonMapper commonMapper;
 
-    public int insertRecord(RsReceive record) throws Exception {
+    public boolean isHasUnsend() {
+        RsReceiveExample example = new RsReceiveExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.COMMIT.getCode());
+        if (receiveMapper.countByExample(example) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public int insertRecord(RsReceive record) {
         OperatorManager om = SystemService.getOperatorManager();
         record.setCreatedBy(om.getOperatorId());
         record.setApplyUserId(om.getOperatorId());
@@ -47,6 +57,18 @@ public class ContractRecvService {
         return receiveMapper.insertSelective(record);
     }
 
+    public RsReceive selectRecordByAccDetail(RsAccDetail record) {
+        RsReceiveExample example = new RsReceiveExample();
+        example.createCriteria().andAccountCodeEqualTo(record.getAccountCode())
+                .andTradeAccCodeEqualTo(record.getToAccountCode()).andDeletedFlagEqualTo("0")
+                .andApAmountEqualTo(record.getTradeAmt()).andTradeDateEqualTo(record.getTradeDate());
+        List<RsReceive> receiveList =  receiveMapper.selectByExample(example);
+        if(receiveList.size() > 0) {
+            return receiveList.get(0);
+        }else {
+            throw new RuntimeException("没有查询到该笔合同收款记录");
+        }
+    }
     public int updateRsReceiveToWorkResult(RsReceive rsReceive, WorkResult workResult) throws Exception {
         RsReceive originRecord = receiveMapper.selectByPrimaryKey(rsReceive.getPkId());
         if (rsReceive.getWorkResult().equalsIgnoreCase(originRecord.getWorkResult())) {

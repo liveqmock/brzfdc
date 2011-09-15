@@ -106,14 +106,18 @@
                                     <h:inputText autocomplete="off" id="statusFlag" size="36" readonly="true"
                                                  value="#{accDetailBackAction.tradeStatus.valueOfAlias(accDetailBackAction.accDetail.statusFlag).title}">
                                     </h:inputText>
+                                    <h:outputLabel value="申请人:" for="lastUpdBy" size="30" style="margin-left: 16px;"/>
+                                    <h:inputText autocomplete="off" id="lastUpdBy" size="36" readonly="true"
+                                                 value="#{accDetailBackAction.accDetail.lastUpdBy}">
+                                    </h:inputText>
                                 </h:panelGrid>
 
                             </h:panelGrid>
                         </p:fieldset>
                     </h:panelGrid>
                     <h:panelGrid style="width: 20%" columns="2" >
-                        <p:commandButton id="saveBtn" ajax="true" value="申请退票"
-                                         action="#{accDetailBackAction.onApplyBack}"
+                        <p:commandButton id="saveBtn" ajax="true" value="退票"
+                                         action="#{accDetailBackAction.onBack}"
                                          style="margin-left:235px;width:90px"
                                          update="msgs,input">
                         </p:commandButton>

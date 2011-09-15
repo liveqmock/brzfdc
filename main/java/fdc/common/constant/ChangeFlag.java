@@ -5,7 +5,9 @@ import java.util.Hashtable;
 public enum ChangeFlag implements EnumApp {
     NORMAL("N", "Õı³£"),
     CANCEL("R", "³åÕı"),
-    BACK("D", "ÍËÆ±");
+    BACK("D", "ÍËÆ±"),
+    AP_CANCEL("A", "ÉêÇë³åÕı"),
+    AP_BACK("B", "ÉêÇëÍËÆ±");
 
     private String code = null;
     private String title = null;

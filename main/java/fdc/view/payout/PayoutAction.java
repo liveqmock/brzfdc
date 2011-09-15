@@ -109,6 +109,10 @@ public class PayoutAction {
             MessageUtil.addError("申请金额不得大于可用金额！");
             return null;
         }
+        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+            MessageUtil.addError("申请金额不得大于可用金额！");
+            return null;
+        }
         try {
             rsPayout.setApAmount(rsPayout.getPlAmount());
             if (payoutService.insertRsPayout(rsPayout) == 1) {

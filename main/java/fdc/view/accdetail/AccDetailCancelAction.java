@@ -37,6 +37,8 @@ public class AccDetailCancelAction {
     private TradeService tradeService;
     private RsAccDetail accDetail;
     private List<RsAccDetail> accDetailList;
+    private List<RsAccDetail> accDetailApList;
+
     private InOutFlag inoutFlag = InOutFlag.IN;
     private TradeType tradeType = TradeType.HOUSE_INCOME;
     private TradeStatus tradeStatus = TradeStatus.SUCCESS;
@@ -51,7 +53,25 @@ public class AccDetailCancelAction {
             accDetail = accDetailService.selectAccDetailByPkid(pkid);
         } else {
             accDetailList = accDetailService.selectCancelAccDetails();
+            accDetailApList = accDetailService.selectAPCancelAccDetails();
         }
+    }
+
+    public String onApplyCancel() {
+        try {
+            accDetail.setChangeFlag(ChangeFlag.AP_CANCEL.getCode());
+            if (accDetailService.updateAccDetail(accDetail)== 1) {
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
+                MessageUtil.addInfo("交易冲正申请成功，待审核！");
+            }else {
+                MessageUtil.addError("交易冲正申请失败！");
+            }
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败." + e.getMessage());
+        }
+        return null;
     }
 
     public String onCancel() {
@@ -65,7 +85,6 @@ public class AccDetailCancelAction {
                 MessageUtil.addError("交易冲正失败！");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             MessageUtil.addError("操作失败." + e.getMessage());
         }
         return null;
@@ -128,5 +147,13 @@ public class AccDetailCancelAction {
 
     public void setTradeService(TradeService tradeService) {
         this.tradeService = tradeService;
+    }
+
+    public List<RsAccDetail> getAccDetailApList() {
+        return accDetailApList;
+    }
+
+    public void setAccDetailApList(List<RsAccDetail> accDetailApList) {
+        this.accDetailApList = accDetailApList;
     }
 }
