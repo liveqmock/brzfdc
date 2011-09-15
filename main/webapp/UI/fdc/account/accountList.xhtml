@@ -3,6 +3,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:fbi="http://www.fbifaces.org"
                 template="/templates/ui.xhtml">
 
     <ui:define name="head">
@@ -82,8 +83,11 @@
                             <p:commandButton style="margin-left:15px;width:90px" ajax="false"
                                              action="#{accountAction.onBtnQueryClick}" id="btnQuery" value="查询">
                             </p:commandButton>
-                            <p:commandButton type="reset" id="resetBtn" value="重置"
-                                             style="width:90px;margin-left:15px"/>
+                            <p:commandButton ajax="false" id="resetBtn" value="Excel导出"
+                                             style="width:90px;margin-left:15px">
+                                <fbi:DataExporter target="pdt" type="xls" titleName="账户信息" fileName="zhanghu" excludeColumns="0,1,11"
+                                                  excludeColumnsWidth="15,15,15,15,15,14,14,12,12"/>
+                            </p:commandButton>
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:panel>
@@ -109,45 +113,72 @@
                     <p:column headerText="statusflag" style="display:none;">
                         <h:outputText value="#{record.statusFlag}"/>
                     </p:column>
-                    <p:column headerText="预售许可证号" style="text-align:center">
+                    <p:column style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="预售许可证号"/>
+                        </f:facet>
                         <h:outputText value="#{record.presellNo}" style="text-align: center;"/>
                     </p:column>
 
                     <p:column headerText="房产商" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="房产商"/>
+                        </f:facet>
                         <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"
                                       style="text-align: right"/>
                     </p:column>
 
                     <p:column headerText="监管账号" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="监管账号"/>
+                        </f:facet>
                         <h:outputText value="#{record.accountCode}" style="text-align: center;"/>
                     </p:column>
 
                     <p:column headerText="账户名称" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="账户名称"/>
+                        </f:facet>
                         <h:outputText value="#{record.accountName}" style="text-align: right"/>
                     </p:column>
 
                     <p:column headerText="项目名称" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="项目名称"/>
+                        </f:facet>
                         <h:outputText value="#{record.proName}" style="text-align: right"/>
                     </p:column>
 
                     <p:column headerText="余额" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="余额"/>
+                        </f:facet>
                         <h:outputText value="#{record.balance}" style="float: right">
                             <f:convertNumber pattern="###,###,###,##0.00"/>
                         </h:outputText>
                     </p:column>
 
                     <p:column headerText="可用余额" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="可用余额"/>
+                        </f:facet>
                         <h:outputText value="#{record.balanceUsable}" style="float: right;">
                             <f:convertNumber pattern="###,###,###,##0.00"/>
                         </h:outputText>
                     </p:column>
 
                     <p:column headerText="状态" style="text-align:center">
-                        <h:outputText value="#{accountAction.accountStatus.valueOfAlias(record.statusFlag).title}"/>
+                        <f:facet name="header">
+                            <h:outputText value="状态"/>
+                        </f:facet>
+                        <h:outputText value="#{flagStatusForMap.accountStatus[record.statusFlag]}"/>
                     </p:column>
 
-                     <p:column headerText="限制付款" style="text-align:center">
-                        <h:outputText value="#{accountAction.limitStatus.valueOfAlias(record.limitFlag).title}"/>
+                    <p:column headerText="限制付款" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="限制付款"/>
+                        </f:facet>
+                        <h:outputText value="#{flagStatusForMap.accountLimit[record.limitFlag]}"/>
                     </p:column>
 
                     <p:column headerText="操作" style="text-align:center">

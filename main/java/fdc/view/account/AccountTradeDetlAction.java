@@ -37,6 +37,8 @@ public class AccountTradeDetlAction {
     private ToolsService toolsService;
     private Date beginDate;
     private Date endDate;
+    private String acctname;
+    private String acctno;
     private List<RsAccDetail> rsAccDetails;
     private RsAccDetail rsAccDetail;
     private List<RsAccDetail> rsAccDetailsInit;
@@ -50,8 +52,8 @@ public class AccountTradeDetlAction {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         beginDate = cal.getTime();
         endDate = new Date();
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(
-                sdf10.format(beginDate), sdf10.format(endDate));
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname,acctno
+                ,sdf10.format(beginDate), sdf10.format(endDate));
         List<String> statusfalgs = new ArrayList<String>();
         statusfalgs.add(0, TradeStatus.CANCEL.getCode());
         statusfalgs.add(1,TradeStatus.BACK.getCode());
@@ -73,8 +75,24 @@ public class AccountTradeDetlAction {
     }
 
     public void onBtnQueryClick() {
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname,acctno,
                 sdf10.format(beginDate), sdf10.format(endDate));
+    }
+
+    public String getAcctname() {
+        return acctname;
+    }
+
+    public void setAcctname(String acctname) {
+        this.acctname = acctname;
+    }
+
+    public String getAcctno() {
+        return acctno;
+    }
+
+    public void setAcctno(String acctno) {
+        this.acctno = acctno;
     }
 
     public List<RsAccDetail> getRsAccDetailsInit() {

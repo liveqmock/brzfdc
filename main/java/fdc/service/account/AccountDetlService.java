@@ -31,12 +31,22 @@ public class AccountDetlService {
     @Autowired
     private CommonMapper commonMapper;
 
-    public List<RsAccDetail> selectedRecordsByTradeDate(String beginDate, String endDate) {
+    /**
+     * ÕË»§Ã÷Ï¸²éÑ¯*/
+    public List<RsAccDetail> selectedRecordsByTradeDate(String acctname,String acctno,String beginDate, String endDate) {
         RsAccDetailExample example = new RsAccDetailExample();
         example.clear();
-        if (beginDate != null && endDate != null) {
-            example.createCriteria().andTradeDateBetween(beginDate, endDate).andDeletedFlagEqualTo("0");
+        RsAccDetailExample.Criteria criteria = example.createCriteria();
+        if (acctname !=null && !StringUtils.isEmpty(acctname.trim())) {
+            criteria.andAccountNameLike(acctname + "%");
         }
+        if (acctno != null && !StringUtils.isEmpty(acctno.trim())) {
+            criteria.andAccountCodeEqualTo(acctno);
+        }
+        if (beginDate != null && endDate != null) {
+            criteria.andTradeDateBetween(beginDate, endDate);
+        }
+        criteria.andDeletedFlagEqualTo("0");
         example.setOrderByClause("account_code,local_serial");
         return rsAccDetailMapper.selectByExample(example);
     }
