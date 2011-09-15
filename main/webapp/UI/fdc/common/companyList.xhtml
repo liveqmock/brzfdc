@@ -22,7 +22,8 @@
         <div class="entry" id="top">
             <h:form id="selFrom">
                 <p:fieldset legend="房产商列表(双击选择)">
-                    <h:selectOneListbox ondblclick="selCom(this)" id="selListBoxCom" style="height:300px;">
+                    <h:selectOneListbox ondblclick="selCom(this)" id="selListBoxCom" style="height:300px;width:200px;">
+                        <f:selectItem itemLabel="" itemValue=""/>
                         <f:selectItems value="#{accountEditAction.companyList}"></f:selectItems>
                     </h:selectOneListbox>
                 </p:fieldset>

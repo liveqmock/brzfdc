@@ -61,7 +61,7 @@
                                          onfocus="this.select()">
                             </h:inputText>
 
-                            <h:outputLabel value="* 房产商:" for="companyId"/>
+                            <h:outputLabel value="*房产商:" for="companyId"/>
                             <h:panelGroup>
                                 <p:inputText readonly="true" autocomplete="off" id="companyName" style="width:192px;"
                                              required="true"
@@ -71,24 +71,24 @@
                                 <h:commandButton type="button" id="btnComSel" onclick="openCom()" value="选择">
                                 </h:commandButton>
                             </h:panelGroup>
-                            <h:outputLabel value="监管账号:" for="accountCode"/>
+                            <h:outputLabel value="*监管账号:" for="accountCode"/>
                             <h:inputText autocomplete="off" id="accountCode" style="width:192px;" required="true"
                                          requiredMessage="必须输入监管账号！" value="#{accountAction.account.accountCode}">
                             </h:inputText>
 
-                            <h:outputLabel value="确认监管账号:" for="confirmAccountNo"/>
+                            <h:outputLabel value="*确认监管账号:" for="confirmAccountNo"/>
                             <h:inputText autocomplete="off" id="confirmAccountNo" style="width:192px;" required="true"
                                          requiredMessage="必须输入确认监管账号！" value="#{accountAction.confirmAccountNo}">
                             </h:inputText>
 
-                            <h:outputLabel value="账户名称:" for="accountName"/>
+                            <h:outputLabel value="*账户名称:" for="accountName"/>
                             <p:inputText id="accountName" value="#{accountAction.account.accountName}"
                                         required="true" requiredMessage="必须输入账户名称！" style="width:192px;"/>
 
-                            <h:outputLabel value="预存金额:" for="balance"/>
-                            <p:inputText id="balance" value="#{accountAction.account.balance}" style="width:192px;"/>
+                            <h:outputLabel value="*预存金额:" for="balance"/>
+                            <p:inputText id="balance" required="true" requiredMessage="必须输入预存金额！" value="#{accountAction.account.balance}" style="width:192px;"/>
 
-                            <h:outputLabel value="项目名称:" for="proName"/>
+                            <h:outputLabel value="*项目名称:" for="proName"/>
                             <p:inputText id="proName" value="#{accountAction.account.proName}"
                                          required="true" requiredMessage="必须输入项目名称！" style="width:192px;"/>
 

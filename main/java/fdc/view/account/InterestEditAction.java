@@ -78,6 +78,7 @@ public class InterestEditAction {
             rsAccDetail.setTradeType(TradeType.INTEREST.getCode());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             rsAccDetail.setTradeDate(sdf.format(new Date()));
+//            rsAccDetail.setLocalSerial();
             accountDetlService.insertSelectedRecord(rsAccDetail);
         } catch (Exception ex) {
             ex.printStackTrace();

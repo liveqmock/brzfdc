@@ -1,6 +1,7 @@
 package fdc.service.account;
 
 import fdc.repository.dao.RsAccDetailMapper;
+import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsAccDetailExample;
 import fdc.repository.model.RsAccount;
@@ -27,12 +28,16 @@ import java.util.List;
 public class AccountDetlService {
     @Autowired
     private RsAccDetailMapper rsAccDetailMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
     public List<RsAccDetail> selectedRecordsByTradeDate(String beginDate, String endDate) {
         RsAccDetailExample example = new RsAccDetailExample();
+        example.clear();
         if (beginDate != null && endDate != null) {
             example.createCriteria().andTradeDateBetween(beginDate, endDate).andDeletedFlagEqualTo("0");
         }
+        example.setOrderByClause("account_code,local_serial");
         return rsAccDetailMapper.selectByExample(example);
     }
 
@@ -44,6 +49,8 @@ public class AccountDetlService {
         rsAccDetail.setCreatedDate(new Date());
         rsAccDetail.setLastUpdBy(om.getOperatorId());
         rsAccDetail.setLastUpdDate(new Date());
+        rsAccDetail.setLocalSerial(commonMapper.selectMaxAccDetailSerial());
+        rsAccDetail.setBankSerial(commonMapper.selectMaxAccDetailSerial());
         rsAccDetailMapper.insertSelective(rsAccDetail);
     }
 
@@ -59,7 +66,7 @@ public class AccountDetlService {
         if (statusflags != null && statusflags.size()>0) {
             criteria.andStatusFlagIn(statusflags);
         }
-        example.setOrderByClause("trade_Date desc");
+        example.setOrderByClause("account_code,local_serial");
         return rsAccDetailMapper.selectByExample(example);
     }
 
@@ -76,7 +83,7 @@ public class AccountDetlService {
         if (sendflag != null && !StringUtils.isEmpty(sendflag.trim())) {
             criteria.andSendFlagEqualTo(sendflag);
         }
-        example.setOrderByClause("trade_Date desc");
+        example.setOrderByClause("account_code,local_serial");
         return rsAccDetailMapper.selectByExample(example);
     }
 
