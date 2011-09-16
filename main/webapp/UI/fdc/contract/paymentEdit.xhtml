@@ -7,21 +7,13 @@
 
     <ui:define name="head">
         <script type="text/javascript">
-            function doPopupWindow(obj) {
-                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
-                popupwindow = window.open("contractDetlForm.xhtml?pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupwindow.focus;
-            }
+
             function doPopupEditWindow(obj) {
                 var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
-                popupwindow = window.open("contractRecvEditForm.xhtml?pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                popupwindow = window.open("contractRecvEditForm.xhtml?action=edit&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
             }
-            function doPopupRecvWindow(obj) {
-                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
-                popupwindow = window.open("contractRecvDetlForm.xhtml?action=query&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupwindow.focus;
-            }
+
 
         </script>
         <style type="text/css">

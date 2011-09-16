@@ -6,6 +6,7 @@ import fdc.view.payout.ParamPlan;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -34,4 +35,7 @@ public interface CommonMapper {
 
     @Select("select nvl(max(SERIAL)+1,'100001') from rs_refund")
     String selectMaxRefundSerial();
+
+    @Select("select sum(t.pl_amount) sumplamount from rs_refund t where t.deleted_flag = '0' group by t.business_no")
+    BigDecimal selectSumPlamount();
 }

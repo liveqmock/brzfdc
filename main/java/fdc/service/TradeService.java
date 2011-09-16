@@ -205,7 +205,12 @@ public class TradeService {
         // 设置账户余额 和可用余额
         account.setBalance(account.getBalance().add(receive.getApAmount()));
         account.setBalanceUsable(account.getBalanceUsable().add(receive.getApAmount()));
-        int rtnCnt = accDetailService.insertAccDetail(accDetail)
+
+        RsContract contract = contractService.selectContractByNo(receive.getBusinessNo());
+        contract.setReceiveAmt(receive.getApAmount());
+
+        int rtnCnt = contractService.updateRecord(contract)
+                + accDetailService.insertAccDetail(accDetail)
                 + accountService.updateRecord(account);
         return rtnCnt;
     }
@@ -219,11 +224,14 @@ public class TradeService {
     @Transactional
     public int handleRefundTrade(RsRefund refund) {
         // 查询未限制已监管未删除账户
+        int rtnCnt = 0;
         RsAccount account = accountService.selectCanPayAccountByNo(refund.getPayAccount());
+        RsContract contract = contractService.selectContractByNo(refund.getBusinessNo());
         // 检查余额
         if (refund.getApAmount().compareTo(account.getBalanceUsable()) > 0) {
             throw new RuntimeException("账户余额不足！");
         }
+
         //======== 开始付款 ===========
         //--------------------------------------------------
         // 新增交易明细
@@ -247,8 +255,14 @@ public class TradeService {
         // 设置账户余额 和可用余额
         account.setBalance(account.getBalance().subtract(refund.getApAmount()));
         account.setBalanceUsable(account.getBalanceUsable().subtract(refund.getApAmount()));
-        int rtnCnt = accDetailService.insertAccDetail(accDetail)
-                + accountService.updateRecord(account) + refundService.updateRecord(refund);
+
+        if(ContractStatus.CANCELING.getCode().equalsIgnoreCase(contract.getStatusFlag())) {
+            contract.setStatusFlag(ContractStatus.END.getCode());
+            contractService.updateRecord(contract);
+        }
+        rtnCnt = refundService.updateRecord(refund)
+                + accDetailService.insertAccDetail(accDetail)
+                + accountService.updateRecord(account);
         return rtnCnt;
     }
 

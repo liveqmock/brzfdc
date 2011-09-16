@@ -85,12 +85,11 @@
                             <p:inputText id="accountName" value="#{accountAction.account.accountName}"
                                         required="true" requiredMessage="必须输入账户名称！" style="width:192px;"/>
 
-                            <h:outputLabel value="*预存金额:" for="balance"/>
-                            <p:inputText id="balance" required="true" requiredMessage="必须输入预存金额！" value="#{accountAction.account.balance}" style="width:192px;"/>
+                           <!-- <h:outputLabel value="*预存金额:" for="balance"/>
+                            <p:inputText id="balance" required="true" requiredMessage="必须输入预存金额！" value="#{accountAction.account.balance}" style="width:192px;"/>-->
 
-                            <h:outputLabel value="*项目名称:" for="proName"/>
-                            <p:inputText id="proName" value="#{accountAction.account.proName}"
-                                         required="true" requiredMessage="必须输入项目名称！" style="width:192px;"/>
+                            <h:outputLabel value="项目名称:" for="proName"/>
+                            <p:inputText id="proName" value="#{accountAction.account.proName}" style="width:192px;"/>
 
                             <h:outputLabel value="项目地址:" for="proAddr"/>
                             <p:inputText id="proAddr" value="#{accountAction.account.proAddr}"

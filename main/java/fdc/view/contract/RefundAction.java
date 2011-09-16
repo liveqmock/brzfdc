@@ -111,6 +111,7 @@ public class RefundAction implements Serializable {
         try {
             for (RsRefund record : selectedRefundRecords) {
                 record.setWorkResult(WorkResult.PASS.getCode());
+                record.setApAmount(record.getPlAmount());
                 if (refundService.updateRecord(record) != 1) {
                     throw new RuntimeException("复核更新异常！");
                 }
@@ -151,7 +152,7 @@ public class RefundAction implements Serializable {
         try {
             for (RsRefund record : selectedRefundRecords) {
                 record.setWorkResult(WorkResult.COMMIT.getCode());
-                if (tradeService.handleRefundTrade(record) != 3) {
+                if (tradeService.handleRefundTrade(record) != 4) {
                     throw new RuntimeException("入账过程发生异常！");
                 }
             }

@@ -86,6 +86,11 @@ public class PayoutAction {
             rsPayout.setPayAccount(planCtrl.getAccountCode());
             bankCodeList = toolsService.getEnuSelectItemList("BANK_CODE", false, false);
             return true;
+        } else if (!StringUtils.isEmpty(pkid) && "edit".equalsIgnoreCase(action)) {
+            rsPayout = payoutService.selectPayoutByPkid(pkid);
+            planCtrl = expensesPlanService.selectPlanCtrlByPlanNo(rsPayout.getBusinessNo());
+            bankCodeList = toolsService.getEnuSelectItemList("BANK_CODE", false, false);
+            return true;
         } else if (!StringUtils.isEmpty(pkid) && "query".equalsIgnoreCase(action)) {
             rsPayout = payoutService.selectPayoutByPkid(pkid);
             planCtrl = expensesPlanService.selectPlanCtrlByPlanNo(rsPayout.getBusinessNo());
@@ -103,20 +108,22 @@ public class PayoutAction {
     }
 
     public String onSave() {
-        RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
-        if(account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())){
-            MessageUtil.addError("该账户已被限制付款！");
-            return null;
-        }
-        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
-            MessageUtil.addError("申请金额不得大于可用金额！");
-            return null;
-        }
-        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
-            MessageUtil.addError("申请金额不得大于可用金额！");
-            return null;
-        }
+
         try {
+            RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
+            if (account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())) {
+                MessageUtil.addError("该账户已被限制付款！");
+                return null;
+            }
+
+            if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+                MessageUtil.addError("申请金额不得大于可用金额！");
+                return null;
+            }
+            if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+                MessageUtil.addError("申请金额不得大于可用金额！");
+                return null;
+            }
             rsPayout.setApAmount(rsPayout.getPlAmount());
             if (payoutService.insertRsPayout(rsPayout) == 1) {
                 MessageUtil.addInfo("受理用款成功！");
@@ -127,27 +134,28 @@ public class PayoutAction {
                 MessageUtil.addError("受理用款失败！");
             }
         } catch (Exception e) {
-            logger.error("受理用款失败，请检查输入内容！", e.getMessage());
-            MessageUtil.addError("受理用款失败，请检查输入内容！");
+            logger.error("受理用款失败！", e.getMessage());
+            MessageUtil.addError("受理用款失败！"+e.getMessage());
         }
         return null;
     }
 
-     public String onEdit() {
-        RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
-        if(account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())){
-            MessageUtil.addError("该账户已被限制付款！");
-            return null;
-        }
-        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
-            MessageUtil.addError("申请金额不得大于可用金额！");
-            return null;
-        }
-        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
-            MessageUtil.addError("申请金额不得大于可用金额！");
-            return null;
-        }
+    public String onEdit() {
+
         try {
+            RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
+            if (account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())) {
+                MessageUtil.addError("该账户已被限制付款！");
+                return null;
+            }
+            if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+                MessageUtil.addError("申请金额不得大于可用金额！");
+                return null;
+            }
+            if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+                MessageUtil.addError("申请金额不得大于可用金额！");
+                return null;
+            }
             rsPayout.setApAmount(rsPayout.getPlAmount());
             rsPayout.setWorkResult(WorkResult.CREATE.getCode());
             if (payoutService.updateRsPayout(rsPayout) == 1) {
@@ -159,8 +167,8 @@ public class PayoutAction {
                 MessageUtil.addError("受理用款失败！");
             }
         } catch (Exception e) {
-            logger.error("受理用款失败，请检查输入内容！", e.getMessage());
-            MessageUtil.addError("受理用款失败，请检查输入内容！");
+            logger.error("受理用款失败！", e.getMessage());
+            MessageUtil.addError("受理用款失败！"+e.getMessage());
         }
         return null;
     }

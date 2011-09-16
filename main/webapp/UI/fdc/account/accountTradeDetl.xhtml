@@ -102,10 +102,23 @@
     </p:column>
     <p:column>
         <f:facet name="header">
-            <h:outputText value="房产商"/>
+            <h:outputText value="收支标志"/>
         </f:facet>
-        <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
+        <h:outputText value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
     </p:column>
+   <p:column>
+        <f:facet name="header">
+            <h:outputText value="对方账号"/>
+        </f:facet>
+        <h:outputText value="#{record.toAccountCode}"></h:outputText>
+    </p:column>
+     <p:column>
+        <f:facet name="header">
+            <h:outputText value="对方账户名"/>
+        </f:facet>
+        <h:outputText value="#{record.toAccountName}"></h:outputText>
+    </p:column>
+
     <p:column>
         <f:facet name="header">
             <h:outputText value="交易金额"/>

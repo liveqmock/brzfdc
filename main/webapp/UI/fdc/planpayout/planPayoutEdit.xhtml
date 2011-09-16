@@ -9,7 +9,7 @@
         <script type="text/javascript">
             function doPopupWindow(obj) {
                 var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
-                popupwindow = window.open("planPayoutEditDetl.xhtml?action=insert&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                popupwindow = window.open("planPayoutEditDetl.xhtml?action=edit&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
             }
 
@@ -94,7 +94,7 @@
 
                                 <p:column headerText="状态标志" style="text-align:center">
                                     <h:outputText
-                                            value="#{payoutQryAction.statusFlag.valueOfAlias(record.statusFlag).title}"/>
+                                            value="#{payoutAction.workResult.valueOfAlias(record.workResult).title}"/>
                                 </p:column>
 
                                 <p:column headerText="操作" style="text-align:center">

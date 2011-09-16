@@ -39,6 +39,10 @@
                             <h:outputLabel value="合同号:"/>
                             <h:inputText value="#{refundDetlAction.contract.contractNo}"
                                          size="30" disabled="true"/>
+                            <h:outputLabel value="退款金额:"/>
+                            <h:inputText value="#{refundDetlAction.contract.transbuyeramt}" size="30" disabled="true">
+                                <f:convertNumber pattern="###,##0.00"/>
+                            </h:inputText>
                         </h:panelGrid>
                         <p:separator/>
                         <h:panelGrid columns="4" cellpadding="2"
@@ -107,8 +111,8 @@
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
 
-                            <h:outputLabel value="退款金额:"/>
-                            <h:inputText value="#{refundDetlAction.contract.transbuyeramt}" size="30" disabled="true">
+                            <h:outputLabel value="累计交款:"/>
+                            <h:inputText value="#{refundDetlAction.contract.receiveAmt}" size="30" disabled="true">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
                         </h:panelGrid>
@@ -128,7 +132,7 @@
                                          size="30" readonly="true"/>
                             <h:outputLabel value="退款金额:"/>
                             <h:inputText value="#{refundDetlAction.refund.plAmount}" size="30"
-                                         disabled="false" readonly="true">
+                                         disabled="false" readonly="false">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
 

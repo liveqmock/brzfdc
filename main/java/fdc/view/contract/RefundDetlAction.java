@@ -55,15 +55,25 @@ public class RefundDetlAction {
 
     public String onSave() {
         try {
-            contract.setStatusFlag(ContractStatus.CANCELING.getCode());
-            if (contractService.updateRecord(contract) == 1 && refundService.insertRecord(refund) == 1) {
-                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
-                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
-                saveBtn.setDisabled(true);
-                MessageUtil.addInfo("申请退款已提交！");
-            }else {
-                MessageUtil.addError("申请退款失败！");
+            if (refundService.selectSumPlamount().add(refund.getPlAmount()).compareTo(contract.getTransbuyeramt()) > 0) {
+                MessageUtil.addError("退款申请总金额不能大于合同退款金额！");
+                return null;
+            } else {
+                if (refundService.insertRecord(refund) == 1) {
+                    if (refundService.selectSumPlamount().add(refund.getPlAmount()).equals(contract.getTransbuyeramt())) {
+                        contract.setStatusFlag(ContractStatus.CANCELING.getCode());
+                        contractService.updateRecord(contract);
+                    }
+                    UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                    CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                    saveBtn.setDisabled(true);
+                    MessageUtil.addInfo("申请退款已提交！");
+                } else {
+                    MessageUtil.addError("申请退款失败！");
+                }
+
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             MessageUtil.addError("操作失败。" + e.getMessage());
@@ -73,16 +83,26 @@ public class RefundDetlAction {
 
     public String onEdit() {
         try {
-            contract.setStatusFlag(ContractStatus.CANCELING.getCode());
-            refund.setWorkResult(WorkResult.CREATE.getCode());
-            if (contractService.updateRecord(contract) == 1 && refundService.updateRecord(refund) == 1) {
-                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
-                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
-                saveBtn.setDisabled(true);
-                MessageUtil.addInfo("申请退款已修改！");
-            }else {
-                MessageUtil.addError("申请退款失败！");
+            if (refundService.selectSumPlamount().add(refund.getPlAmount()).compareTo(contract.getTransbuyeramt()) > 0) {
+                MessageUtil.addError("退款申请总金额不能大于合同退款金额！");
+                return null;
+            } else {
+                refund.setWorkResult(WorkResult.CREATE.getCode());
+                if (refundService.updateRecord(refund) == 1) {
+                    if (refundService.selectSumPlamount().add(refund.getPlAmount()).equals(contract.getTransbuyeramt())) {
+                        contract.setStatusFlag(ContractStatus.CANCELING.getCode());
+                        contractService.updateRecord(contract);
+                    }
+                    UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                    CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                    saveBtn.setDisabled(true);
+                    MessageUtil.addInfo("申请退款已修改！");
+                } else {
+                    MessageUtil.addError("申请退款失败！");
+                }
+
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             MessageUtil.addError("操作失败。" + e.getMessage());

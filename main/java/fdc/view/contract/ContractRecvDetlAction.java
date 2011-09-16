@@ -59,7 +59,12 @@ public class ContractRecvDetlAction implements Serializable {
         if ("query".equals(action)) {
             selectedRecord = contractRecvService.selectContractRecv(pkid);
             contract = contractService.selectContractByNo(selectedRecord.getBusinessNo());
-        } else if (!StringUtils.isEmpty(pkid)) {
+        } else if("edit".equals(action)) {
+            selectedRecord = contractRecvService.selectContractRecv(pkid);
+            contract = contractService.selectContractByNo(selectedRecord.getBusinessNo());
+            recvTypeOptions = toolsService.getEnuSelectItemList("RECEIVE_TYPE", false, false);
+        }
+        else if (!StringUtils.isEmpty(pkid)) {
             contract = contractService.selectRecordContract(pkid);
             selectedRecord = new RsReceive();
             copyFieldsFromContract();
@@ -91,14 +96,14 @@ public class ContractRecvDetlAction implements Serializable {
         try {
             selectedRecord.setApAmount(selectedRecord.getPlAmount());
 
-            contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
+            //contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
 
-            if (contract.getReceiveAmt().compareTo(contract.getTotalAmt()) > 0) {
+            if (contract.getReceiveAmt().add(selectedRecord.getApAmount()).compareTo(contract.getTotalAmt()) > 0) {
                 MessageUtil.addError("申请缴款金额不得大于房屋总价！");
                 return null;
             }
-            if (contractRecvService.insertRecord(selectedRecord) == 1
-                    && contractService.updateRecord(contract) == 1) {
+            if (contractRecvService.insertRecord(selectedRecord) == 1) {
+                   // && contractService.updateRecord(contract) == 1) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);
@@ -115,15 +120,15 @@ public class ContractRecvDetlAction implements Serializable {
         try {
             selectedRecord.setApAmount(selectedRecord.getPlAmount());
             selectedRecord.setWorkResult(WorkResult.CREATE.getCode());
-            contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
+           // contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
 
 
             if (contract.getReceiveAmt().compareTo(contract.getTotalAmt()) > 0) {
                 MessageUtil.addError("申请缴款金额不得大于房屋总价！");
                 return null;
             }
-            if (contractRecvService.updateRecord(selectedRecord) == 1
-                    && contractService.updateRecord(contract) == 1) {
+            if (contractRecvService.updateRecord(selectedRecord) == 1) {
+                 //   && contractService.updateRecord(contract) == 1) {
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);

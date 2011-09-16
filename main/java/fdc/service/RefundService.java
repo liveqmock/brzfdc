@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,7 @@ public class RefundService {
     private RsRefundMapper refundMapper;
     @Autowired
     private CommonMapper commonMapper;
-    private SimpleDateFormat sdf10 = new SimpleDateFormat();
+    private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
     @Transactional
     public int insertRecord(RsRefund record) {
@@ -47,6 +48,10 @@ public class RefundService {
         record.setSerial(serial);
         record.setBankSerial(serial);
         return refundMapper.insertSelective(record);
+    }
+
+    public BigDecimal selectSumPlamount() {
+        return commonMapper.selectSumPlamount();
     }
 
     public List<RsRefund> selectRefundList() {

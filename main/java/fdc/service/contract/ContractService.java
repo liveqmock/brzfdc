@@ -34,7 +34,7 @@ public class ContractService {
 
     public List<RsContract> selectContractList(){
         RsContractExample example = new RsContractExample();
-        example.createCriteria().andDeletedFlagEqualTo("0");
+        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(ContractStatus.NORMAL.getCode());
         return  contractMapper.selectByExample(example);
     }
 

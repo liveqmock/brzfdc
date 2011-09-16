@@ -55,7 +55,7 @@ public class ContractRecvActAction {
         }
         try {
             for (RsReceive record : selectedRecords) {
-                if (tradeService.handleReceiveTrade(record) == 2) {
+                if (tradeService.handleReceiveTrade(record) == 3) {
                     if (contractRecvService.updateRsReceiveToWorkResult(record, WorkResult.COMMIT) != 1) {
                         throw new RuntimeException("»Î’À ß∞‹£°’À∫≈:" + record.getAccountCode());
                     }
