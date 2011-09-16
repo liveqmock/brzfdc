@@ -23,6 +23,8 @@ import java.util.Map;
 public class FlagStatusForMap {
     @ManagedProperty(value = "#{companyService}")
     private CompanyService companyService;
+    //收支标志
+    private Map<String,String> inoutFlagMap;
     //交易类型
     private Map<String,String> tradeTypeMap;
     //监管账户交易明细状态标志
@@ -33,6 +35,45 @@ public class FlagStatusForMap {
     private Map<String,String> actDetlChangeFlagMap;
     //房产公司 Map<id,name>
     private Map<String,String> companyMap;
+    //Rs_account表
+    //账户状态
+    private Map<String,String> accountStatus;
+    //限制付款
+    private Map<String,String> accountLimit;
+
+    public Map<String, String> getInoutFlagMap() {
+        inoutFlagMap = new HashMap();
+        inoutFlagMap.put("0","支出");
+        inoutFlagMap.put("1","收入");
+        return inoutFlagMap;
+    }
+
+    public void setInoutFlagMap(Map<String, String> inoutFlagMap) {
+        this.inoutFlagMap = inoutFlagMap;
+    }
+
+    public Map<String, String> getAccountLimit() {
+        accountLimit = new HashMap();
+        accountLimit.put("0", "未限制");
+        accountLimit.put("1", "限制");
+        return accountLimit;
+    }
+
+    public void setAccountLimit(Map<String, String> accountLimit) {
+        this.accountLimit = accountLimit;
+    }
+
+    public Map<String, String> getAccountStatus() {
+        accountStatus = new HashMap();
+        accountStatus.put("N","初始");
+        accountStatus.put("0", "监管中");
+        accountStatus.put("1", "撤销监管");
+        return accountStatus;
+    }
+
+    public void setAccountStatus(Map<String, String> accountStatus) {
+        this.accountStatus = accountStatus;
+    }
 
     public Map<String, String> getCompanyMap() {
         List<RsFdccompany> rsFdccompanyList = companyService.qryRsFdccompanyByName("");
