@@ -64,7 +64,7 @@
     <ui:define name="content">
         <div style="margin:5px;" id="top">
             <p:tabView style="font-weight:normal;font-style:normal" cache="false" dynamic="true">
-                <p:tab title="监管账户入账">
+                <p:tab title="账户利息待入账记录">
                     <p:growl id="msgs1" showDetail="false"/>
                     <h:form id="bookForm">
                         <p:menubar>
@@ -96,7 +96,7 @@
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="公司"/>
+                                    <h:outputText value="房产商"/>
                                 </f:facet>
                                 <h:outputText
                                         value="#{flagStatusForMap.companyMap[record.companyId]}"></h:outputText>
