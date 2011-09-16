@@ -54,6 +54,10 @@ public class RefundService {
         return commonMapper.selectSumPlamount();
     }
 
+    public BigDecimal selectSumPlamountExceptPkid(String pkid) {
+        return commonMapper.selectSumPlamountExceptPkid(pkid);
+    }
+
     public List<RsRefund> selectRefundList() {
         RsRefundExample example = new RsRefundExample();
         example.createCriteria().andDeletedFlagEqualTo("0");
@@ -90,7 +94,7 @@ public class RefundService {
 
     public List<RsRefund> selectRefundList(WorkResult status) {
         RsRefundExample example = new RsRefundExample();
-        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(status.getCode());
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(status.getCode());
         return refundMapper.selectByExample(example);
     }
 

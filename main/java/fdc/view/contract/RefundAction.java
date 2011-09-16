@@ -12,7 +12,9 @@ import fdc.service.contract.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
+import platform.service.SystemService;
 import platform.service.ToolsService;
+import pub.platform.security.OperatorManager;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -109,9 +111,14 @@ public class RefundAction implements Serializable {
             return null;
         }
         try {
+            OperatorManager om = SystemService.getOperatorManager();
+            String date10 = SystemService.getSdfdate10();
             for (RsRefund record : selectedRefundRecords) {
                 record.setWorkResult(WorkResult.PASS.getCode());
                 record.setApAmount(record.getPlAmount());
+                record.setAuditUserId(om.getOperatorId());
+                record.setAuditUserName(om.getOperatorName());
+                record.setAuditDate(date10);
                 if (refundService.updateRecord(record) != 1) {
                     throw new RuntimeException("复核更新异常！");
                 }
@@ -150,9 +157,13 @@ public class RefundAction implements Serializable {
             return null;
         }
         try {
+            OperatorManager om = SystemService.getOperatorManager();
+            String date10 = SystemService.getSdfdate10();
             for (RsRefund record : selectedRefundRecords) {
-                record.setWorkResult(WorkResult.COMMIT.getCode());
-                if (tradeService.handleRefundTrade(record) != 4) {
+                record.setExecDate(date10);
+                record.setExecUserId(om.getOperatorId());
+                record.setExecUserName(om.getOperatorName());
+                if (tradeService.handleRefundTrade(record) != 3) {
                     throw new RuntimeException("入账过程发生异常！");
                 }
             }
@@ -171,7 +182,6 @@ public class RefundAction implements Serializable {
         }
         try {
             for (RsRefund record : selectedRefundRecords) {
-                record.setWorkResult(WorkResult.SENT.getCode());
                 if (clientBiService.sendRsRefundMsg(record, InOutFlag.OUT.getCode()) != 1) {
                     throw new RuntimeException("发送过程发生异常！");
                 }
@@ -179,6 +189,7 @@ public class RefundAction implements Serializable {
             MessageUtil.addInfo("发送完成！");
             initList();
         } catch (Exception e) {
+            e.printStackTrace();
             MessageUtil.addError("操作失败。" + e.getMessage());
         }
         return null;

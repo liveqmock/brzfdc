@@ -301,6 +301,7 @@ public class ClientBiService {
         if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
             return -1;
         } else {
+            record.setWorkResult(WorkResult.SENT.getCode());
             return refundService.updateRecord(record);
         }
     }

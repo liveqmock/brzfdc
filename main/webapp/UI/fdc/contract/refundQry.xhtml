@@ -93,11 +93,11 @@
                                 <h:outputText value="#{record.applyDate}">
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
-                                      filterOptions="#{refundAction.refundStatusOptions}"
+                            <p:column headerText="处理结果" style="text-align:center" filterBy="#{record.workResult}"
+                                      filterOptions="#{refundAction.workResultOptions}"
                                       filterMatchMode="exact">
                                 <h:outputText
-                                        value="#{refundAction.refundStatus.valueOfAlias(record.statusFlag).title}"/>
+                                        value="#{refundAction.workResult.valueOfAlias(record.workResult).title}"/>
                             </p:column>
                             <p:column headerText="操作" style="width:50px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"

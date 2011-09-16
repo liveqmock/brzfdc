@@ -10,6 +10,7 @@ import fdc.service.contract.ContractService;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.commandbutton.CommandButton;
 import platform.common.utils.MessageUtil;
+import platform.service.SystemService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -17,6 +18,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -55,12 +57,15 @@ public class RefundDetlAction {
 
     public String onSave() {
         try {
-            if (refundService.selectSumPlamount().add(refund.getPlAmount()).compareTo(contract.getTransbuyeramt()) > 0) {
+            BigDecimal totalPlamt = refundService.selectSumPlamount() == null ? new BigDecimal(0) : refundService.selectSumPlamount();
+
+            if (totalPlamt.add(refund.getPlAmount()).compareTo(contract.getTransbuyeramt()) > 0) {
                 MessageUtil.addError("退款申请总金额不能大于合同退款金额！");
                 return null;
             } else {
+                refund.setTradeDate(SystemService.getSdfdate10());
                 if (refundService.insertRecord(refund) == 1) {
-                    if (refundService.selectSumPlamount().add(refund.getPlAmount()).equals(contract.getTransbuyeramt())) {
+                    if (totalPlamt.add(refund.getPlAmount()).equals(contract.getTransbuyeramt())) {
                         contract.setStatusFlag(ContractStatus.CANCELING.getCode());
                         contractService.updateRecord(contract);
                     }
@@ -83,13 +88,16 @@ public class RefundDetlAction {
 
     public String onEdit() {
         try {
-            if (refundService.selectSumPlamount().add(refund.getPlAmount()).compareTo(contract.getTransbuyeramt()) > 0) {
+            BigDecimal totalPlamt = refundService.selectSumPlamountExceptPkid(refund.getPkId()) == null
+                    ? new BigDecimal(0) : refundService.selectSumPlamountExceptPkid(refund.getPkId());
+
+            if (totalPlamt.add(refund.getPlAmount()).compareTo(contract.getTransbuyeramt()) > 0) {
                 MessageUtil.addError("退款申请总金额不能大于合同退款金额！");
                 return null;
             } else {
                 refund.setWorkResult(WorkResult.CREATE.getCode());
                 if (refundService.updateRecord(refund) == 1) {
-                    if (refundService.selectSumPlamount().add(refund.getPlAmount()).equals(contract.getTransbuyeramt())) {
+                    if (totalPlamt.add(refund.getPlAmount()).equals(contract.getTransbuyeramt())) {
                         contract.setStatusFlag(ContractStatus.CANCELING.getCode());
                         contractService.updateRecord(contract);
                     }

@@ -260,6 +260,7 @@ public class TradeService {
             contract.setStatusFlag(ContractStatus.END.getCode());
             contractService.updateRecord(contract);
         }
+        refund.setWorkResult(WorkResult.COMMIT.getCode());
         rtnCnt = refundService.updateRecord(refund)
                 + accDetailService.insertAccDetail(accDetail)
                 + accountService.updateRecord(account);
