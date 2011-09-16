@@ -54,7 +54,7 @@ public class PayoutService {
         return false;
     }
 
-    private int updateRsPayout(RsPayout rsPayout) {
+    public int updateRsPayout(RsPayout rsPayout) {
         RsPayout originRecord = rsPayoutMapper.selectByPrimaryKey(rsPayout.getPkId());
         if (!originRecord.getModificationNum().equals(rsPayout.getModificationNum())) {
             throw new RuntimeException("记录并发更新冲突，请重试！");
@@ -140,11 +140,20 @@ public class PayoutService {
                 .andPayAccountEqualTo(record.getAccountCode()).andRecAccountEqualTo(record.getToAccountCode())
                 .andApAmountEqualTo(record.getTradeAmt()).andTradeDateEqualTo(record.getTradeDate());
         List<RsPayout> payoutList = rsPayoutMapper.selectByExample(example);
-        if(payoutList.size() > 0) {
+        if (payoutList.size() > 0) {
             return payoutList.get(0);
-        }else {
+        } else {
             throw new RuntimeException("没有查询到该笔计划付款记录！");
         }
 
+    }
+
+    public List<RsPayout> selectEditRecords() {
+        RsPayoutExample example = new RsPayoutExample();
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andWorkResultEqualTo(WorkResult.CREATE.getCode());
+        example.or(example.createCriteria().andDeletedFlagEqualTo("0")
+                .andWorkResultEqualTo(WorkResult.NOTPASS.getCode()));
+        return rsPayoutMapper.selectByExample(example);
     }
 }

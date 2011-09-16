@@ -71,6 +71,25 @@ public class RefundDetlAction {
         return null;
     }
 
+    public String onEdit() {
+        try {
+            contract.setStatusFlag(ContractStatus.CANCELING.getCode());
+            refund.setWorkResult(WorkResult.CREATE.getCode());
+            if (contractService.updateRecord(contract) == 1 && refundService.updateRecord(refund) == 1) {
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
+                MessageUtil.addInfo("ÉêÇëÍË¿îÒÑÐÞ¸Ä£¡");
+            }else {
+                MessageUtil.addError("ÉêÇëÍË¿îÊ§°Ü£¡");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            MessageUtil.addError("²Ù×÷Ê§°Ü¡£" + e.getMessage());
+        }
+        return null;
+    }
+
     private void copyFields(BiContractClose contractClose) {
         refund.setPayAccount(contractClose.getAccountCode());
         refund.setPayCompanyName(contractClose.getAccountName());

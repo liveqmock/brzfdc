@@ -111,6 +111,31 @@ public class ContractRecvDetlAction implements Serializable {
         return null;
     }
 
+    public String onEdit() {
+        try {
+            selectedRecord.setApAmount(selectedRecord.getPlAmount());
+            selectedRecord.setWorkResult(WorkResult.CREATE.getCode());
+            contract.setReceiveAmt(contract.getReceiveAmt().add(selectedRecord.getApAmount()));
+
+
+            if (contract.getReceiveAmt().compareTo(contract.getTotalAmt()) > 0) {
+                MessageUtil.addError("申请缴款金额不得大于房屋总价！");
+                return null;
+            }
+            if (contractRecvService.updateRecord(selectedRecord) == 1
+                    && contractService.updateRecord(contract) == 1) {
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
+                MessageUtil.addInfo("缴款申请修改成功！");
+            }
+        } catch (Exception e) {
+            logger.error("缴款保存失败", e);
+            MessageUtil.addError("操作失败。" + e.getMessage());
+        }
+        return null;
+    }
+
     //======================================================
 
     public ContractService getContractService() {

@@ -105,4 +105,11 @@ public class RefundService {
         record.setModificationNum(record.getModificationNum() + 1);
         return refundMapper.updateByPrimaryKeySelective(record);
     }
+
+    public List<RsRefund> selectEditList() {
+        RsRefundExample example = new RsRefundExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.CREATE.getCode());
+        example.or(example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.NOTPASS.getCode()));
+        return refundMapper.selectByExample(example);
+    }
 }

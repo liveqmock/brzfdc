@@ -3,6 +3,7 @@ package fdc.service;
 import fdc.common.constant.*;
 import fdc.repository.model.*;
 import fdc.service.account.AccountService;
+import fdc.service.contract.ContractService;
 import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ecs.html.Big;
@@ -43,6 +44,8 @@ public class TradeService {
     private RefundService refundService;
     @Autowired
     private ContractRecvService receiveService;
+    @Autowired
+    private ContractService contractService;
 
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -140,7 +143,12 @@ public class TradeService {
             newReceive.setWorkResult(WorkResult.SENT.getCode());
             newReceive.setApAmount(newReceive.getApAmount().multiply(new BigDecimal("-1")));
             newReceive.setPlAmount(newReceive.getPlAmount().multiply(new BigDecimal("-1")));
-            return receiveService.insertRecord(newReceive);
+
+            RsContract contract = contractService.selectContractByNo(record.getContractNo());
+            contract.setReceiveAmt(contract.getReceiveAmt().subtract(record.getTradeAmt()));
+            if(receiveService.insertRecord(newReceive) == 1){
+                return contractService.updateRecord(contract);
+            }
 
         }
         // ºÏÍ¬ÍË¿î
@@ -153,7 +161,11 @@ public class TradeService {
             newRefund.setWorkResult(WorkResult.SENT.getCode());
             newRefund.setApAmount(newRefund.getApAmount().multiply(new BigDecimal("-1")));
             newRefund.setPlAmount(newRefund.getPlAmount().multiply(new BigDecimal("-1")));
-            return refundService.insertRecord(newRefund);
+            RsContract contract = contractService.selectContractByNo(record.getContractNo());
+            contract.setReceiveAmt(contract.getReceiveAmt().add(record.getTradeAmt()));
+            if(refundService.insertRecord(newRefund) == 1){
+                return contractService.updateRecord(contract);
+            }
         }
         return -1;
     }

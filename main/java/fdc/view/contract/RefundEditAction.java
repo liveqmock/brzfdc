@@ -1,6 +1,5 @@
 package fdc.view.contract;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import fdc.common.constant.*;
 import fdc.repository.model.RsContract;
 import fdc.repository.model.RsRefund;
@@ -18,12 +17,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,8 +30,8 @@ import java.util.Map;
  */
 @ManagedBean
 @ViewScoped
-public class RefundAction implements Serializable {
-    private static final Logger logger = LoggerFactory.getLogger(RefundAction.class);
+public class RefundEditAction implements Serializable {
+    private static final Logger logger = LoggerFactory.getLogger(RefundEditAction.class);
 
     @ManagedProperty(value = "#{contractService}")
     private ContractService contractService;
@@ -60,8 +56,6 @@ public class RefundAction implements Serializable {
     private List<RsRefund> pendActList;
     private List<RsRefund> pendToSendList;
     private List<RsRefund> pendSentList;
-    private List<RsRefund> detlEditList;
-
     private RsRefund[] selectedRefundRecords;
     private RsRefund selectedRefundRecord;
 
@@ -100,7 +94,6 @@ public class RefundAction implements Serializable {
         this.pendToSendList = refundService.selectRefundList(WorkResult.COMMIT);
         this.pendSentList = refundService.selectRefundList(WorkResult.SENT);
         this.detlRefundList = refundService.selectRefundList();
-        this.detlEditList = refundService.selectEditList();
     }
 
     public String onCheck() {
@@ -203,14 +196,6 @@ public class RefundAction implements Serializable {
 
     public List<RsContract> getDetlList() {
         return detlList;
-    }
-
-    public List<RsRefund> getDetlEditList() {
-        return detlEditList;
-    }
-
-    public void setDetlEditList(List<RsRefund> detlEditList) {
-        this.detlEditList = detlEditList;
     }
 
     public void setDetlList(List<RsContract> detlList) {

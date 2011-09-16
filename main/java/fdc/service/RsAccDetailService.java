@@ -81,8 +81,7 @@ public class RsAccDetailService {
     public List<RsAccDetail> selectAPCancelAccDetails() {
         RsAccDetailExample example = new RsAccDetailExample();
         example.createCriteria().andDeletedFlagEqualTo("0")
-                .andChangeFlagEqualTo(ChangeFlag.AP_CANCEL.getCode())
-                .andTradeDateGreaterThanOrEqualTo(sdf10.format(new Date()));
+                .andChangeFlagEqualTo(ChangeFlag.AP_CANCEL.getCode());
         example.setOrderByClause("Trade_Date desc");
         return accDetailMapper.selectByExample(example);
     }
@@ -104,18 +103,12 @@ public class RsAccDetailService {
         return accDetailMapper.selectByExample(example);
     }
 
-     // 退票申请交易
+    // 退票申请交易
     public List<RsAccDetail> selectAPBackAccDetails() {
         RsAccDetailExample example = new RsAccDetailExample();
-        try {
-            example.createCriteria().andDeletedFlagEqualTo("0")
-                    .andInoutFlagEqualTo(InOutFlag.OUT.getCode())
-                    .andChangeFlagEqualTo(ChangeFlag.AP_BACK.getCode())
-                    .andTradeDateGreaterThan(SystemService.getTodayAddDays(-7))
-                    .andTradeDateLessThan(sdf10.format(new Date()));
-        } catch (ParseException e) {
-            throw new RuntimeException("日期转换错误！");
-        }
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andInoutFlagEqualTo(InOutFlag.OUT.getCode())
+                .andChangeFlagEqualTo(ChangeFlag.AP_BACK.getCode());
         example.setOrderByClause("Trade_Date desc");
         return accDetailMapper.selectByExample(example);
     }

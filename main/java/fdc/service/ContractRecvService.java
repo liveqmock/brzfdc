@@ -102,6 +102,13 @@ public class ContractRecvService {
         return receiveMapper.selectByExample(example);
     }
 
+    public List<RsReceive> selectEditRecvList() {
+        RsReceiveExample example = new RsReceiveExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.CREATE.getCode());
+        example.or(example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(WorkResult.NOTPASS.getCode()));
+        return receiveMapper.selectByExample(example);
+    }
+
     public List<RsReceive> selectContractList(WorkResult workResult) {
         RsReceiveExample example = new RsReceiveExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(workResult.getCode());

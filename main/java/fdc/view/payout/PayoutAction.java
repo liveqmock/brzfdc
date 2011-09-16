@@ -49,6 +49,7 @@ public class PayoutAction {
     private ToolsService toolsService;
     private List<RsPayout> rsPayoutList;
     private List<RsPayout> chkPayoutList;
+    private List<RsPayout> editPayoutList;
     private List<RsPayout> passPayoutList;
     private List<RsPayout> refusePayoutList;
     private List<RsPlanCtrl> rsPlanCtrlList;
@@ -94,9 +95,11 @@ public class PayoutAction {
 
     public void initTabList() {
         chkPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.CREATE.getCode());
+        editPayoutList = payoutService.selectEditRecords();
         passPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.PASS.getCode());
         refusePayoutList = payoutService.selectRecordsByWorkResult(WorkResult.NOTPASS.getCode());
         rsPlanCtrlList = expensesPlanService.selectPlanList();
+
     }
 
     public String onSave() {
@@ -117,6 +120,38 @@ public class PayoutAction {
             rsPayout.setApAmount(rsPayout.getPlAmount());
             if (payoutService.insertRsPayout(rsPayout) == 1) {
                 MessageUtil.addInfo("受理用款成功！");
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
+            } else {
+                MessageUtil.addError("受理用款失败！");
+            }
+        } catch (Exception e) {
+            logger.error("受理用款失败，请检查输入内容！", e.getMessage());
+            MessageUtil.addError("受理用款失败，请检查输入内容！");
+        }
+        return null;
+    }
+
+     public String onEdit() {
+        RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
+        if(account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())){
+            MessageUtil.addError("该账户已被限制付款！");
+            return null;
+        }
+        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+            MessageUtil.addError("申请金额不得大于可用金额！");
+            return null;
+        }
+        if (rsPayout.getPlAmount().compareTo(planCtrl.getAvAmount()) > 0) {
+            MessageUtil.addError("申请金额不得大于可用金额！");
+            return null;
+        }
+        try {
+            rsPayout.setApAmount(rsPayout.getPlAmount());
+            rsPayout.setWorkResult(WorkResult.CREATE.getCode());
+            if (payoutService.updateRsPayout(rsPayout) == 1) {
+                MessageUtil.addInfo("受理用款修改成功！");
                 UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);
@@ -188,6 +223,14 @@ public class PayoutAction {
 
     public void setBankCodeList(List<SelectItem> bankCodeList) {
         this.bankCodeList = bankCodeList;
+    }
+
+    public List<RsPayout> getEditPayoutList() {
+        return editPayoutList;
+    }
+
+    public void setEditPayoutList(List<RsPayout> editPayoutList) {
+        this.editPayoutList = editPayoutList;
     }
 
     public ToolsService getToolsService() {

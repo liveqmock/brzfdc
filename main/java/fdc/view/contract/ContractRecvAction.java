@@ -47,6 +47,7 @@ public class ContractRecvAction implements Serializable {
     private List<RsReceive> detlRecvList;
     private List<RsReceive> pendChkList;
     private List<RsReceive> pendActList;
+    private List<RsReceive> detlEditList;
     private RsReceive[] selectedRecvRecords;
     private RsReceive selectedRecvRecord;
 
@@ -84,6 +85,7 @@ public class ContractRecvAction implements Serializable {
         this.pendChkList = contractRecvService.selectContractList(WorkResult.CREATE);
         this.pendActList = contractRecvService.selectContractList(WorkResult.PASS);
         this.detlRecvList = contractRecvService.selectContractRecvList();
+        this.detlEditList = contractRecvService.selectEditRecvList();
     }
 
     public String onQuery() {
@@ -296,5 +298,13 @@ public class ContractRecvAction implements Serializable {
 
     public void setPendActList(List<RsReceive> pendActList) {
         this.pendActList = pendActList;
+    }
+
+    public List<RsReceive> getDetlEditList() {
+        return detlEditList;
+    }
+
+    public void setDetlEditList(List<RsReceive> detlEditList) {
+        this.detlEditList = detlEditList;
     }
 }
