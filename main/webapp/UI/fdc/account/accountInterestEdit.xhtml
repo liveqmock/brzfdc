@@ -38,15 +38,10 @@
                 }
             }
             function recordEdit(obj) {
-                var pkid = obj.parentNode.parentNode.children[8].innerHTML;
-                var acctno = obj.parentNode.parentNode.children[2].innerHTML;
-                var acctname = obj.parentNode.parentNode.children[1].innerHTML;
-                var companyid = obj.parentNode.parentNode.children[9].innerHTML;
-                var statusflag = obj.parentNode.parentNode.children[0].innerHTML;
-                if (statusflag != "0") {
-                    alert("账户不在监管中。");
-                    return false;
-                }
+                var pkid = obj.parentNode.parentNode.children[7].innerHTML;
+                var acctno = obj.parentNode.parentNode.children[1].innerHTML;
+                var acctname = obj.parentNode.parentNode.children[0].innerHTML;
+                var companyid = obj.parentNode.parentNode.children[8].innerHTML;
                 var sfeature = "dialogwidth:800px; dialogheight:520px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
                 var arg = new Object();
                 arg.doType = "edit";
@@ -64,7 +59,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <div class="entry" id="top">
+        <div style="margin:5px;" id="top">
             <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
                 <p:tab title="利息录入修改">
                     <h:form id="editForm">
@@ -76,9 +71,6 @@
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,10,5"
                                      emptyMessage="数据记录为空...">
-                            <p:column headerText="statusflag" style="display:none;">
-                                <h:outputText value="#{record.statusFlag}"/>
-                            </p:column>
                             <p:column headerText="账户名称" filterBy="#{record.accountName}" filterMatchMode="contains">
                                 <h:outputText value="#{record.accountName}"/>
                             </p:column>
