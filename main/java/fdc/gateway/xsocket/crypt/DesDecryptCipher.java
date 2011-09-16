@@ -18,14 +18,15 @@ import java.security.NoSuchAlgorithmException;
 public class DesDecryptCipher {
     private static DesDecryptCipher desDecryptCipher = null;
     private static Cipher decryptCipher = null;
+    private static String Algorithm = "DES";
 
     public static DesDecryptCipher getInstanceByKey(Key key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
         if (desDecryptCipher == null) {
             desDecryptCipher = new DesDecryptCipher();
         }
         if (decryptCipher == null) {
-            decryptCipher = Cipher.getInstance("DES");
-            decryptCipher.init(Cipher.ENCRYPT_MODE, key);
+            decryptCipher = Cipher.getInstance(Algorithm);
+            decryptCipher.init(Cipher.DECRYPT_MODE, key);
         }
         return desDecryptCipher;
     }

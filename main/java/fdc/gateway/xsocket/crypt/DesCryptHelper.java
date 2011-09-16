@@ -84,4 +84,16 @@ public class DesCryptHelper {
         keyGenerator = null;
         return desKey;
     }
+
+    public static void main(String[] args) throws Exception {
+        String str = "<?xml version=\"1.0\" encoding=\"GBK\"?><root><Head><OpCode>0001</OpCode><OpDate>20110829</OpDate><OpTime>105950</OpTime><BankCode>304</BankCode></Head><Param><Acct>12050000000373775</Acct><AcctName>青岛伟业房地产有限公司</AcctName></Param></root>";
+        DesCryptHelper helper = new DesCryptHelper();
+        System.out.println("明文："+str);
+        System.out.println("---------------------------------------------");
+        String miStr = helper.encrypt(str);
+        System.out.println("密文："+ miStr);
+        System.out.println("---------------------------------------------");
+        System.out.println("明文："+ helper.decrypt(miStr));
+        System.out.println("---------------------------------------------");
+    }
 }
