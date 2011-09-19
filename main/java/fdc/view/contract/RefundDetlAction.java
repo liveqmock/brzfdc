@@ -9,6 +9,8 @@ import fdc.service.RefundService;
 import fdc.service.contract.ContractService;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.commandbutton.CommandButton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
 import platform.service.SystemService;
 
@@ -32,12 +34,16 @@ import java.util.Date;
 @ViewScoped
 public class RefundDetlAction {
 
+    private static final Logger logger = LoggerFactory.getLogger(RefundDetlAction.class);
     private RsRefund refund;
     private RsContract contract;
     @ManagedProperty(value = "#{contractService}")
     private ContractService contractService;
     @ManagedProperty(value = "#{refundService}")
     private RefundService refundService;
+
+    private BigDecimal totalTransAmt;
+    private BigDecimal totalTransAmtExptThis;
 
     @PostConstruct
     public void init() {
@@ -47,12 +53,16 @@ public class RefundDetlAction {
         if ("query".equals(action)) {
             refund = refundService.selectRefundByPkid(pkid);
             contract = contractService.selectContractByNo(refund.getBusinessNo());
+             totalTransAmtExptThis = refundService.selectSumPlamountExceptPkid(refund.getPkId()) == null
+                    ? new BigDecimal(0) : refundService.selectSumPlamountExceptPkid(refund.getPkId());
         } else if (!StringUtils.isEmpty(pkid)) {
             contract = contractService.selectRecordContract(pkid);
             BiContractClose contractClose = contractService.selectCloseContractByNo(contract.getContractNo());
             refund = new RsRefund();
             copyFields(contractClose);
+            totalTransAmt = refundService.selectSumPlamount() == null ? new BigDecimal(0) : refundService.selectSumPlamount();
         }
+
     }
 
     public String onSave() {
@@ -118,6 +128,26 @@ public class RefundDetlAction {
         return null;
     }
 
+    public String onDelete() {
+        try {
+
+                refund.setDeletedFlag("1");
+                if (refundService.updateRecord(refund) == 1) {
+                    UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                    CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                    saveBtn.setDisabled(true);
+                    MessageUtil.addInfo("ÉêÇëÍË¿îÒÑÉ¾³ý£¡");
+                } else {
+                    MessageUtil.addError("ÉêÇëÍË¿îÉ¾³ýÊ§°Ü£¡");
+                }
+
+        } catch (Exception e) {
+            logger.error("ÉêÇëºÏÍ¬ÍË¿îÉ¾³ýÊ§°Ü£¡", e.getMessage());
+            MessageUtil.addError("²Ù×÷Ê§°Ü¡£" + e.getMessage());
+        }
+        return null;
+    }
+
     private void copyFields(BiContractClose contractClose) {
         refund.setPayAccount(contractClose.getAccountCode());
         refund.setPayCompanyName(contractClose.getAccountName());
@@ -163,5 +193,21 @@ public class RefundDetlAction {
 
     public void setRefundService(RefundService refundService) {
         this.refundService = refundService;
+    }
+
+    public BigDecimal getTotalTransAmt() {
+        return totalTransAmt;
+    }
+
+    public void setTotalTransAmt(BigDecimal totalTransAmt) {
+        this.totalTransAmt = totalTransAmt;
+    }
+
+    public BigDecimal getTotalTransAmtExptThis() {
+        return totalTransAmtExptThis;
+    }
+
+    public void setTotalTransAmtExptThis(BigDecimal totalTransAmtExptThis) {
+        this.totalTransAmtExptThis = totalTransAmtExptThis;
     }
 }

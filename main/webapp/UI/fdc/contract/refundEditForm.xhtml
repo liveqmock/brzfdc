@@ -39,6 +39,11 @@
                             <h:outputLabel value="合同号:"/>
                             <h:inputText value="#{refundDetlAction.contract.contractNo}"
                                          size="30" disabled="true"/>
+
+                            <h:outputLabel value="累计退款金额:"/>
+                            <h:inputText value="#{refundDetlAction.totalTransAmtExptThis}" size="30" disabled="true">
+                                <f:convertNumber pattern="###,##0.00"/>
+                            </h:inputText>
                         </h:panelGrid>
                         <p:separator/>
                         <h:panelGrid columns="4" cellpadding="2"
@@ -125,7 +130,7 @@
                                         requiredMessage="必须填入单据号！" size="30" disabled="false"/>
                             <h:outputLabel value="合同号:"/>
                             <h:inputText value="#{refundDetlAction.refund.businessNo}"
-                                         size="30" readonly="true"/>
+                                         size="30" readonly="true" disabled="true"/>
                             <h:outputLabel value="退款金额:"/>
                             <h:inputText value="#{refundDetlAction.refund.plAmount}" size="30"
                                          disabled="false" readonly="false">

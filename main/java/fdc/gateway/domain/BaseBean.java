@@ -27,7 +27,6 @@ public class BaseBean {
     }
 
     public String toFDCDatagram() {
-        String datagram = toXml();
-        return datagram.getBytes().length + "\r\n" + datagram;
+        return toXml();
     }
 }

@@ -41,7 +41,7 @@
                 var pkid = obj.parentNode.parentNode.children[0].innerHTML;
                 var statusflag = obj.parentNode.parentNode.children[1].innerHTML;
                 if (statusflag != "N") {
-                    alert("账户已启用，不能修改。");
+                    alert("账户已开启监管，不能修改!");
                     return false;
                 }
                 var sfeature = "dialogwidth:800px; dialogheight:520px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";

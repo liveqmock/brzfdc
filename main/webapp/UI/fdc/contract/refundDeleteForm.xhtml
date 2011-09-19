@@ -39,8 +39,9 @@
                             <h:outputLabel value="合同号:"/>
                             <h:inputText value="#{refundDetlAction.contract.contractNo}"
                                          size="30" disabled="true"/>
+
                             <h:outputLabel value="累计退款金额:"/>
-                            <h:inputText value="#{refundDetlAction.totalTransAmt}" size="30" disabled="true">
+                            <h:inputText value="#{refundDetlAction.totalTransAmtExptThis}" size="30" disabled="true">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
                         </h:panelGrid>
@@ -111,12 +112,7 @@
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
 
-                            <h:outputLabel value="累计交款:"/>
-                            <h:inputText value="#{refundDetlAction.contract.receiveAmt}" size="30" disabled="true">
-                                <f:convertNumber pattern="###,##0.00"/>
-                            </h:inputText>
-
-                             <h:outputLabel value="退款金额:"/>
+                            <h:outputLabel value="退款金额:"/>
                             <h:inputText value="#{refundDetlAction.contract.transbuyeramt}" size="30" disabled="true">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
@@ -130,33 +126,32 @@
                         <h:panelGrid columns="4" cellpadding="2" border="0"
                                      columnClasses="col-label,col-input,col-label2,col-input">
                             <h:outputLabel value="单据号:"/>
-                            <h:inputText value="#{refundDetlAction.refund.docNo}" required="true"
-                                        requiredMessage="必须填入单据号！" size="30" disabled="false"/>
+                            <h:inputText value="#{refundDetlAction.refund.docNo}"  size="30" disabled="true"/>
                             <h:outputLabel value="合同号:"/>
                             <h:inputText value="#{refundDetlAction.refund.businessNo}"
                                          size="30" readonly="true" disabled="true"/>
                             <h:outputLabel value="退款金额:"/>
                             <h:inputText value="#{refundDetlAction.refund.plAmount}" size="30"
-                                         disabled="false" readonly="false">
+                                         disabled="true" readonly="true">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
 
                             <h:outputLabel value="收款账户名:"/>
                             <h:inputText value="#{refundDetlAction.refund.recCompanyName}" size="30"
-                                         disabled="false"/>
+                                         disabled="true"/>
                             <h:outputLabel value="收款账户号:"/>
                             <h:inputText value="#{refundDetlAction.refund.recAccount}" size="30"
-                                         disabled="false" required="true"/>
+                                         disabled="true" required="true"/>
                             <h:outputLabel value="收款方开户行:"/>
                             <h:inputText value="#{refundDetlAction.refund.recBankName}" size="30"
-                                         disabled="false"/>
+                                         disabled="true"/>
 
                         </h:panelGrid>
                         <p:separator/>
                         <h:panelGrid columns="2" cellpadding="5" border="0"
                                      columnClasses="col-label,col-input,col-label2,col-input">
-                            <p:commandButton id="saveBtn" ajax="true" value="提交"
-                                             action="#{refundDetlAction.onSave}"
+                            <p:commandButton id="saveBtn" ajax="true" value="删除"
+                                             action="#{refundDetlAction.onDelete}"
                                              style="margin-left:280px;width:90px;" update="msgs,detailPanel2">
                             </p:commandButton>
                             <p:commandButton ajax="true" id="closeBtn" value="关闭" onclick="window.close();"

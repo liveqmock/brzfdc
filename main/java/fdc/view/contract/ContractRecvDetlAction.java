@@ -141,6 +141,22 @@ public class ContractRecvDetlAction implements Serializable {
         return null;
     }
 
+    public String onDelete() {
+        try {
+            selectedRecord.setDeletedFlag("1");
+            if (contractRecvService.updateRecord(selectedRecord) == 1) {
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
+                MessageUtil.addInfo("合同交款申请删除成功！");
+            }
+        } catch (Exception e) {
+            logger.error("合同交款删除失败", e);
+            MessageUtil.addError("操作失败。" + e.getMessage());
+        }
+        return null;
+    }
+
     //======================================================
 
     public ContractService getContractService() {

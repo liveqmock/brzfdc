@@ -28,7 +28,7 @@ public class XSocketComponent {
      */
     private Logger logger = LoggerFactory.getLogger(XSocketComponent.class);
 
-    public String sendAndRecvDataByBlockConn(String datagram) throws IOException {
+    public String sendAndRecvDataByBlockConn(String datagram) throws Exception {
 
         IBlockConnect client = ClientFactory.XSocket.getBlockClient();
         String recvDatagram = client.sendDataUntilRcv(datagram);

@@ -164,11 +164,31 @@ public class PayoutAction {
                 CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
                 saveBtn.setDisabled(true);
             } else {
-                MessageUtil.addError("受理用款失败！");
+                MessageUtil.addError("受理用款修改失败！");
             }
         } catch (Exception e) {
-            logger.error("受理用款失败！", e.getMessage());
-            MessageUtil.addError("受理用款失败！"+e.getMessage());
+            logger.error("受理用款修改失败！", e.getMessage());
+            MessageUtil.addError("受理用款修改失败！"+e.getMessage());
+        }
+        return null;
+    }
+
+    public String onDelete() {
+
+        try {
+
+            rsPayout.setDeletedFlag("1");
+            if (payoutService.updateRsPayout(rsPayout) == 1) {
+                MessageUtil.addInfo("受理用款修删除成功！");
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                saveBtn.setDisabled(true);
+            } else {
+                MessageUtil.addError("受理用款删除失败！");
+            }
+        } catch (Exception e) {
+            logger.error("受理用款删除失败！", e.getMessage());
+            MessageUtil.addError("受理用款删除失败！"+e.getMessage());
         }
         return null;
     }
