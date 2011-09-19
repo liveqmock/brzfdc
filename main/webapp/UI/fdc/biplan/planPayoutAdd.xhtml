@@ -53,14 +53,14 @@
                                 <h:panelGrid columns="1">
                                     <h:panelGrid columns="4" cellspacing="2" style="width: 100%"
                                                  columnClasses="col-95,col-5,col-95,col-5">
-                                        <h:outputLabel value="单据号:" for="docNo"/>
+                                        <h:outputLabel value="*单据号:" for="docNo"/>
                                         <p:inputText id="docNo" value="#{biplanAction.paramPlan.docNo}"
-                                                     style="width:160px;"/>
+                                                     style="width:160px;" required="true" requiredMessage="必须输入单据号！"/>
 
                                         <h:outputLabel value="* 付款房产商:" for="companyName" style="margin-left:20px;"/>
                                         <h:inputText autocomplete="off" id="companyName" style="width:160px;"
                                                      required="true"
-                                                     requiredMessage="必须输入房产商名称！"
+                                                     requiredMessage="必须输入付款房产商！"
                                                      value="#{biplanAction.paramPlan.companyName}"
                                                      onfocus="this.select()">
                                         </h:inputText>
@@ -72,7 +72,7 @@
                                                      value="#{biplanAction.paramPlan.accountCode}">
                                         </p:inputText>
 
-                                        <h:outputLabel value="申请金额:" for="applyAmt" style="margin-left:20px"/>
+                                        <h:outputLabel value="*申请金额:" for="applyAmt" style="margin-left:20px"/>
                                         <p:inputText autocomplete="off" id="applyAmt" style="width:160px;"
                                                      required="true"
                                                      requiredMessage="必须输入申请金额！"

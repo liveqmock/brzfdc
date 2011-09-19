@@ -46,10 +46,10 @@
 <h:form id="qryForm">
 <p:panel id="query" header="监管账号交易明细">
     <h:panelGrid columns="2" cellspacing="3" style="width:100%">
-        <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5">
-            <h:outputLabel value="账户名称"/>
+        <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5,col-95,col-5">
+            <h:outputLabel value="账户名称："/>
             <h:inputText value="#{accountTradeDetlAction.acctname}" style="width:146px;"/>
-            <h:outputLabel value="账户号"/>
+            <h:outputLabel value="账户号："/>
             <h:inputText value="#{accountTradeDetlAction.acctno}" style="width:146px;"/>
             <h:outputLabel value="起始日期："/>
             <p:calendar pattern="yyyy-MM-dd" id="begindate" readonly="true" mode="popup"
@@ -100,11 +100,11 @@
         </f:facet>
         <h:outputText value="#{record.accountCode}"></h:outputText>
     </p:column>
-    <p:column>
+    <p:column style="align:center;">
         <f:facet name="header">
             <h:outputText value="收支标志"/>
         </f:facet>
-        <h:outputText value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
+        <h:outputText style="text-align: center;" value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
     </p:column>
    <p:column>
         <f:facet name="header">
@@ -148,6 +148,13 @@
         </f:facet>
         <h:outputText
                 value="#{flagStatusForMap.actDetlStatusFlagMap[record.statusFlag]}"></h:outputText>
+    </p:column>
+    <p:column style="text-align:center;">
+        <f:facet name="header">
+            <h:outputText value="变更标志"/>
+        </f:facet>
+        <h:outputText
+                value="#{flagStatusForMap.actDetlChangeFlagMap[record.changeFlag]}"></h:outputText>
     </p:column>
 </p:dataTable>
 

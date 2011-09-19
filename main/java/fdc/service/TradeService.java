@@ -51,7 +51,7 @@ public class TradeService {
 
     // R-冲正 D-退票
     @Transactional
-    public int handleCancelAccDetail(RsAccDetail record, ChangeFlag changeFlag) throws IOException {
+    public int handleCancelAccDetail(RsAccDetail record, ChangeFlag changeFlag) throws Exception {
         // 查询未限制已监管未删除账户
         RsAccount account = accountService.selectCanPayAccountByNo(record.getAccountCode());
         if (account == null) {

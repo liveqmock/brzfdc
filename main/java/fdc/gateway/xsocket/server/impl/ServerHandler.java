@@ -60,6 +60,8 @@ public class ServerHandler implements IServerHandler {
         // 处理接收到的报文，并生成响应报文
         String responseMsg = serverMessageService.handleMessage(datagram);
 
+        responseMsg = responseMsg.getBytes().length + "\r\n" +responseMsg;
+
         int sendDatagramLength = nbc.write(responseMsg, "GBK");
         logger.info("【本地服务端】发送报文内容:" + responseMsg);
         logger.info("【本地服务端】发送报文长度:" + sendDatagramLength);

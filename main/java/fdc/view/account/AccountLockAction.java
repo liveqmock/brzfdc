@@ -133,7 +133,7 @@ public class AccountLockAction {
         return null;
     }
 
-    private int sendOneLockDetail(RsLockedaccDetail record) throws IOException {
+    private int sendOneLockDetail(RsLockedaccDetail record) throws Exception {
 
         return clientBiService.sendLockAccDetail(record);
     }

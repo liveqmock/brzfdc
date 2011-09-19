@@ -16,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import platform.common.utils.MessageUtil;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -61,9 +58,9 @@ public class ClientBiService {
      *
      * @param accDetailList
      * @return
-     * @throws IOException
+     * @throws Exception
      */
-    public int sendTodayAccDetails(List<RsAccDetail> accDetailList) throws IOException {
+    public int sendTodayAccDetails(List<RsAccDetail> accDetailList) throws Exception {
         T0007Req req = new T0007Req();
         req.head.OpCode = "0007";
         for (RsAccDetail accDetail : accDetailList) {
@@ -107,9 +104,9 @@ public class ClientBiService {
      *
      * @param record
      * @return
-     * @throws IOException
+     * @throws Exception
      */
-    public int sendInterestRecord(RsAccDetail record) throws IOException {
+    public int sendInterestRecord(RsAccDetail record) throws Exception {
         RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(record.getPkId());
         if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
             return 1;
@@ -140,9 +137,9 @@ public class ClientBiService {
      *
      * @param record
      * @return
-     * @throws IOException
+     * @throws Exception
      */
-    public int sendAccDetailBack(RsAccDetail record) throws IOException {
+    public int sendAccDetailBack(RsAccDetail record) throws Exception {
         RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(record.getPkId());
         if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
             return 1;
@@ -171,7 +168,7 @@ public class ClientBiService {
      * @param record
      * @return
      */
-    public int sendAccDetailCancel(RsAccDetail record) throws IOException {
+    public int sendAccDetailCancel(RsAccDetail record) throws Exception {
         RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(record.getPkId());
         if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
             return 1;
@@ -197,9 +194,9 @@ public class ClientBiService {
      *
      * @param record
      * @return
-     * @throws IOException
+     * @throws Exception
      */
-    public int sendRsPayoutMsg(RsPayout record) throws IOException {
+    public int sendRsPayoutMsg(RsPayout record) throws Exception {
         RsPayout originRecord = payoutService.selectPayoutByPkid(record.getPkId());
         if (WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
             return 1;
@@ -312,7 +309,7 @@ public class ClientBiService {
      * @param record
      * @return
      */
-    public int sendLockAccDetail(RsLockedaccDetail record) throws IOException {
+    public int sendLockAccDetail(RsLockedaccDetail record) throws Exception {
         if (lockedaccDetailService.isSent(record)) {
             return 1;
         }
@@ -333,10 +330,10 @@ public class ClientBiService {
         }
     }
 
-    private CommonRes sendMsgAndRecvRes(String dataGram) throws IOException {
+    private CommonRes sendMsgAndRecvRes(String dataGram) throws Exception {
         // TODO TEST-ing
-       // String recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
-        String recvMsg = new CommonRes().toXml();
+        String recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
+        //String recvMsg = new CommonRes().toXml();
         CommonRes resBean = clientMessageService.transMsgToBean(recvMsg);
         return resBean;
     }
