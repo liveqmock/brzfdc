@@ -10,6 +10,7 @@ import fdc.service.TradeService;
 import fdc.service.account.AccountService;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.commandbutton.CommandButton;
+import org.primefaces.event.TabChangeEvent;
 import platform.common.utils.MessageUtil;
 
 import javax.annotation.PostConstruct;
@@ -62,20 +63,38 @@ public class AccountLockAction {
         initLockDetailList();
     }
 
-    private void initLockDetailList() {
+    public void initLockDetailList() {
+        if(unSendLockDetailList != null) {
+            unSendLockDetailList.clear();
+        }
+        if(sentLockDetailList != null) {
+            sentLockDetailList.clear();
+        }
         unSendLockDetailList = lockedaccDetailService.selectRecordsBySendflagAndNotEqualLockstatus(
                 SendFlag.UN_SEND.getCode(), LockAccStatus.UN_LOCK.getCode());
         sentLockDetailList = lockedaccDetailService.selectRecordsBySendflagAndNotEqualLockstatus(
                 SendFlag.SENT.getCode(), LockAccStatus.UN_LOCK.getCode());
     }
 
+    public void onTabChange(TabChangeEvent event) {
+        if(accountList != null) {
+            accountList.clear();
+        }
+        accountList = accountService.qryAllRecords();
+        initLockDetailList();
+    }
+
     public String onSave() {
-        if (!lockConfirmAmt.equals(rsLockedaccDetail.getBalanceLock())) {
+        if (lockConfirmAmt.compareTo(rsLockedaccDetail.getBalanceLock()) != 0) {
             MessageUtil.addError("两次输入的冻结金额不一致！");
             return null;
         }
         if (rsLockedaccDetail.getBalanceLock().compareTo(rsAccount.getBalanceUsable()) > 0) {
-            MessageUtil.addError("冻结金额数不可大于可用账户余额！");
+            MessageUtil.addError("冻结金额数不可大于账户可用余额！");
+            return null;
+        }
+        if(lockConfirmAmt.compareTo(new BigDecimal(0)) <= 0) {
+             MessageUtil.addError("冻结金额数必须大于0.00！");
             return null;
         }
 

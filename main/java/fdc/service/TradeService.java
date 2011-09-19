@@ -167,6 +167,11 @@ public class TradeService {
                 return contractService.updateRecord(contract);
             }
         }
+        // 利息录入冲正
+        else if (StringUtils.isEmpty(record.getContractNo()) && StringUtils.isEmpty(record.getPlanCtrlNo())
+                && InOutFlag.IN.getCode().equalsIgnoreCase(record.getInoutFlag())) {
+            return 1;
+        }
         return -1;
     }
 

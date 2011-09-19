@@ -10,6 +10,7 @@ import fdc.service.TradeService;
 import fdc.service.account.AccountService;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.commandbutton.CommandButton;
+import org.primefaces.event.TabChangeEvent;
 import platform.common.utils.MessageUtil;
 
 import javax.annotation.PostConstruct;
@@ -62,20 +63,38 @@ public class AccountUnlockAction {
         initLockDetailList();
     }
 
-    private void initLockDetailList() {
+    public void initLockDetailList() {
+        if(unSendLockDetailList != null) {
+            unSendLockDetailList.clear();
+        }
+        if(sentLockDetailList != null) {
+            sentLockDetailList.clear();
+        }
         unSendLockDetailList = lockedaccDetailService.selectRecordsBySendflagAndLockstatus(
                 SendFlag.UN_SEND.getCode(), LockAccStatus.UN_LOCK.getCode());
         sentLockDetailList = lockedaccDetailService.selectRecordsBySendflagAndLockstatus(
                 SendFlag.SENT.getCode(), LockAccStatus.UN_LOCK.getCode());
     }
 
+    public void onTabChange(TabChangeEvent event) {
+        if(accountLockList != null) {
+            accountLockList.clear();
+        }
+        accountLockList = accountService.qryAllLockRecords();
+        initLockDetailList();
+    }
+
     public String onSave() {
-        if (!lockConfirmAmt.equals(rsLockedaccDetail.getBalanceLock())) {
+        if (lockConfirmAmt.compareTo(rsLockedaccDetail.getBalanceLock()) != 0) {
             MessageUtil.addError("两次输入的解冻金额不一致！");
             return null;
         }
         if (rsLockedaccDetail.getBalanceLock().compareTo(rsAccount.getBalanceLock()) > 0) {
             MessageUtil.addError("解冻金额数不可大于账户冻结金额！");
+            return null;
+        }
+        if(lockConfirmAmt.compareTo(new BigDecimal(0)) <= 0) {
+             MessageUtil.addError("解冻金额数必须大于0.00！");
             return null;
         }
 

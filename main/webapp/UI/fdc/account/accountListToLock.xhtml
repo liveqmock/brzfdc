@@ -25,7 +25,8 @@
 
     <ui:define name="content">
         <div style="margin:5px;">
-            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true"
+                       tabChangeListener="#{accountLockAction.onTabChange}">
                 <p:tab title="当前账户清单">
                     <div>
                         <h:form id="form1">
