@@ -90,9 +90,12 @@ public class FlagStatusForMap {
 
     public Map<String, String> getActDetlChangeFlagMap() {
         actDetlChangeFlagMap = new HashMap();
+        // 变更标志;[N]-正常;[R]-冲正;[D]-退票;[A]-申请冲正;[B]-申请退票
         actDetlChangeFlagMap.put("N","正常");
-        actDetlChangeFlagMap.put("R","补充");
-        actDetlChangeFlagMap.put("D","删除");
+        actDetlChangeFlagMap.put("R","冲正");
+        actDetlChangeFlagMap.put("D","退票");
+        actDetlChangeFlagMap.put("A","申请冲正");
+        actDetlChangeFlagMap.put("B","申请退票");
         return actDetlChangeFlagMap;
     }
 
