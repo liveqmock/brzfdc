@@ -113,7 +113,7 @@
                             <p:column headerText="操作" style="text-align:center">
                                 <h:commandLink onclick="recordEdit(this)" value="修改" style="color: blue"/>
                                 <h:commandLink onclick="if (confirm('确定删除账号 '+this.parentNode.parentNode.children[1].innerHTML+'的利息？'))
-                                 return true;else return false;" action="#{accountTradeDetlAction.onDelete}"
+                                 {document.getElementById('editForm:btnQuery').click(); return true;}else return false;" action="#{accountTradeDetlAction.onDelete}"
                                                value="删除" style="color: blue;margin-left: 6px" ajax="false">
                                         <f:param name="pkid" value="#{record.pkId}"/>
                                 </h:commandLink>
