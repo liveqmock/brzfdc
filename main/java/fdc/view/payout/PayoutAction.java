@@ -84,6 +84,7 @@ public class PayoutAction {
             rsPayout.setRecBankName(planCtrl.getToHsBankName());
             rsPayout.setPayCompanyName(planCtrl.getCompanyName());
             rsPayout.setPayAccount(planCtrl.getAccountCode());
+            rsPayout.setPurpose(planCtrl.getPlanDesc());
             bankCodeList = toolsService.getEnuSelectItemList("BANK_CODE", false, false);
             return true;
         } else if (!StringUtils.isEmpty(pkid) && "edit".equalsIgnoreCase(action)) {

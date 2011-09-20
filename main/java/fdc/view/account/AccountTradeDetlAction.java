@@ -3,9 +3,11 @@ package fdc.view.account;
 import fdc.common.constant.TradeStatus;
 import fdc.common.constant.TradeType;
 import fdc.repository.model.RsAccDetail;
+import fdc.service.RsAccDetailService;
 import fdc.service.account.AccountDetlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import platform.common.utils.MessageUtil;
 import platform.service.SystemService;
 import platform.service.ToolsService;
 import pub.platform.utils.BusinessDate;
@@ -35,6 +37,8 @@ public class AccountTradeDetlAction {
     private AccountDetlService accountDetlService;
     @ManagedProperty(value = "#{toolsService}")
     private ToolsService toolsService;
+    @ManagedProperty(value = "#{rsAccDetailService}")
+    private RsAccDetailService accDetailService;
     private Date beginDate;
     private Date endDate;
     private String acctname;
@@ -44,6 +48,7 @@ public class AccountTradeDetlAction {
     private List<RsAccDetail> rsAccDetailsInit;
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
     private List<SelectItem> actDetlStatusOptions;
+
     @PostConstruct
     public void init() {
         actDetlStatusOptions = returnStatusOptions();
@@ -52,13 +57,13 @@ public class AccountTradeDetlAction {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         beginDate = cal.getTime();
         endDate = new Date();
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname,acctno
-                ,sdf10.format(beginDate), sdf10.format(endDate));
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno
+                , sdf10.format(beginDate), sdf10.format(endDate));
         List<String> statusfalgs = new ArrayList<String>();
         statusfalgs.add(0, TradeStatus.CANCEL.getCode());
-        statusfalgs.add(1,TradeStatus.BACK.getCode());
+        statusfalgs.add(1, TradeStatus.BACK.getCode());
         //成功录入(包括被退回的)
-        rsAccDetailsInit = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(),statusfalgs);
+        rsAccDetailsInit = accountDetlService.selectedRecordsForChk(TradeType.INTEREST.getCode(), statusfalgs);
 
     }
 
@@ -67,15 +72,29 @@ public class AccountTradeDetlAction {
         SelectItem item;
         item = new SelectItem("", "全部");
         items.add(item);
-        item = new SelectItem(TradeStatus.CANCEL.getCode(),TradeStatus.CANCEL.getTitle());
+        item = new SelectItem(TradeStatus.CANCEL.getCode(), TradeStatus.CANCEL.getTitle());
         items.add(item);
-        item = new SelectItem(TradeStatus.BACK.getCode(),TradeStatus.BACK.getTitle());
+        item = new SelectItem(TradeStatus.BACK.getCode(), TradeStatus.BACK.getTitle());
         items.add(item);
         return items;
     }
 
+    public String onDelete() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String pkid = context.getExternalContext().getRequestParameterMap().get("pkid").toString();
+        RsAccDetail record = accDetailService.selectAccDetailByPkid(pkid);
+        record.setDeletedFlag("1");
+        if(accDetailService.updateAccDetail(record) == 1) {
+            MessageUtil.addInfo("账户"+record.getAccountCode() +"利息已删除！");
+            init();
+        }else {
+            MessageUtil.addError("账户"+record.getAccountCode() +"利息删除失败！");
+        }
+        return null;
+    }
+
     public void onBtnQueryClick() {
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname,acctno,
+        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno,
                 sdf10.format(beginDate), sdf10.format(endDate));
     }
 
@@ -113,6 +132,14 @@ public class AccountTradeDetlAction {
 
     public AccountDetlService getAccountDetlService() {
         return accountDetlService;
+    }
+
+    public RsAccDetailService getAccDetailService() {
+        return accDetailService;
+    }
+
+    public void setAccDetailService(RsAccDetailService accDetailService) {
+        this.accDetailService = accDetailService;
     }
 
     public void setAccountDetlService(AccountDetlService accountDetlService) {

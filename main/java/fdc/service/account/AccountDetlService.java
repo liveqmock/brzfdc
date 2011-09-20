@@ -76,6 +76,7 @@ public class AccountDetlService {
         if (statusflags != null && statusflags.size()>0) {
             criteria.andStatusFlagIn(statusflags);
         }
+        criteria.andDeletedFlagEqualTo("0");
         example.setOrderByClause("account_code,local_serial");
         return rsAccDetailMapper.selectByExample(example);
     }

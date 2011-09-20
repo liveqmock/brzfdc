@@ -61,8 +61,9 @@
     <ui:define name="content">
         <div style="margin:5px;" id="top">
             <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
-                <p:tab title="利息录入修改">
+                <p:tab title="利息录入管理">
                     <h:form id="editForm">
+                        <p:growl id="msgs" showDetail="false"/>
                         <p:commandButton id="btnQuery" style="display:none" action="#{accountTradeDetlAction.init}"/>
                         <p:dataTable id="pdt1" style="width:100%;"
                                      dynamic="true" selectionMode="single"
@@ -96,7 +97,7 @@
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="交易金额"/>
+                                    <h:outputText value="利息金额"/>
                                 </f:facet>
                                 <h:outputText style="float:right;" value="#{record.tradeAmt}">
                                     <f:convertNumber pattern="###,##0.00"/>
@@ -111,6 +112,11 @@
                             </p:column>
                             <p:column headerText="操作" style="text-align:center">
                                 <h:commandLink onclick="recordEdit(this)" value="修改" style="color: blue"/>
+                                <h:commandLink onclick="if (confirm('确定删除账号 '+this.parentNode.parentNode.children[1].innerHTML+'的利息？'))
+                                 return true;else return false;" action="#{accountTradeDetlAction.onDelete}"
+                                               value="删除" style="color: blue;margin-left: 6px" ajax="false">
+                                        <f:param name="pkid" value="#{record.pkId}"/>
+                                </h:commandLink>
                             </p:column>
                             <p:column headerText="pkid" style="display:none">
                                 <h:outputText value="#{record.pkId}"/>
