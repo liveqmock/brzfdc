@@ -59,6 +59,7 @@ public class RefundAction implements Serializable {
 
     private List<RsRefund> detlRefundList;
     private List<RsRefund> pendChkList;
+    private List<RsRefund> pendNotpassList;
     private List<RsRefund> pendActList;
     private List<RsRefund> pendToSendList;
     private List<RsRefund> pendSentList;
@@ -98,6 +99,7 @@ public class RefundAction implements Serializable {
     private void initList() {
         this.detlList = contractService.selectContractList(ContractStatus.TRANS);
         this.pendChkList = refundService.selectRefundList(WorkResult.CREATE);
+        this.pendNotpassList = refundService.selectRefundList(WorkResult.NOTPASS);
         this.pendActList = refundService.selectRefundList(WorkResult.PASS);
         this.pendToSendList = refundService.selectRefundList(WorkResult.COMMIT);
         this.pendSentList = refundService.selectRefundList(WorkResult.SENT);
@@ -219,6 +221,14 @@ public class RefundAction implements Serializable {
 
     public List<RsRefund> getDetlEditList() {
         return detlEditList;
+    }
+
+    public List<RsRefund> getPendNotpassList() {
+        return pendNotpassList;
+    }
+
+    public void setPendNotpassList(List<RsRefund> pendNotpassList) {
+        this.pendNotpassList = pendNotpassList;
     }
 
     public void setDetlEditList(List<RsRefund> detlEditList) {

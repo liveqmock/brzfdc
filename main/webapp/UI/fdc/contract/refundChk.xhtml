@@ -39,7 +39,7 @@
 
     <ui:define name="content">
         <div style="margin:5px;">
-            <p:tabView style="font-weight:normal;font-style:normal">
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
                 <p:tab title="待复核记录清单">
                     <p:growl id="msgs2" showDetail="false"/>
                     <h:form id="form2">
@@ -60,6 +60,77 @@
                         <p:dataTable id="pdt2" style="width:100%;"
                                      dynamic="true" selection="#{refundAction.selectedRefundRecords}"
                                      value="#{refundAction.pendChkList}" var="record"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="15" paginatorPosition="bottom"
+                                     rowsPerPageTemplate="100,50,30,15,5"
+                                     emptyMessage="数据记录为空...">
+                            <p:column style="display:none;" headerText="pkid">
+                                <h:outputText value="#{record.pkId}"/>
+                            </p:column>
+                            <p:column selectionMode="multiple"/>
+                            <p:column headerText="单据号" style="text-align:center" filterBy="#{record.docNo}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.docNo}"/>
+                            </p:column>
+                            <p:column headerText="付款开发商" style="text-align:center" filterBy="#{record.payCompanyName}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.payCompanyName}"/>
+                            </p:column>
+                            <p:column headerText="收款方户名" style="text-align:center" filterBy="#{record.recCompanyName}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.recCompanyName}"/>
+                            </p:column>
+                            <p:column headerText="收款方帐号" style="text-align:center" filterBy="#{record.recAccount}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.recAccount}"/>
+                            </p:column>
+
+                            <p:column headerText="退款金额">
+                                <h:outputText value="#{record.plAmount}" style="float: right">
+                                    <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <!--<p:column headerText="申请人" style="text-align:center" filterBy="#{record.applyUserName}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{record.applyUserName}"/>
+                            </p:column>-->
+                            <p:column headerText="申请日期" style="text-align:center">
+                                <h:outputText value="#{record.applyDate}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
+                                      filterOptions="#{refundAction.refundStatusOptions}"
+                                      filterMatchMode="exact">
+                                <h:outputText
+                                        value="#{refundAction.refundStatus.valueOfAlias(record.statusFlag).title}"/>
+                            </p:column>
+                            <p:column headerText="操作" style="width:50px;text-align:center">
+                                <p:commandLink style="color:blue;" value="详细" update="popupwindow"
+                                               onclick="doPopupRefundWindow(this);">
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
+                <p:tab title="复核通过记录清单">
+                    <p:growl id="msgs3" showDetail="false"/>
+                    <h:form id="form3">
+                        <p:menubar>
+
+                            <p:menuitem type="push" value="退回" icon="ui-icon ui-icon-document"
+                                        action="#{refundAction.onBack}" update="msgs3, pdt3" ajax="true"/>
+                        </p:menubar>
+                        <p:ajaxStatus style="height:18px;text-align:center">
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                            </f:facet>
+                            <f:facet name="complete">
+                                <h:outputText value=""/>
+                            </f:facet>
+                        </p:ajaxStatus>
+                        <p:dataTable id="pdt3" style="width:100%;"
+                                     dynamic="true" selection="#{refundAction.selectedRefundRecords}"
+                                     value="#{refundAction.pendNotpassList}" var="record"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
