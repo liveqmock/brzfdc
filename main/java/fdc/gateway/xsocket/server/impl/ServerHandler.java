@@ -54,6 +54,7 @@ public class ServerHandler implements IServerHandler {
         // mark read position
         connection.markReadPosition();
         dataLength = Integer.parseInt(connection.readStringByDelimiter("\r\n"));
+        logger.info("【本地服务端】待接收密文长度："+dataLength);
         try {
             connection.setHandler(new ContentHandler(this, serverMessageService, dataLength));
             connection.removeReadMark();
@@ -134,7 +135,9 @@ class ContentHandler implements IDataHandler {
                 datagram = DesCrypter.getInstance().decrypt(encrypedStr);
                 logger.info("【本地服务端】接收报文内容:" + datagram);
             } catch (Exception e) {
+                e.printStackTrace();
                 logger.error("【本地服务端】接收到密文解码异常！", e.getMessage());
+                throw new RuntimeException("【本地服务端】接收到密文解码异常！");
             }
             // 处理接收到的报文，并生成响应报文
             String responseMsg = serverMessageService.handleMessage(datagram);

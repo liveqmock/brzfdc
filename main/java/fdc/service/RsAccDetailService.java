@@ -38,7 +38,7 @@ public class RsAccDetailService {
         example.createCriteria().andDeletedFlagEqualTo("0")
                 .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                 .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
-                .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
+              //  .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
                 .andTradeDateEqualTo(sdf10.format(new Date()));
         return accDetailMapper.selectByExample(example);
     }

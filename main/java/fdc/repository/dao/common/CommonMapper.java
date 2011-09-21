@@ -20,21 +20,21 @@ import java.util.List;
 @Component
 public interface CommonMapper {
 
-    @Select("select nvl(max(company_id)+1,'100001') from rs_fdccompany")
+    @Select("select to_char(sysdate, 'yyyyMMdd')||nvl(max(company_id)+1,'000001') from rs_fdccompany")
     String selectNewCompanyId();
 
     List<RsPayout> selectRsPayoutsByParamPlan(ParamPlan paramPlan);
 
-    @Select("select nvl(max(SERIAL)+1,'100001') from rs_payout")
+    @Select("select to_char(sysdate, 'yyyyMMdd')||nvl(max(SERIAL)+1,'000001') from rs_payout")
     String selectMaxPayoutSerial();
 
-    @Select("select nvl(max(SERIAL)+1,'100001') from rs_receive")
+    @Select("select to_char(sysdate, 'yyyyMMdd')||nvl(max(SERIAL)+1,'000001') from rs_receive")
     String selectMaxRecvSerial();
 
-     @Select("select nvl(max(LOCAL_SERIAL)+1,'100001') from rs_acc_detail")
+     @Select("select to_char(sysdate, 'yyyyMMdd')||nvl(max(LOCAL_SERIAL)+1,'000001') from rs_acc_detail")
     String selectMaxAccDetailSerial();
 
-    @Select("select nvl(max(SERIAL)+1,'100001') from rs_refund")
+    @Select("select to_char(sysdate, 'yyyyMMdd')||nvl(max(SERIAL)+1,'000001') from rs_refund")
     String selectMaxRefundSerial();
 
     @Select("select sum(t.pl_amount) sumplamount from rs_refund t where t.deleted_flag = '0' group by t.business_no")
