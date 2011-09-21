@@ -73,7 +73,7 @@
                             <p:inputText id="accountName" value="#{accountAction.account.accountName}"
                                          style="width:192px;"/>
                         </h:panelGrid>
-                        <h:panelGrid style="width:20%">
+                        <h:panelGrid style="width:20%" columns="2" cellspacing="3">
                             <p:commandButton style="margin-left:15px;width:90px" ajax="false"
                                              action="#{accountAction.onBtnQueryClick}" id="btnQuery" value="查询">
                             </p:commandButton>
@@ -109,14 +109,6 @@
                         <h:outputText value="#{record.statusFlag}"/>
                     </p:column>
 
-                    <p:column headerText="房产商" style="text-align:center">
-                        <f:facet name="header">
-                            <h:outputText value="房产商"/>
-                        </f:facet>
-                        <h:outputText value="#{flagStatusForMap.companyMap[record.companyId]}"
-                                      style="text-align: right"/>
-                    </p:column>
-
                     <p:column headerText="监管账号" style="text-align:center">
                         <f:facet name="header">
                             <h:outputText value="监管账号"/>
@@ -136,6 +128,13 @@
                             <h:outputText value="项目名称"/>
                         </f:facet>
                         <h:outputText value="#{record.proName}" style="text-align: right"/>
+                    </p:column>
+
+                    <p:column headerText="项目地址" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="项目地址"/>
+                        </f:facet>
+                        <h:outputText value="#{record.proAddr}" style="text-align: right"/>
                     </p:column>
 
                     <p:column headerText="余额" style="text-align:center">

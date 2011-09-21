@@ -4,6 +4,7 @@ import fdc.gateway.service.IMessageService;
 import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.xsocket.client.ConnectClient;
 import fdc.gateway.xsocket.crypt.des.DesCrypter;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xsocket.MaxReadSizeExceededException;
@@ -79,15 +80,20 @@ public class XSocketBlockClient extends ConnectClient implements IConnectHandler
         }
         logger.info("【本地客户端】发送密文：" + toSendData);
         if (sendData(toSendData)) {
-            String gramLength = bc.readStringByDelimiter("\r\n");
+            int gramLength = Integer.parseInt(bc.readStringByDelimiter("\r\n"));
             logger.info("【本地客户端】接收报文内容长度：" + gramLength);
+
 
             String dataGram = null;
             if (isCrypt) {
-                String strDataGram = bc.readStringByLength(Integer.parseInt(gramLength));
+                String strDataGram = "";
+                while (StringUtils.isEmpty(strDataGram) ||
+                        strDataGram.getBytes().length < gramLength) {
+                    strDataGram += bc.readStringByLength(gramLength - strDataGram.getBytes().length);
+                }
                 dataGram = DesCrypter.getInstance().decrypt(strDataGram);
             } else {
-                dataGram = bc.readStringByLength(Integer.parseInt(gramLength), "GBK");
+                dataGram = bc.readStringByLength(gramLength);
             }
             logger.info("【本地客户端】接收报文内容：" + dataGram);
             return dataGram;

@@ -37,8 +37,9 @@ public class RsAccDetailService {
         RsAccDetailExample example = new RsAccDetailExample();
         example.createCriteria().andDeletedFlagEqualTo("0")
                 .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
+                .andDcheckFlagEqualTo("0")
                 .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
-              //  .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
+               // .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
                 .andTradeDateEqualTo(sdf10.format(new Date()));
         return accDetailMapper.selectByExample(example);
     }
@@ -47,9 +48,14 @@ public class RsAccDetailService {
     public boolean isHasUnSendCancelRecord() {
         RsAccDetailExample example = new RsAccDetailExample();
         example.createCriteria().andDeletedFlagEqualTo("0")
-                .andChangeFlagNotEqualTo(ChangeFlag.NORMAL.getCode())
+                .andChangeFlagEqualTo(ChangeFlag.CANCEL.getCode())
                 .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                 .andSendFlagEqualTo(SendFlag.UN_SEND.getCode());
+       example.or(example.createCriteria().andDeletedFlagEqualTo("0")
+                .andChangeFlagEqualTo(ChangeFlag.BACK.getCode())
+                .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
+                .andSendFlagEqualTo(SendFlag.UN_SEND.getCode()));
+
         if (accDetailMapper.countByExample(example) > 0) {
             return true;
         }

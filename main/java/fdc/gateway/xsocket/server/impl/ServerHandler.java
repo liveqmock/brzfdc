@@ -12,7 +12,6 @@ import org.xsocket.connection.INonBlockingConnection;
 
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 /**
  * 服务端数据处理类
@@ -50,19 +49,11 @@ public class ServerHandler implements IServerHandler {
 
         int dataLength = 0;
 
-        // "transaction" start
-        // mark read position
-        connection.markReadPosition();
         dataLength = Integer.parseInt(connection.readStringByDelimiter("\r\n"));
-        logger.info("【本地服务端】待接收密文长度："+dataLength);
-        try {
-            connection.setHandler(new ContentHandler(this, serverMessageService, dataLength));
-            connection.removeReadMark();
-        } catch (BufferUnderflowException bue) {
-            connection.resetToReadMark();
-            return true;
-        }
-        // "transaction" end
+        logger.info("【本地服务端】待接收密文长度：" + dataLength);
+
+        connection.setHandler(new ContentHandler(this, serverMessageService, dataLength));
+
         return true;
     }
 
@@ -107,7 +98,7 @@ class ContentHandler implements IDataHandler {
     private int remaining = 0;
     private ServerHandler hdl = null;
 
-    public ContentHandler(ServerHandler hdl,ServerMessageService serverMessageService, int dataLength) {
+    public ContentHandler(ServerHandler hdl, ServerMessageService serverMessageService, int dataLength) {
         this.hdl = hdl;
         remaining = dataLength;
         this.serverMessageService = serverMessageService;
@@ -147,14 +138,13 @@ class ContentHandler implements IDataHandler {
                 miStr = DesCrypter.getInstance().encrypt(responseMsg);
             } catch (Exception e) {
                 logger.error("【本地服务端】发送密文加密异常！", e.getMessage());
+                throw new RuntimeException("【本地服务端】发送密文加密异常！");
             }
             responseMsg = miStr.getBytes().length + "\r\n" + miStr;
+            logger.info("【本地服务端】发送密文内容:" + responseMsg);
             nbc.write(responseMsg, "GBK");
             nbc.flush();
-            logger.info("【本地服务端】发送密文内容:" + responseMsg);
-            nbc.write("\r\n");
         }
-
         return true;
     }
 }

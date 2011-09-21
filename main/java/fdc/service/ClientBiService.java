@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -93,6 +94,7 @@ public class ClientBiService {
         } else {
             for (RsAccDetail record : accDetailList) {
                 record.setSendFlag(SendFlag.SENT.getCode());
+                record.setDcheckFlag("1");
                 accDetailService.updateAccDetail(record);
             }
             return 1;
@@ -118,9 +120,8 @@ public class ClientBiService {
         req.param.BankSerial = record.getBankSerial();
         req.param.Amt = StringUtil.toBiformatAmt(record.getTradeAmt());
         req.param.Purpose = "利息";
-        // TODO 结息日期
-        req.param.Date = "20110920";
-        req.param.Time = "121212";
+        req.param.Date = sdfdate8.format(new Date());
+        req.param.Time = sdftime6.format(new Date());
         String dataGram = req.toFDCDatagram();                // 报文
 
         CommonRes res = sendMsgAndRecvRes(dataGram);
@@ -158,7 +159,8 @@ public class ClientBiService {
         if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
             return -1;
         } else {
-            return 1;
+            record.setSendFlag(SendFlag.SENT.getCode());
+            return accDetailService.updateAccDetail(record);
         }
     }
 
@@ -185,7 +187,8 @@ public class ClientBiService {
         if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
             return -1;
         } else {
-            return 1;
+            record.setSendFlag(SendFlag.SENT.getCode());
+            return accDetailService.updateAccDetail(record);
         }
     }
 
