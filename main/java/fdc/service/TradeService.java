@@ -88,31 +88,33 @@ public class TradeService {
         int rtnCnt = 0;
         if (ChangeFlag.CANCEL.getCode().equalsIgnoreCase(changeFlag.getCode())) {  // 冲正
 
-            // TODO 处理冲正业务回退
-            if (handleCancelBiBack(record) == 1) {
-                rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
-                        + accountService.updateRecord(account);
-            }
             if (clientBiService.sendAccDetailCancel(accDetail) == -1) {
                 throw new RuntimeException("发送冲正交易记录失败!");
             }
-
-        } else if (ChangeFlag.BACK.getCode().equalsIgnoreCase(changeFlag.getCode())) {   // 退票
-
-            // TODO 处理退票业务回退
+            //  处理冲正业务回退
             if (handleCancelBiBack(record) == 1) {
                 rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
                         + accountService.updateRecord(account);
             }
+
+
+        } else if (ChangeFlag.BACK.getCode().equalsIgnoreCase(changeFlag.getCode())) {   // 退票
+
             if (clientBiService.sendAccDetailBack(accDetail) == -1) {
                 throw new RuntimeException("发送退票交易记录失败!");
             }
+            //  处理退票业务回退
+            if (handleCancelBiBack(record) == 1) {
+                rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
+                        + accountService.updateRecord(account);
+            }
+
 
         }
         return rtnCnt;
     }
 
-    // TODO 处理业务回退
+    //  处理业务回退
 
     private int handleCancelBiBack(RsAccDetail record) {
         // 计划付款回退
