@@ -51,7 +51,7 @@ public class ContractRecvService {
         record.setApplyUserId(om.getOperatorId());
         record.setApplyUserName(om.getOperatorName());
         record.setCreatedDate(new Date());
-        String serial = commonMapper.selectMaxRecvSerial();
+        String serial = SystemService.getSdfdate8() + commonMapper.selectMaxRecvSerial();
         record.setSerial(serial);
         record.setBankSerial(serial);
         return receiveMapper.insertSelective(record);

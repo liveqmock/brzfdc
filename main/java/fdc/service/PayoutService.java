@@ -113,7 +113,7 @@ public class PayoutService {
         rsPayout.setExecDate(operDate);
         rsPayout.setStatusFlag(RefundStatus.ACCOUNT_SUCCESS.getCode());
         rsPayout.setWorkResult(WorkResult.COMMIT.getCode());
-        rsPayout.setSerial(SystemService.getDatetime14());
+        rsPayout.setSerial(SystemService.getSdfdate8() + commonMapper.selectMaxPayoutSerial());
         rsPayout.setBankSerial(rsPayout.getSerial());
         return tradeService.handlePayoutTrade(rsPayout) + updateRsPayout(rsPayout);
     }

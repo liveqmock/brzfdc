@@ -63,7 +63,7 @@ public class CompanyService {
      */
     @Transactional
     public void insertRsFdccompany(RsFdccompany fdccompany) {
-        String newId = commonMapper.selectNewCompanyId();
+        String newId = SystemService.getSdfdate8() + commonMapper.selectNewCompanyId();
         fdccompany.setCompanyId(newId);
         OperatorManager om = SystemService.getOperatorManager();
         fdccompany.setCreatedBy(om.getOperatorId());

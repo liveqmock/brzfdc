@@ -126,7 +126,7 @@ public class RsAccDetailService {
         rsAccDetail.setCreatedDate(new Date());
         rsAccDetail.setLastUpdBy(operId);
         rsAccDetail.setLastUpdDate(new Date());
-        rsAccDetail.setLocalSerial(commonMapper.selectMaxAccDetailSerial());
+        rsAccDetail.setLocalSerial(SystemService.getSdfdate8() + commonMapper.selectMaxAccDetailSerial());
         rsAccDetail.setBankSerial(rsAccDetail.getLocalSerial());
         return accDetailMapper.insertSelective(rsAccDetail);
     }
