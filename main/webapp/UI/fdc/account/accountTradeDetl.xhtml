@@ -88,24 +88,21 @@
              paginator="true" rows="15" paginatorPosition="bottom"
              rowsPerPageTemplate="100,50,30,15,5"
              emptyMessage="数据记录为空...">
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="监管账户"/>
-        </f:facet>
-        <h:outputText value="#{record.accountName}"/>
-    </p:column>
+
     <p:column>
         <f:facet name="header">
             <h:outputText value="监管账号"/>
         </f:facet>
         <h:outputText value="#{record.accountCode}"></h:outputText>
     </p:column>
-    <p:column style="align:center;">
+
+    <p:column>
         <f:facet name="header">
-            <h:outputText value="收支标志"/>
+            <h:outputText value="监管账户"/>
         </f:facet>
-        <h:outputText style="text-align: center;" value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
+        <h:outputText value="#{record.accountName}"/>
     </p:column>
+
    <p:column>
         <f:facet name="header">
             <h:outputText value="对方账号"/>
@@ -117,6 +114,13 @@
             <h:outputText value="对方账户名"/>
         </f:facet>
         <h:outputText value="#{record.toAccountName}"></h:outputText>
+    </p:column>
+
+    <p:column style="align:center;">
+        <f:facet name="header">
+            <h:outputText value="收支标志"/>
+        </f:facet>
+        <h:outputText style="text-align: center;" value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
     </p:column>
 
     <p:column>

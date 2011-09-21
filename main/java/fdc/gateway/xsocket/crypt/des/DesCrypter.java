@@ -1,19 +1,15 @@
 package fdc.gateway.xsocket.crypt.des;
 
-import org.apache.commons.lang.StringUtils;
 import pub.platform.advance.utils.PropertyManager;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import javax.crypto.spec.IvParameterSpec;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Formatter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,8 +21,6 @@ import java.security.spec.KeySpec;
 public class DesCrypter {
 
     private static final String STR_DEFAULT_KEY = PropertyManager.getProperty("fdc.socket.data.crypt.key");
-    private static BASE64Encoder base64Encoder;
-    private static BASE64Decoder base64Decoder;
 
     private static Cipher cipher;
     private static Key key;
@@ -37,8 +31,6 @@ public class DesCrypter {
         KeySpec keySpec = new DESKeySpec(STR_DEFAULT_KEY.getBytes());
         key = SecretKeyFactory.getInstance("DES").generateSecret(keySpec);
         cipher = Cipher.getInstance("DES");
-        base64Encoder = new BASE64Encoder();
-        base64Decoder = new BASE64Decoder();
     }
 
     public static DesCrypter getInstance() throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException {
@@ -58,34 +50,32 @@ public class DesCrypter {
     public String encrypt(String strMing) throws Exception {
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encryptedBytes = cipher.doFinal(strMing.getBytes());
-        return base64Encoder.encode(encryptedBytes);
+        StringBuilder miContent = new StringBuilder();
+        Formatter formatter = new Formatter(miContent);
+        for (byte b : encryptedBytes) {
+            formatter.format("%02x", b);
+        }
+        return miContent.toString();
     }
 
     /**
      * 解密
      *
-     * @param strMi
+     * @param encrypedStr
      * @return 明文
      * @throws Exception
      */
-    public String decrypt(String strMi) throws Exception {
+    public String decrypt(String encrypedStr) throws Exception {
 
+        byte[] encryptionBytes = new byte[encrypedStr.length() >> 1];
+        for (int i = 0; i < encryptionBytes.length; i++) {
+            encryptionBytes[i] = (byte)
+                    Integer.parseInt(encrypedStr.substring(2 * i, 2 * i + 2), 16);
+        }
         cipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] miBytes = base64Decoder.decodeBuffer(strMi);
-        byte[] decryptBytes = cipher.doFinal(miBytes);
+        byte[] decryptBytes = cipher.doFinal(encryptionBytes);
         return new String(decryptBytes);
     }
 
-    public static void main(String[] args) throws Exception {
-       // String str = "<?xml version=\"1.0\" encoding=\"GBK\"?><root><Head><OpCode>0001</OpCode><OpDate>20110829</OpDate><OpTime>105950</OpTime><BankCode>304</BankCode></Head><Param><Acct>12050000000373775</Acct><AcctName>青岛伟业房地产有限公司</AcctName></Param></root>";
-        String str = "<?xml version=\"1.0\" encoding=\"GBK\"?><root><Head><OpCode>0001</OpCode><OpDate>20110829</OpDate><OpTime>105950</OpTime><BankCode>304</BankCode></Head><Param><Acct>12050000000373775</Acct><AcctName>青岛伟业房地产有限公司</AcctName></Param></root>";
-        System.out.println("明文：" + str);
-        System.out.println("---------------------------------------------");
-        DesCrypter crypter = DesCrypter.getInstance();
-        String miStr = crypter.encrypt(str);
-        System.out.println("密文：" + miStr);
-        System.out.println("---------------------------------------------");
-        System.out.println("明文：" + crypter.decrypt(miStr));
-        System.out.println("---------------------------------------------");
-    }
+
 }

@@ -38,7 +38,7 @@
                 }
             }
             function recordEdit(obj) {
-                var acctno = obj.parentNode.parentNode.children[5].innerHTML;
+                var acctno = obj.parentNode.parentNode.children[4].innerHTML;
                 var pkid = obj.parentNode.parentNode.children[0].innerHTML;
                 var companyid = obj.parentNode.parentNode.children[2].innerHTML;
                 var statusflag = obj.parentNode.parentNode.children[1].innerHTML;
@@ -83,9 +83,7 @@
                             <p:column headerText="companyid" style="display:none;">
                                 <h:outputText value="#{record.companyId}"/>
                             </p:column>
-                            <p:column headerText="预售许可证号" style="text-align:left">
-                                <h:outputText value="#{record.presellNo}"/>
-                            </p:column>
+
 
                             <p:column headerText="房产商" filterBy="#{flagStatusForMap.companyMap[record.companyId]}"
                                       filterMatchMode="contains">
@@ -107,6 +105,32 @@
                             <p:column headerText="项目地址" style="text-align:left">
                                 <h:outputText value="#{record.proAddr}"/>
                             </p:column>
+
+                            <p:column headerText="余额" style="text-align:center">
+                                <f:facet name="header">
+                                    <h:outputText value="余额"/>
+                                </f:facet>
+                                <h:outputText value="#{record.balance}" style="float: right">
+                                    <f:convertNumber pattern="###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="可用余额" style="text-align:center">
+                                <f:facet name="header">
+                                    <h:outputText value="可用余额"/>
+                                </f:facet>
+                                <h:outputText value="#{record.balanceUsable}" style="float: right;">
+                                    <f:convertNumber pattern="###,###,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="监管状态" style="text-align:center">
+                                <f:facet name="header">
+                                    <h:outputText value="监管状态"/>
+                                </f:facet>
+                                <h:outputText value="#{flagStatusForMap.accountStatus[record.statusFlag]}"/>
+                            </p:column>
+
                             <p:column headerText="操作" style="text-align:center">
                                 <h:commandLink onclick="recordEdit(this);return false;" value="录入" style="color: blue"/>
                             </p:column>

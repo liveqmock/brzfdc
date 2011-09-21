@@ -2,13 +2,16 @@ package fdc.gateway.xsocket.server.impl;
 
 import fdc.gateway.service.IMessageService;
 import fdc.gateway.service.impl.ServerMessageService;
+import fdc.gateway.xsocket.crypt.des.DesCrypter;
 import fdc.gateway.xsocket.server.IServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.xsocket.connection.BlockingConnection;
 import org.xsocket.connection.INonBlockingConnection;
+import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
@@ -51,23 +54,33 @@ public class ServerHandler implements IServerHandler {
     @Override
     public boolean onData(INonBlockingConnection nbc) throws IOException, BufferUnderflowException {
 
-        String dataLength = nbc.readStringByDelimiter("\r\n");
-        logger.info("【本地服务端】接收到报文长度: " + dataLength);
+        int dataLength = Integer.parseInt(nbc.readStringByDelimiter("\r\n"));
+        logger.info("【本地服务端】接收到报文长度 : " + dataLength);
+        String encrypedStr = nbc.readStringByLength(dataLength);
+        logger.info("【本地服务端】接收密文内容:" + encrypedStr);
 
-        String datagram = nbc.readStringByLength(Integer.parseInt(dataLength), "GBK");
-        logger.info("【本地服务端】接收到报文内容: " + datagram);
-
+        String datagram = null;
+        try {
+            datagram = DesCrypter.getInstance().decrypt(encrypedStr);
+            logger.info("【本地服务端】接收报文内容:" + datagram);
+        } catch (Exception e) {
+            logger.error("【本地服务端】接收到密文解码异常！", e.getMessage());
+        }
         // 处理接收到的报文，并生成响应报文
         String responseMsg = serverMessageService.handleMessage(datagram);
-
-        responseMsg = responseMsg.getBytes().length + "\r\n" +responseMsg;
-
-        int sendDatagramLength = nbc.write(responseMsg, "GBK");
-        logger.info("【本地服务端】发送报文内容:" + responseMsg);
-        logger.info("【本地服务端】发送报文长度:" + sendDatagramLength);
+        String miStr = null;
+        try {
+            miStr = DesCrypter.getInstance().encrypt(responseMsg);
+        } catch (Exception e) {
+            logger.error("【本地服务端】发送密文加密异常！", e.getMessage());
+        }
+        responseMsg = miStr.getBytes().length + "\r\n" + miStr;
+        nbc.write(responseMsg, "GBK");
         nbc.flush();
+        logger.info("【本地服务端】发送报文内容:" + responseMsg);
         return true;
     }
+
 
     /**
      * 请求处理超时的处理事件

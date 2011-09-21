@@ -64,12 +64,6 @@
                     <h:panelGrid columns="2" cellspacing="3" style="width:100%">
                         <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5">
 
-                            <h:outputLabel value="预售许可证号:" for="presellNo"/>
-                            <h:inputText autocomplete="off" id="presellNo" style="width:192px;"
-                                         value="#{accountAction.account.presellNo}"
-                                         onfocus="this.select()">
-                            </h:inputText>
-
                             <h:outputLabel value="监管账号:" for="accountCode"/>
                             <h:inputText autocomplete="off" id="accountCode" style="width:192px;"
                                          value="#{accountAction.account.accountCode}">
@@ -113,12 +107,6 @@
                     </p:column>
                     <p:column headerText="statusflag" style="display:none;">
                         <h:outputText value="#{record.statusFlag}"/>
-                    </p:column>
-                    <p:column style="text-align:center">
-                        <f:facet name="header">
-                            <h:outputText value="预售许可证号"/>
-                        </f:facet>
-                        <h:outputText value="#{record.presellNo}" style="text-align: center;"/>
                     </p:column>
 
                     <p:column headerText="房产商" style="text-align:center">
@@ -164,6 +152,15 @@
                             <h:outputText value="可用余额"/>
                         </f:facet>
                         <h:outputText value="#{record.balanceUsable}" style="float: right;">
+                            <f:convertNumber pattern="###,###,###,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="冻结金额" style="text-align:center">
+                        <f:facet name="header">
+                            <h:outputText value="冻结金额"/>
+                        </f:facet>
+                        <h:outputText value="#{record.balanceLock}" style="float: right;">
                             <f:convertNumber pattern="###,###,###,##0.00"/>
                         </h:outputText>
                     </p:column>

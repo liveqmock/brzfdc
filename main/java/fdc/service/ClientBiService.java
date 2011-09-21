@@ -252,7 +252,8 @@ public class ClientBiService {
         req.param.ToAcct = record.getBuyerAccCode();
         req.param.ToBankName = record.getBuyerBankName();
         req.param.Amt = StringUtil.toBiformatAmt(record.getApAmount());
-        req.param.Purpose = record.getPurpose() + TradeType.HOUSE_INCOME.getTitle();
+        req.param.Purpose = record.getPurpose() == null ? TradeType.HOUSE_INCOME.getTitle()
+                : record.getPurpose() + TradeType.HOUSE_INCOME.getTitle();
         String dataGram = req.toFDCDatagram();                // ±¨ÎÄ
 
         CommonRes res = sendMsgAndRecvRes(dataGram);

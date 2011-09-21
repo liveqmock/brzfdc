@@ -23,7 +23,7 @@ public class BaseBean {
     public static Object toObject(Class clazz, String xml) {
         XStream xStream = new XStream(new DomDriver());
         xStream.processAnnotations(clazz);
-        return xStream.fromXML(xml);
+        return xStream.fromXML(xml.trim());
     }
 
     public String toFDCDatagram() {

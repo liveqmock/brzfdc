@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.xsocket.MaxReadSizeExceededException;
 import org.xsocket.connection.*;
 import pub.platform.advance.utils.PropertyManager;
+import sun.misc.BASE64Encoder;
 
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.nio.BufferUnderflowException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Formatter;
 
 /**
  * 客户端接收服务端信息
@@ -66,22 +68,29 @@ public class XSocketBlockClient extends ConnectClient implements IConnectHandler
     public String sendDataUntilRcv(String dataContent) throws Exception {
 
         String toSendData = null;
+        logger.info("【本地客户端】发送报文：" + dataContent);
+
         if (isCrypt) {
             // 加密
-            String strMi = crypter.encrypt(dataContent);
-            toSendData = strMi.getBytes().length + "\r\n" + strMi;
+            String miContent = crypter.encrypt(dataContent);
+            toSendData = miContent.getBytes().length + "\r\n" + miContent;
         } else {
             toSendData = dataContent.getBytes().length + "\r\n" + dataContent;
         }
+        logger.info("【本地客户端】发送密文：" + toSendData);
         if (sendData(toSendData)) {
             String gramLength = bc.readStringByDelimiter("\r\n");
             logger.info("【本地客户端】接收报文内容长度：" + gramLength);
-            String datagram = bc.readStringByLength(Integer.parseInt(gramLength), "GBK");
+
+            String dataGram = null;
             if (isCrypt) {
-                datagram = crypter.decrypt(datagram);
+                String strDataGram = bc.readStringByLength(Integer.parseInt(gramLength));
+                dataGram = DesCrypter.getInstance().decrypt(strDataGram);
+            } else {
+                dataGram = bc.readStringByLength(Integer.parseInt(gramLength), "GBK");
             }
-            logger.info("【本地客户端】接收报文内容：" + datagram);
-            return datagram;
+            logger.info("【本地客户端】接收报文内容：" + dataGram);
+            return dataGram;
         }
         return null;
     }
@@ -91,8 +100,8 @@ public class XSocketBlockClient extends ConnectClient implements IConnectHandler
         if (bc == null || !bc.isOpen()) {
             throw new RuntimeException("未建立连接！");
         } else {
-            logger.info("【本地客户端】发送报文：" + dataContent);
             bc.write(dataContent);
+            bc.flush();
         }
         return true;
     }
