@@ -123,7 +123,7 @@
                     <p:growl id="msgs2" showDetail="false"/>
                     <h:form id="sendForm">
                         <p:menubar>
-                            <p:menuitem type="push" value="发送" icon="ui-icon ui-icon-document"
+                            <p:menuitem type="push" value="全部发送" icon="ui-icon ui-icon-document"
                                         action="#{interestBookAction.onSend}" update="msgs2,pdt2"
                                         ajax="true"/>
                         </p:menubar>
@@ -142,7 +142,7 @@
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,10,5"
                                      emptyMessage="数据记录为空...">
-                            <p:column selectionMode="multiple"/>
+
                             <p:column filterBy="#{record.accountCode}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="监管账号"/>

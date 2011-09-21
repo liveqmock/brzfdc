@@ -193,6 +193,9 @@ public class BiDbService {
             rsContract = new RsContract();
         } else {
             rsContract = rsContracts.get(0);
+            if(rsContract.getReceiveAmt().compareTo(new BigDecimal(0)) > 0) {
+                return 1;
+            }
             rsContract.setModificationNum(rsContract.getModificationNum() + 1);
         }
         rsContract.setContractNo(contract.getContractNo());                                     // ºÏÍ¬ºÅ
