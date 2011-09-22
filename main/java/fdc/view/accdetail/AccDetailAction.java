@@ -44,6 +44,10 @@ public class AccDetailAction {
 
         try {
             if (!tradeService.isHasUnsendTrade()) {
+                if(todayAccDetailList.isEmpty()) {
+                   MessageUtil.addWarn("没有待发送记录！");
+                    return null;
+                }
                 if (clientBiService.sendTodayAccDetails(todayAccDetailList) == 1) {
                     MessageUtil.addInfo("发送当日交易明细完成！");
                 } else {
