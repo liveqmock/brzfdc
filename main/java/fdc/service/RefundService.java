@@ -44,7 +44,7 @@ public class RefundService {
         record.setApplyDate(sdf10.format(new Date()));
         record.setApplyUserId(om.getOperatorId());
         record.setApplyUserName(om.getOperatorName());
-        String serial = SystemService.getSdfdate8() + commonMapper.selectMaxRefundSerial();
+        String serial = commonMapper.selectMaxRefundSerial();
         record.setSerial(serial);
         record.setBankSerial(serial);
         return refundMapper.insertSelective(record);

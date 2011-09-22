@@ -138,7 +138,7 @@ public class RsAccDetailService {
         rsAccDetail.setCreatedDate(new Date());
         rsAccDetail.setLastUpdBy(operId);
         rsAccDetail.setLastUpdDate(new Date());
-        rsAccDetail.setLocalSerial(SystemService.getSdfdate8() + commonMapper.selectMaxAccDetailSerial());
+        rsAccDetail.setLocalSerial(commonMapper.selectMaxAccDetailSerial());
         rsAccDetail.setBankSerial(rsAccDetail.getLocalSerial());
         return accDetailMapper.insertSelective(rsAccDetail);
     }
@@ -146,7 +146,7 @@ public class RsAccDetailService {
     public int updateAccDetail(RsAccDetail rsAccDetail) {
         RsAccDetail originRecord = accDetailMapper.selectByPrimaryKey(rsAccDetail.getPkId());
         if (!originRecord.getModificationNum().equals(rsAccDetail.getModificationNum())) {
-            throw new RuntimeException("记录并发更新冲突，请重试！");
+            throw new RuntimeException("交易明细记录并发更新冲突，请重试！");
         } else {
             OperatorManager om = SystemService.getOperatorManager();
             String operId = om.getOperatorId();

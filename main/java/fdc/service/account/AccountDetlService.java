@@ -59,8 +59,8 @@ public class AccountDetlService {
         rsAccDetail.setCreatedDate(new Date());
         rsAccDetail.setLastUpdBy(om.getOperatorId());
         rsAccDetail.setLastUpdDate(new Date());
-        rsAccDetail.setLocalSerial(SystemService.getSdfdate8() + commonMapper.selectMaxAccDetailSerial());
-        rsAccDetail.setBankSerial(rsAccDetail.getBankSerial());
+        rsAccDetail.setLocalSerial(commonMapper.selectMaxAccDetailSerial());
+        rsAccDetail.setBankSerial(rsAccDetail.getLocalSerial());
         rsAccDetailMapper.insertSelective(rsAccDetail);
     }
 

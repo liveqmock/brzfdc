@@ -20,21 +20,21 @@ import java.util.List;
 @Component
 public interface CommonMapper {
 
-    @Select("select nvl(max(company_id)+1,'000001') from rs_fdccompany")
+    @Select("select nvl(max(company_id)+1,'1000000001') from rs_fdccompany")
     String selectNewCompanyId();
 
     List<RsPayout> selectRsPayoutsByParamPlan(ParamPlan paramPlan);
 
-    @Select("select nvl(max(SERIAL)+1,'000001') from rs_payout")
+    @Select("select nvl(max(SERIAL)+1,'3132000000001') from rs_payout")
     String selectMaxPayoutSerial();
 
-    @Select("select nvl(max(SERIAL)+1,'000001') from rs_receive")
+    @Select("select nvl(max(SERIAL)+1,'3133000000001') from rs_receive")
     String selectMaxRecvSerial();
 
-     @Select("select nvl(max(LOCAL_SERIAL)+1,'000001') from rs_acc_detail")
+     @Select("select nvl(max(LOCAL_SERIAL)+1,'3134000000001') from rs_acc_detail")
     String selectMaxAccDetailSerial();
 
-    @Select("select nvl(max(SERIAL)+1,'000001') from rs_refund")
+    @Select("select nvl(max(SERIAL)+1,'3135000000001') from rs_refund")
     String selectMaxRefundSerial();
 
     @Select("select sum(t.pl_amount) sumplamount from rs_refund t where t.deleted_flag = '0' group by t.business_no")

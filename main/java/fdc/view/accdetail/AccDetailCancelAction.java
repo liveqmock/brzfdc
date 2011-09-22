@@ -85,6 +85,7 @@ public class AccDetailCancelAction {
                 MessageUtil.addError("交易冲正失败！");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             MessageUtil.addError("操作失败." + e.getMessage());
         }
         return null;

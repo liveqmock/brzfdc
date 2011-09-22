@@ -74,42 +74,40 @@ public class TradeService {
         record.setChangeFlag(changeFlag.getCode());
         accDetail.setPlanCtrlNo(record.getPlanCtrlNo());
         accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
+        accDetail.setSendFlag(SendFlag.SENT.getCode());
         if (InOutFlag.IN.getCode().equalsIgnoreCase(record.getInoutFlag())) {
             accDetail.setInoutFlag(InOutFlag.OUT.getCode());
-            accDetail.setBalance(record.getBalance().subtract(record.getTradeAmt()));
+            accDetail.setBalance(account.getBalance().subtract(record.getTradeAmt()));
             account.setBalance(account.getBalance().subtract(record.getTradeAmt()));
             account.setBalanceUsable(account.getBalanceUsable().subtract(record.getTradeAmt()));
         } else {
             accDetail.setInoutFlag(InOutFlag.IN.getCode());
-            accDetail.setBalance(record.getBalance().add(record.getTradeAmt()));
+            accDetail.setBalance(account.getBalance().add(record.getTradeAmt()));
             account.setBalance(account.getBalance().add(record.getTradeAmt()));
             account.setBalanceUsable(account.getBalanceUsable().add(record.getTradeAmt()));
         }
         int rtnCnt = 0;
         if (ChangeFlag.CANCEL.getCode().equalsIgnoreCase(changeFlag.getCode())) {  // 冲正
 
-            if (clientBiService.sendAccDetailCancel(accDetail) == -1) {
-                throw new RuntimeException("发送冲正交易记录失败!");
-            }
             //  处理冲正业务回退
             if (handleCancelBiBack(record) == 1) {
                 rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
                         + accountService.updateRecord(account);
             }
-
+            if (clientBiService.sendAccDetailCancel(record) == -1) {
+                throw new RuntimeException("发送冲正交易记录失败!");
+            }
 
         } else if (ChangeFlag.BACK.getCode().equalsIgnoreCase(changeFlag.getCode())) {   // 退票
 
-            if (clientBiService.sendAccDetailBack(accDetail) == -1) {
-                throw new RuntimeException("发送退票交易记录失败!");
-            }
             //  处理退票业务回退
             if (handleCancelBiBack(record) == 1) {
                 rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
                         + accountService.updateRecord(account);
             }
-
-
+             if (clientBiService.sendAccDetailBack(record) == -1) {
+                throw new RuntimeException("发送退票交易记录失败!");
+            }
         }
         return rtnCnt;
     }

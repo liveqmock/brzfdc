@@ -151,7 +151,7 @@ public class AccountService {
             account.setModificationNum(account.getModificationNum() + 1);
             return accountMapper.updateByPrimaryKeySelective(account);
         } else {
-            throw new RuntimeException("并发更新冲突！ActPkid=" + account.getPkId());
+            throw new RuntimeException("账户并发更新冲突！ActPkid=" + account.getPkId());
         }
     }
 
