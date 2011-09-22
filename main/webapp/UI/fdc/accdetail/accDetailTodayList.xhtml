@@ -8,10 +8,10 @@
     <ui:define name="head">
         <script type="text/javascript">
             /*function doPopupWindow(obj) {
-                var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
-                popupwindow = window.open("accDetailCancelForm.xhtml?action=query&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-                popupwindow.focus;
-            }*/
+             var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
+             popupwindow = window.open("accDetailCancelForm.xhtml?action=query&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+             popupwindow.focus;
+             }*/
         </script>
         <style type="text/css">
             .input-col-m {
@@ -39,11 +39,11 @@
 
     <ui:define name="content">
         <div style="margin:5px;">
-            <p:tabView style="font-weight:normal;font-style:normal">
+            <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
                 <p:tab title="交易记录清单">
                     <p:growl id="msgs" showDetail="false"/>
                     <h:form id="form">
-                         <p:menubar>
+                        <p:menubar>
                             <p:menuitem type="push" value="全部发送" icon="ui-icon ui-icon-document"
                                         action="#{accDetailAction.onSend}" update="msgs,pdt"
                                         ajax="true"/>
@@ -63,7 +63,7 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
-                             <p:column style="display:none;" headerText="pkid">
+                            <p:column style="display:none;" headerText="pkid">
                                 <h:outputText value="#{record.pkId}"/>
                             </p:column>
                             <p:column headerText="监管账号" style="text-align:center" filterBy="#{record.accountCode}">
@@ -74,7 +74,7 @@
                                 <h:outputText
                                         value="#{record.accountName}"/>
                             </p:column>
-                             <p:column headerText="对方账号" style="text-align:center" filterBy="#{record.toAccountCode}">
+                            <p:column headerText="对方账号" style="text-align:center" filterBy="#{record.toAccountCode}">
                                 <h:outputText
                                         value="#{record.toAccountCode}"/>
                             </p:column>
@@ -86,6 +86,10 @@
                                 <h:outputText
                                         value="#{accDetailCancelAction.inoutFlag.valueOfAlias(record.inoutFlag).title}"/>
                             </p:column>
+                            <p:column headerText="交易类型" style="text-align:center">
+                                <h:outputText
+                                        value="#{accDetailCancelAction.tradeType.valueOfAlias(record.tradeType).title}"/>
+                            </p:column>
                             <p:column headerText="交易金额">
                                 <h:outputText value="#{record.tradeAmt}" style="float: right">
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
@@ -95,13 +99,6 @@
                                 <h:outputText value="#{record.tradeDate}">
                                 </h:outputText>
                             </p:column>
-
-      <!--                      <p:column headerText="交易状态" style="text-align:center" filterBy="#{record.statusFlag}"
-                                      filterOptions="#{contractRecvAction.contractStatusOptions}"
-                                      filterMatchMode="exact">
-                                <h:outputText
-                                        value="#{contractRecvAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
-                            </p:column>-->
 
                         </p:dataTable>
                     </h:form>

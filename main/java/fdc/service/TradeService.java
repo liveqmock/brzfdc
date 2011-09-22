@@ -366,6 +366,9 @@ public class TradeService {
         if (refundService.isHasUnsend()) {
             throw new RuntimeException("有未发送的已入账合同退款记录，请先发送！");
         }
+        if(accDetailService.isHasUnSendInterest()) {
+            throw new RuntimeException("有未发送的已入账利息记录，请先发送！");
+        }
         return false;
     }
 }

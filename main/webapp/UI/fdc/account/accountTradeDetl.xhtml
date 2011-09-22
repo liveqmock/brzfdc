@@ -103,13 +103,13 @@
         <h:outputText value="#{record.accountName}"/>
     </p:column>
 
-   <p:column>
+    <p:column>
         <f:facet name="header">
             <h:outputText value="对方账号"/>
         </f:facet>
         <h:outputText value="#{record.toAccountCode}"></h:outputText>
     </p:column>
-     <p:column>
+    <p:column>
         <f:facet name="header">
             <h:outputText value="对方账户名"/>
         </f:facet>
@@ -120,7 +120,16 @@
         <f:facet name="header">
             <h:outputText value="收支标志"/>
         </f:facet>
-        <h:outputText style="text-align: center;" value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
+        <h:outputText style="text-align: center;"
+                      value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
+    </p:column>
+
+    <p:column style="align:center;">
+        <f:facet name="header">
+            <h:outputText value="交易类型"/>
+        </f:facet>
+        <h:outputText style="text-align: center;"
+                      value="#{flagStatusForMap.tradeTypeMap[record.tradeType]}"></h:outputText>
     </p:column>
 
     <p:column>

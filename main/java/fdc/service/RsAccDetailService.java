@@ -44,6 +44,18 @@ public class RsAccDetailService {
         return accDetailMapper.selectByExample(example);
     }
 
+    public boolean isHasUnSendInterest() {
+        RsAccDetailExample example = new RsAccDetailExample();
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
+                .andTradeTypeEqualTo(TradeType.INTEREST.getCode())
+                .andSendFlagEqualTo(SendFlag.UN_SEND.getCode());
+        if(accDetailMapper.countByExample(example) > 0) {
+            return true;
+        }
+        return false;
+    }
+
 
     public boolean isHasUnSendCancelRecord() {
         RsAccDetailExample example = new RsAccDetailExample();

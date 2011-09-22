@@ -66,7 +66,7 @@ public class ClientBiService {
         req.head.OpCode = "0007";
         for (RsAccDetail accDetail : accDetailList) {
             RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(accDetail.getPkId());
-            if (SendFlag.SENT.getCode().equals(originRecord.getSendFlag())) {
+            if ("1".equals(originRecord.getDcheckFlag())) {
                 continue;
             }
             T0007Req.Param.Record record = T0007Req.getRecord();
@@ -93,7 +93,7 @@ public class ClientBiService {
             return -1;
         } else {
             for (RsAccDetail record : accDetailList) {
-                record.setSendFlag(SendFlag.SENT.getCode());
+                //record.setSendFlag(SendFlag.SENT.getCode());
                 record.setDcheckFlag("1");
                 accDetailService.updateAccDetail(record);
             }
