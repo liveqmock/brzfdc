@@ -1,6 +1,7 @@
 package fdc.gateway.service.impl;
 
 import fdc.common.constant.AccountStatus;
+import fdc.common.constant.ContractStatus;
 import fdc.common.constant.TradeType;
 import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.T0001Req;
@@ -78,45 +79,37 @@ public class ServerMessageService implements IMessageService {
 
                 T0002Res t0002Res = new T0002Res();
 
-                try {
-                    if (!biDbService.isAccountExistByCodeName(t0002Req.param.Acct, t0002Req.param.AcctName)) {
-                        t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_NO_ACCOUNT.getCode();
-                        t0002Res.head.RetMsg = "没有查到账户，请检查账户信息。";
-                        responseMsg = t0002Res.toFDCDatagram();
-                        break;
-                    }
-                    List<RsAccDetail> accDetailList = biDbService.selectAccDetailsByCodeNameDate(t0002Req.param.Acct,
-                            t0002Req.param.AcctName, StringUtil.transDate8ToDate10(t0002Req.param.BeginDate),
-                            StringUtil.transDate8ToDate10(t0002Req.param.EndDate));
-                    if (!accDetailList.isEmpty()) {
-                        t0002Res.param.DetailNum = String.valueOf(accDetailList.size());
-                        for (RsAccDetail accDetail : accDetailList) {
-                            T0002Res.Param.Record record = T0002Res.getRecord();
-                            record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
-                            record.Time = "121212";
-
-                            record.Flag = accDetail.getInoutFlag();
-                            record.Type = accDetail.getTradeType();
-                            record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
-                            record.ContractNum = accDetail.getContractNo();
-                            record.ToAcct = accDetail.getToAccountCode();
-                            record.ToAcctName = accDetail.getToAccountName();
-                            record.ToBankName = accDetail.getToHsBankName();
-                            // TODO 字段待确定 暂定交易明类型字段
-                            record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
-                            t0002Res.param.recordList.add(record);
-                        }
-                    }else {
-                        t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
-                        t0002Res.head.RetMsg = "交易明细记录为空！";
-                    }
-                } catch (ParseException e) {
-                    t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FORMAT_ERROR.getCode();
-                    t0002Res.head.RetMsg = "日期格式错误";
-                    logger.error("接口数据日期格式错误.", e);
+                if (!biDbService.isAccountExistByCodeName(t0002Req.param.Acct, t0002Req.param.AcctName)) {
+                    t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_NO_ACCOUNT.getCode();
+                    t0002Res.head.RetMsg = "没有查到账户，请检查账户信息。";
                     responseMsg = t0002Res.toFDCDatagram();
                     break;
                 }
+                List<RsAccDetail> accDetailList = biDbService.selectAccDetailsByCodeNameDate(t0002Req.param.Acct,
+                        t0002Req.param.AcctName, StringUtil.transDate8ToDate10(t0002Req.param.BeginDate),
+                        StringUtil.transDate8ToDate10(t0002Req.param.EndDate));
+                if (!accDetailList.isEmpty()) {
+                    t0002Res.param.DetailNum = String.valueOf(accDetailList.size());
+                    for (RsAccDetail accDetail : accDetailList) {
+                        T0002Res.Param.Record record = T0002Res.getRecord();
+                        record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
+                        record.Time = "121212";
+
+                        record.Flag = accDetail.getInoutFlag();
+                        record.Type = accDetail.getTradeType();
+                        record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
+                        record.ContractNum = accDetail.getContractNo();
+                        record.ToAcct = accDetail.getToAccountCode();
+                        record.ToAcctName = accDetail.getToAccountName();
+                        record.ToBankName = accDetail.getToHsBankName();
+                        record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
+                        t0002Res.param.recordList.add(record);
+                    }
+                } else {
+                    t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
+                    t0002Res.head.RetMsg = "交易明细记录为空！";
+                }
+
                 responseMsg = t0002Res.toFDCDatagram();
                 break;
 
@@ -241,10 +234,19 @@ public class ServerMessageService implements IMessageService {
                 contractClose.setPurpose(t2007Req.param.EndReason);
                 contractClose.setTransAmt(new BigDecimal(t2007Req.param.TransBuyerAmt).divide(new BigDecimal(100)));
 
+
                 T2007Res t2007Res = new T2007Res();
-                if (biDbService.recvCloseContractInfo(contractClose) != 1) {
+                RsContract originContract = biDbService.selectContractByCloseInfo(contractClose);
+                if (ContractStatus.TRANS.getCode().equalsIgnoreCase(originContract.getStatusFlag())
+                        || ContractStatus.CANCEL.getCode().equalsIgnoreCase(originContract.getStatusFlag())
+                        || ContractStatus.CANCELING.getCode().equalsIgnoreCase(originContract.getStatusFlag())) {
                     t2007Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
-                    t2007Res.head.RetMsg = "操作失败，请重试。";
+                    t2007Res.head.RetMsg = "该合同已经撤销，不可重复撤销！";
+                } else {
+                    if (biDbService.recvCloseContractInfo(contractClose) != 1) {
+                        t2007Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
+                        t2007Res.head.RetMsg = "操作失败，请重试。";
+                    }
                 }
                 responseMsg = t2007Res.toFDCDatagram();
                 break;

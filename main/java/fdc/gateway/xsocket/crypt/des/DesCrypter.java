@@ -30,7 +30,7 @@ public class DesCrypter {
     private DesCrypter() throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException {
         KeySpec keySpec = new DESKeySpec(STR_DEFAULT_KEY.getBytes());
         key = SecretKeyFactory.getInstance("DES").generateSecret(keySpec);
-        cipher = Cipher.getInstance("DES/ECB/NOPADDING");
+
     }
 
     public static DesCrypter getInstance() throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException {
@@ -48,6 +48,7 @@ public class DesCrypter {
      * @throws Exception
      */
     public String encrypt(String strMing) throws Exception {
+        cipher = Cipher.getInstance("DES");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encryptedBytes = cipher.doFinal(strMing.getBytes());
         StringBuilder miContent = new StringBuilder();
@@ -67,6 +68,7 @@ public class DesCrypter {
      */
     public String decrypt(String encrypedStr) throws Exception {
 
+        cipher = Cipher.getInstance("DES/ECB/NOPADDING");
         byte[] encryptionBytes = new byte[encrypedStr.length() >> 1];
         for (int i = 0; i < encryptionBytes.length; i++) {
             encryptionBytes[i] = (byte)

@@ -154,7 +154,7 @@ public class BiDbService {
         return -1;
     }
 
-    private RsContract selectContractByCloseInfo(BiContractClose contractClose) {
+    public RsContract selectContractByCloseInfo(BiContractClose contractClose) {
         RsContractExample example = new RsContractExample();
         example.createCriteria().andContractNoEqualTo(contractClose.getContractNo()).andAccountCodeEqualTo(contractClose.getAccountCode())
                 .andDeletedFlagEqualTo("0");
@@ -238,7 +238,7 @@ public class BiDbService {
      * @return
      * @throws ParseException
      */
-    public List<RsAccDetail> selectAccDetailsByCodeNameDate(String accountCode, String accountName, String fromDate, String toDate) throws ParseException {
+    public List<RsAccDetail> selectAccDetailsByCodeNameDate(String accountCode, String accountName, String fromDate, String toDate) {
         RsAccDetailExample example = new RsAccDetailExample();
         example.createCriteria().andDeletedFlagEqualTo("0")
                 .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())

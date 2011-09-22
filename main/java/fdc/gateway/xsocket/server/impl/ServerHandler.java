@@ -137,6 +137,7 @@ class ContentHandler implements IDataHandler {
             try {
                 miStr = DesCrypter.getInstance().encrypt(responseMsg);
             } catch (Exception e) {
+                e.printStackTrace();
                 logger.error("【本地服务端】发送密文加密异常！", e.getMessage());
                 throw new RuntimeException("【本地服务端】发送密文加密异常！");
             }
