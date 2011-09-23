@@ -78,11 +78,6 @@
                         <h:panelGrid columns="4" cellpadding="2"
                                      columnClasses="col-label,col-input,col-label2,col-input">
 
-                            <h:outputLabel value="*【预售许可证号】:" for="presellNo"/>
-                            <h:inputText autocomplete="off" id="presellNo" style="width:192px;" value="#{accountEditAction.account.presellNo}"
-                                         onfocus="this.select()" required="true" requiredMessage="必须输入预售许可证号！">
-                            </h:inputText>
-
                             <h:outputLabel value="*【房产商】:" for="companyId"/>
                             <h:selectOneMenu id="companyId" value="#{accountEditAction.account.companyId}" style="width:192px;">
                                 <f:selectItems value="#{accountEditAction.companyList}"></f:selectItems>
@@ -114,7 +109,6 @@
                                              action="#{accountEditAction.onBtnSaveClick}" value="保存"/>
                             <h:commandButton immediate="true" rendered="true" value="取消"
                                              onclick="window.close();return false;"/>
-                            <!--<h:commandButton rendered="" immediate="true" action-->
                         </h:panelGroup>
 
                     </h:panelGrid>
