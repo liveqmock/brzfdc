@@ -74,46 +74,46 @@
                                 <h:outputText value="#{record.pkId}"/>
                             </p:column>
 
-                            <p:column headerText="合同号" style="text-align:center;width:15px;"
+                            <p:column headerText="合同号" style="text-align:center;"
                                       filterBy="#{record.contractNo}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.contractNo}"/>
                             </p:column>
-                            <p:column headerText="监管账户名" style="text-align:center;width:55px;"
+                            <p:column headerText="监管账户名" style="text-align:center;"
                                       filterBy="#{record.accountName}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.accountName}"/>
                             </p:column>
-                            <p:column headerText="监管帐号" style="text-align:center;width:25px;"
+                            <p:column headerText="监管帐号" style="text-align:center;"
                                       filterBy="#{record.accountCode}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.accountCode}"/>
                             </p:column>
-                            <p:column headerText="买方姓名" style="text-align:center;width:25px;"
+                            <p:column headerText="买方姓名" style="text-align:center;"
                                       filterBy="#{record.buyerName}"
                                       filterMatchMode="contains">
                                 <h:outputText value="#{record.buyerName}"/>
                             </p:column>
-                            <p:column headerText="房屋类型" style="text-align:center;width:25px;"
+                            <p:column headerText="房屋类型" style="text-align:center;"
                                       filterBy="#{record.houseType}"
                                       filterOptions="#{contractRecvAction.houseTypeOptions}"
                                       filterMatchMode="exact">
                                 <h:outputText
                                         value="#{contractRecvAction.houseType.valueOfAlias(record.houseType).title}"/>
                             </p:column>
-                            <p:column headerText="房款总价" style="text-align:center;;width:25px;">
+                            <p:column headerText="房款总价" style="text-align:center;">
                                 <h:outputText value="#{record.totalAmt}" style="float: right">
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="交易状态" style="text-align:center;width:20px"
+                            <p:column headerText="交易状态" style="text-align:center;"
                                       filterBy="#{record.statusFlag}"
                                       filterOptions="#{contractRecvAction.contractStatusOptions}"
                                       filterMatchMode="exact">
                                 <h:outputText
                                         value="#{contractRecvAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
                             </p:column>
-                            <p:column headerText="操作" style="width:80px;text-align:center">
+                            <p:column headerText="操作" style="width:70px;text-align:center">
                                 <p:commandLink style="color:blue;" value="详细" update="popupwindow"
                                                onclick="doPopupWindow(this);">
                                 </p:commandLink>

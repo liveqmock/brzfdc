@@ -112,8 +112,8 @@ public class RsAccDetailService {
                     .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                     .andInoutFlagEqualTo(InOutFlag.OUT.getCode())
                     .andChangeFlagEqualTo(ChangeFlag.NORMAL.getCode())
-                    .andTradeDateGreaterThan(SystemService.getTodayAddDays(-7))
-                    .andTradeDateLessThan(sdf10.format(new Date()));
+                    .andTradeDateGreaterThan(SystemService.getTodayAddDays(-15));
+                    //.andTradeDateLessThan(sdf10.format(new Date()));
         } catch (ParseException e) {
             throw new RuntimeException("ÈÕÆÚ×ª»»´íÎó£¡");
         }

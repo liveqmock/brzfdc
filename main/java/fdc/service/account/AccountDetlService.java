@@ -47,7 +47,7 @@ public class AccountDetlService {
             criteria.andTradeDateBetween(beginDate, endDate);
         }
         criteria.andDeletedFlagEqualTo("0");
-        example.setOrderByClause("account_code,local_serial");
+        example.setOrderByClause("Trade_Date desc,account_code,local_serial");
         return rsAccDetailMapper.selectByExample(example);
     }
 

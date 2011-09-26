@@ -111,6 +111,7 @@ public class PayoutService {
         rsPayout.setExecUserId(operId);
         rsPayout.setExecUserName(operName);
         rsPayout.setExecDate(operDate);
+        rsPayout.setTradeDate(operDate);
         rsPayout.setStatusFlag(RefundStatus.ACCOUNT_SUCCESS.getCode());
         rsPayout.setWorkResult(WorkResult.COMMIT.getCode());
         rsPayout.setSerial(commonMapper.selectMaxPayoutSerial());
