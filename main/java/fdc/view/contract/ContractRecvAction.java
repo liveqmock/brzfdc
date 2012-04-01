@@ -5,6 +5,7 @@ import fdc.repository.model.RsContract;
 import fdc.repository.model.RsReceive;
 import fdc.service.ContractRecvService;
 import fdc.service.contract.ContractService;
+import org.apache.ibatis.annotations.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.service.ToolsService;
@@ -58,6 +59,7 @@ public class ContractRecvAction implements Serializable {
     private List<SelectItem> loanTypeOptions;
     private List<SelectItem> payupFlagOptions;
     private List<SelectItem> receiveTypeOptions;
+    private List<SelectItem> purposeOptions;
 
     private ContractStatus contractStatus = ContractStatus.NORMAL;
    // private ContractRecvStatus recvStatus = ContractRecvStatus.BACK;
@@ -77,11 +79,13 @@ public class ContractRecvAction implements Serializable {
         // TODO
         this.recvStatusOptions = toolsService.getEnuSelectItemList("WORK_RESULT", true, false);
         this.receiveTypeOptions = toolsService.getEnuSelectItemList("RECEIVE_TYPE", true, false);
+        purposeOptions = toolsService.getEnuSelectItemList("PAY_PURPOSE_TYPE", false, false);
+
         initList();
     }
 
     private void initList() {
-        this.detlList = contractService.selectContractList();
+        this.detlList = contractService.selectContractList(ContractStatus.NORMAL);
         this.pendChkList = contractRecvService.selectContractList(WorkResult.CREATE);
         this.pendActList = contractRecvService.selectContractList(WorkResult.PASS);
         this.detlRecvList = contractRecvService.selectContractRecvList();
@@ -141,6 +145,14 @@ public class ContractRecvAction implements Serializable {
 
     public List<SelectItem> getContractStatusOptions() {
         return contractStatusOptions;
+    }
+
+    public List<SelectItem> getPurposeOptions() {
+        return purposeOptions;
+    }
+
+    public void setPurposeOptions(List<SelectItem> purposeOptions) {
+        this.purposeOptions = purposeOptions;
     }
 
     public void setContractStatusOptions(List<SelectItem> contractStatusOptions) {

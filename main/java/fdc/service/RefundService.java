@@ -50,8 +50,8 @@ public class RefundService {
         return refundMapper.insertSelective(record);
     }
 
-    public BigDecimal selectSumPlamount() {
-        return commonMapper.selectSumPlamount();
+    public BigDecimal selectSumPlamount(String businessNo) {
+        return commonMapper.selectSumPlamount(businessNo);
     }
 
     public BigDecimal selectSumPlamountExceptPkid(String pkid) {

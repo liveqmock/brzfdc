@@ -106,10 +106,7 @@
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="交易状态" style="text-align:center;"
-                                      filterBy="#{record.statusFlag}"
-                                      filterOptions="#{contractRecvAction.contractStatusOptions}"
-                                      filterMatchMode="exact">
+                            <p:column headerText="交易状态" style="text-align:center;">
                                 <h:outputText
                                         value="#{contractRecvAction.contractStatus.valueOfAlias(record.statusFlag).title}"/>
                             </p:column>

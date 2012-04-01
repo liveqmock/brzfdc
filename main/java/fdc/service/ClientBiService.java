@@ -1,6 +1,5 @@
 package fdc.service;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import fdc.common.constant.SendFlag;
 import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
@@ -8,6 +7,7 @@ import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.*;
 import fdc.gateway.domain.T200.T2004Req;
 import fdc.gateway.domain.T200.T2005Req;
+import fdc.gateway.jms.ClientJmsTemplate;
 import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.utils.StringUtil;
 import fdc.gateway.xsocket.client.XSocketComponent;
@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pub.platform.advance.utils.PropertyManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,8 +37,7 @@ import java.util.List;
 @Service
 public class ClientBiService {
     private static final Logger logger = LoggerFactory.getLogger(ClientBiService.class);
-    @Autowired
-    private XSocketComponent xSocketComponent;
+
     @Autowired
     private ClientMessageService clientMessageService;
     @Autowired
@@ -50,6 +50,11 @@ public class ClientBiService {
     private RefundService refundService;
     @Autowired
     private RsAccDetailService accDetailService;
+
+     @Autowired
+    private XSocketComponent xSocketComponent;
+    @Autowired
+    private ClientJmsTemplate clientJmsTemplate;
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
@@ -256,7 +261,7 @@ public class ClientBiService {
         req.param.ToBankName = record.getBuyerBankName();
         req.param.Amt = StringUtil.toBiformatAmt(record.getApAmount());
         req.param.Purpose = record.getPurpose() == null ? TradeType.HOUSE_INCOME.getTitle()
-                : record.getPurpose() + TradeType.HOUSE_INCOME.getTitle();
+                : record.getPurpose();
         String dataGram = req.toFDCDatagram();                // 报文
 
         CommonRes res = sendMsgAndRecvRes(dataGram);
@@ -335,9 +340,17 @@ public class ClientBiService {
     }
 
     private CommonRes sendMsgAndRecvRes(String dataGram) throws Exception {
-        // TODO TEST-ing
-        //String recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
-        String recvMsg = new CommonRes().toXml();
+        // TODO 选定接口通信方式
+        String recvMsg = null;
+
+        if("socket".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
+            recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
+        }else if("mq".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))){
+            recvMsg = clientJmsTemplate.sendAndRecv(dataGram);
+        }else if("test".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
+            recvMsg = new CommonRes().toXml();
+        }
+        logger.info("接收响应报文：" + recvMsg);
         CommonRes resBean = clientMessageService.transMsgToBean(recvMsg);
         return resBean;
     }

@@ -41,6 +41,7 @@ public class RefundDetlAction {
     private ContractService contractService;
     @ManagedProperty(value = "#{refundService}")
     private RefundService refundService;
+    private String contractNo;
 
     private BigDecimal totalTransAmt;
     private BigDecimal totalTransAmtExptThis;
@@ -53,21 +54,22 @@ public class RefundDetlAction {
         if ("query".equals(action)) {
             refund = refundService.selectRefundByPkid(pkid);
             contract = contractService.selectContractByNo(refund.getBusinessNo());
-             totalTransAmtExptThis = refundService.selectSumPlamountExceptPkid(refund.getPkId()) == null
+            totalTransAmtExptThis = refundService.selectSumPlamountExceptPkid(refund.getPkId()) == null
                     ? new BigDecimal(0) : refundService.selectSumPlamountExceptPkid(refund.getPkId());
         } else if (!StringUtils.isEmpty(pkid)) {
+            contractNo = (String) context.getExternalContext().getRequestParameterMap().get("contractNo");
             contract = contractService.selectRecordContract(pkid);
             BiContractClose contractClose = contractService.selectCloseContractByNo(contract.getContractNo());
             refund = new RsRefund();
             copyFields(contractClose);
-            totalTransAmt = refundService.selectSumPlamount() == null ? new BigDecimal(0) : refundService.selectSumPlamount();
+            totalTransAmt = refundService.selectSumPlamount(contractNo) == null ? new BigDecimal(0) : refundService.selectSumPlamount(contractNo);
         }
 
     }
 
     public String onSave() {
         try {
-            BigDecimal totalPlamt = refundService.selectSumPlamount() == null ? new BigDecimal(0) : refundService.selectSumPlamount();
+            BigDecimal totalPlamt = refundService.selectSumPlamount(contractNo) == null ? new BigDecimal(0) : refundService.selectSumPlamount(contractNo);
 
             if (totalPlamt.add(refund.getPlAmount()).compareTo(contract.getTransbuyeramt()) > 0) {
                 MessageUtil.addError("退款申请总金额不能大于合同退款金额！");

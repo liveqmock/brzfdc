@@ -161,6 +161,12 @@
                             <h:inputText value="#{contractRecvDetlAction.selectedRecord.execUserName}" size="30"
                                          disabled="true"/>
 
+                            <h:outputLabel value="【用途】:"/>
+                            <h:selectOneMenu value="#{contractRecvDetlAction.selectedRecord.purpose}"
+                                             style="width: 185px;">
+                                <f:selectItems value="#{contractRecvDetlAction.purposeOptions}"/>
+                            </h:selectOneMenu>
+
                         </h:panelGrid>
                         <p:separator/>
                         <h:panelGrid columns="2" cellpadding="5" border="0"

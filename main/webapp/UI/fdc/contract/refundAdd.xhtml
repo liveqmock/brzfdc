@@ -14,7 +14,8 @@
             }
             function doPopupAddWindow(obj) {
                 var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
-                popupwindow = window.open("refundAddForm.xhtml?pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+                var contractNo = obj.parentNode.parentNode.childNodes[1].innerHTML;
+                popupwindow = window.open("refundAddForm.xhtml?pkid=" + pkid + "&amp;contractNo=" + contractNo, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
             }
 

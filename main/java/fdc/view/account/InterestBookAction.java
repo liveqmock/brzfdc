@@ -107,6 +107,7 @@ public class InterestBookAction {
             MessageUtil.addInfo("发送完成！");
             init();
         }catch (Exception e) {
+            e.printStackTrace();
            MessageUtil.addError("操作失败." + e.getMessage());
            logger.error("操作失败", e.getMessage());
         }

@@ -2,7 +2,6 @@ package fdc.view.contract;
 
 import fdc.common.constant.ReceiveType;
 import fdc.common.constant.WorkResult;
-import fdc.gateway.utils.StringUtil;
 import fdc.repository.model.RsContract;
 import fdc.repository.model.RsReceive;
 import fdc.service.ContractRecvService;
@@ -48,6 +47,8 @@ public class ContractRecvDetlAction implements Serializable {
     private RsContract contract;
 
     private List<SelectItem> recvTypeOptions;
+    private List<SelectItem> purposeOptions;
+
     private ReceiveType receiveType = ReceiveType.OTHER;
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -63,12 +64,15 @@ public class ContractRecvDetlAction implements Serializable {
             selectedRecord = contractRecvService.selectContractRecv(pkid);
             contract = contractService.selectContractByNo(selectedRecord.getBusinessNo());
             recvTypeOptions = toolsService.getEnuSelectItemList("RECEIVE_TYPE", false, false);
+            purposeOptions = toolsService.getEnuSelectItemList("PAY_PURPOSE_TYPE", false, false);
         }
         else if (!StringUtils.isEmpty(pkid)) {
             contract = contractService.selectRecordContract(pkid);
             selectedRecord = new RsReceive();
             copyFieldsFromContract();
             recvTypeOptions = toolsService.getEnuSelectItemList("RECEIVE_TYPE", false, false);
+            purposeOptions = toolsService.getEnuSelectItemList("PAY_PURPOSE_TYPE", false, false);
+
         }
     }
 
@@ -213,5 +217,13 @@ public class ContractRecvDetlAction implements Serializable {
 
     public void setReceiveType(ReceiveType receiveType) {
         this.receiveType = receiveType;
+    }
+
+    public List<SelectItem> getPurposeOptions() {
+        return purposeOptions;
+    }
+
+    public void setPurposeOptions(List<SelectItem> purposeOptions) {
+        this.purposeOptions = purposeOptions;
     }
 }

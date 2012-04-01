@@ -137,7 +137,7 @@
                                          disabled="false" required="true" requiredMessage="必须输入缴款金额！">
                                 <f:convertNumber pattern="###,##0.00"/>
                             </h:inputText>
-                            <h:outputLabel value="缴款类型:"/>
+                            <h:outputLabel value="【缴款类型】:"/>
                             <h:selectOneMenu value="#{contractRecvDetlAction.selectedRecord.receiveType}"
                                              style="width: 185px;">
                                 <f:selectItems value="#{contractRecvDetlAction.recvTypeOptions}"/>
@@ -160,6 +160,11 @@
                             <h:outputLabel value="付款人姓名:"/>
                             <h:inputText value="#{contractRecvDetlAction.selectedRecord.execUserName}" size="30"
                                          disabled="false"/>
+                            <h:outputLabel value="【用途】:"/>
+                            <h:selectOneMenu value="#{contractRecvDetlAction.selectedRecord.purpose}"
+                                             style="width: 185px;">
+                                <f:selectItems value="#{contractRecvDetlAction.purposeOptions}"/>
+                            </h:selectOneMenu>
 
                         </h:panelGrid>
                         <p:separator/>

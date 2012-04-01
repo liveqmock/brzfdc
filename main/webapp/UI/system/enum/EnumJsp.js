@@ -4,7 +4,7 @@ function body_load() {
     //var divhight = document.body.clientHeight - 180 ;
 
     divfd_EnumTable.style.height = 220;
-    divfd_detailTable.style.height = "100%";
+    divfd_detailTable.style.height = "150";
     EnumTable.fdwidth = "100%";
     detailTable.fdwidth = "100%";
     EnumTable.actionname = "sm0051";
