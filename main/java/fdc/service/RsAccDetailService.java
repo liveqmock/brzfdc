@@ -44,6 +44,18 @@ public class RsAccDetailService {
         return accDetailMapper.selectByExample(example);
     }
 
+    public List<RsAccDetail> selectTodayLoanAccDetails() {
+            RsAccDetailExample example = new RsAccDetailExample();
+            example.createCriteria().andDeletedFlagEqualTo("0")
+                    .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
+                    .andTradeTypeEqualTo(TradeType.HOUSE_CREDIT.getCode())
+                    .andEcheckFlagNotEqualTo("2")
+                    .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
+                   // .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
+                    .andTradeDateEqualTo(sdf10.format(new Date()));
+            return accDetailMapper.selectByExample(example);
+        }
+
     public boolean isHasUnSendInterest() {
         RsAccDetailExample example = new RsAccDetailExample();
         example.createCriteria().andDeletedFlagEqualTo("0")

@@ -3,10 +3,13 @@ package fdc.common.constant;
 import java.util.Hashtable;
 
 /*
-类型;01房款收入、02计划付款、03退款、04利息、05 房款划转、09其他
+类型;01房款收入-定金、02计划付款、03退款、04利息、05 房款划转、09其他
+
  */
 public enum TradeType implements EnumApp {
     HOUSE_INCOME("01", "房款收入"),
+    HOUSE_DOWN_PAYMENT("07", "首付"),
+    HOUSE_CREDIT("08", "按揭贷款"),
     PLAN_PAYOUT("02", "计划付款"),
     TRANS_BACK("03", "退款"),
     INTEREST("04", "利息"),

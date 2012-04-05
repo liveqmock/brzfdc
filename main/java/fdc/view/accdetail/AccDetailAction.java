@@ -12,7 +12,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,12 +30,14 @@ public class AccDetailAction {
     @ManagedProperty(value = "#{clientBiService}")
     private ClientBiService clientBiService;
     private List<RsAccDetail> todayAccDetailList;
+    private List<RsAccDetail> todayLoanAccDetailList;
     @ManagedProperty(value = "#{tradeService}")
     private TradeService tradeService;
 
     @PostConstruct
     public void init() {
         todayAccDetailList = accDetailService.selectTodayAccDetails();
+        todayLoanAccDetailList = accDetailService.selectTodayLoanAccDetails();
     }
 
     public String onSend() {
@@ -44,8 +45,8 @@ public class AccDetailAction {
 
         try {
             if (!tradeService.isHasUnsendTrade()) {
-                if(todayAccDetailList.isEmpty()) {
-                   MessageUtil.addWarn("没有待发送记录！");
+                if (todayAccDetailList.isEmpty()) {
+                    MessageUtil.addWarn("没有待发送记录！");
                     return null;
                 }
                 if (clientBiService.sendTodayAccDetails(todayAccDetailList) == 1) {
@@ -56,7 +57,22 @@ public class AccDetailAction {
             }
         } catch (Exception e) {
             MessageUtil.addError("操作失败." + e.getMessage());
-            logger.error("发送当日交易明细失败！",e.getMessage());
+            logger.error("发送当日交易明细失败！", e.getMessage());
+        }
+        return null;
+    }
+
+    // 2012-4-5 新增发送贷款交易记录
+    public String onSendLoanDetails() {
+        try {
+            if (clientBiService.sendTodayLoanAccDetails(todayLoanAccDetailList) == 1) {
+                MessageUtil.addInfo("发送贷款记录完成！发送贷款笔数：" + todayLoanAccDetailList.size());
+            } else {
+                MessageUtil.addError("发送贷款记录失败！");
+            }
+        } catch (Exception e) {
+            MessageUtil.addError("操作失败." + e.getMessage());
+            logger.error("发送当日贷款交易记录失败！", e.getMessage());
         }
         return null;
     }
@@ -93,5 +109,13 @@ public class AccDetailAction {
 
     public void setTodayAccDetailList(List<RsAccDetail> todayAccDetailList) {
         this.todayAccDetailList = todayAccDetailList;
+    }
+
+    public List<RsAccDetail> getTodayLoanAccDetailList() {
+        return todayLoanAccDetailList;
+    }
+
+    public void setTodayLoanAccDetailList(List<RsAccDetail> todayLoanAccDetailList) {
+        this.todayLoanAccDetailList = todayLoanAccDetailList;
     }
 }

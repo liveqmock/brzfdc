@@ -51,7 +51,7 @@ public class ClientBiService {
     @Autowired
     private RsAccDetailService accDetailService;
 
-     @Autowired
+    @Autowired
     private XSocketComponent xSocketComponent;
     @Autowired
     private ClientJmsTemplate clientJmsTemplate;
@@ -106,6 +106,43 @@ public class ClientBiService {
         }
     }
 
+    public int sendTodayLoanAccDetails(List<RsAccDetail> accDetailList) throws Exception {
+        T0007Req req = new T0007Req();
+        req.head.OpCode = "0007";
+        for (RsAccDetail accDetail : accDetailList) {
+            T0007Req.Param.Record record = T0007Req.getRecord();
+            record.BankSerial = accDetail.getBankSerial();
+            record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
+            record.Time = "121212";
+            record.Flag = accDetail.getInoutFlag();
+            record.Type = accDetail.getTradeType();
+            record.ContractNum = accDetail.getContractNo();
+            record.PlanDetailNO = accDetail.getPlanCtrlNo();
+            record.AcctName = accDetail.getAccountName();
+            record.Acct = accDetail.getAccountCode();
+            record.ToName = accDetail.getToAccountName();
+            record.ToAcct = accDetail.getToAccountCode();
+            record.ToBankName = accDetail.getToHsBankName();
+            record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
+            record.Purpose = TradeType.HOUSE_CREDIT.valueOfAlias(accDetail.getTradeType()).getTitle();
+            req.param.recordList.add(record);
+        }
+        String dataGram = req.toFDCDatagram();                // 报文
+
+        CommonRes res = sendMsgAndRecvRes(dataGram);
+        if (!"0000".equalsIgnoreCase(res.head.RetCode)) {
+            return -1;
+        } else {
+            for (RsAccDetail record : accDetailList) {
+                //record.setSendFlag(SendFlag.SENT.getCode());
+                record.setEcheckFlag("2");
+                accDetailService.updateAccDetail(record);
+            }
+            return 1;
+        }
+    }
+
+
     /**
      * 0005
      *
@@ -139,7 +176,7 @@ public class ClientBiService {
     }
 
     /**
-     *  0004 退票
+     * 0004 退票
      *
      * @param record
      * @return
@@ -243,7 +280,7 @@ public class ClientBiService {
     public int sendRsReceiveMsg(RsReceive record, String flag) throws Exception {
 
         RsReceive originRecord = contractRecvService.selectContractRecv(record.getPkId());
-        if(WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
+        if (WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
             return 1;
         }
         T2005Req req = new T2005Req();
@@ -281,7 +318,7 @@ public class ClientBiService {
     public int sendRsRefundMsg(RsRefund record, String flag) throws Exception {
 
         RsRefund originRecord = refundService.selectRefundByPkid(record.getPkId());
-        if(WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
+        if (WorkResult.SENT.getCode().equals(originRecord.getWorkResult())) {
             return 1;
         }
 
@@ -343,11 +380,11 @@ public class ClientBiService {
         // TODO 选定接口通信方式
         String recvMsg = null;
 
-        if("socket".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
+        if ("socket".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
             recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
-        }else if("mq".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))){
+        } else if ("mq".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
             recvMsg = clientJmsTemplate.sendAndRecv(dataGram);
-        }else if("test".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
+        } else if ("test".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
             recvMsg = new CommonRes().toXml();
         }
         logger.info("接收响应报文：" + recvMsg);

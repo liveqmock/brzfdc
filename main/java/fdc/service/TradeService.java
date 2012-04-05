@@ -6,14 +6,11 @@ import fdc.service.account.AccountService;
 import fdc.service.contract.ContractService;
 import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ecs.html.Big;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import platform.common.utils.BeanHelper;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -105,7 +102,7 @@ public class TradeService {
                 rtnCnt = accDetailService.insertAccDetail(accDetail) + accDetailService.updateAccDetail(record)
                         + accountService.updateRecord(account);
             }
-             if (clientBiService.sendAccDetailBack(record) == -1) {
+            if (clientBiService.sendAccDetailBack(record) == -1) {
                 throw new RuntimeException("发送退票交易记录失败!");
             }
         }
@@ -146,7 +143,7 @@ public class TradeService {
 
             RsContract contract = contractService.selectContractByNo(record.getContractNo());
             contract.setReceiveAmt(contract.getReceiveAmt().subtract(record.getTradeAmt()));
-            if(receiveService.insertRecord(newReceive) == 1){
+            if (receiveService.insertRecord(newReceive) == 1) {
                 return contractService.updateRecord(contract);
             }
 
@@ -163,7 +160,7 @@ public class TradeService {
             newRefund.setPlAmount(newRefund.getPlAmount().multiply(new BigDecimal("-1")));
             RsContract contract = contractService.selectContractByNo(record.getContractNo());
             contract.setReceiveAmt(contract.getReceiveAmt().add(record.getTradeAmt()));
-            if(refundService.insertRecord(newRefund) == 1){
+            if (refundService.insertRecord(newRefund) == 1) {
                 return contractService.updateRecord(contract);
             }
         }
@@ -202,7 +199,13 @@ public class TradeService {
         accDetail.setBalance(account.getBalance().add(accDetail.getTradeAmt()));
         accDetail.setLocalSerial(receive.getSerial());
         accDetail.setBankSerial(receive.getBankSerial());
-        accDetail.setTradeType(TradeType.HOUSE_INCOME.getCode());
+        if (ReceiveType.LOAN.getCode().equalsIgnoreCase(receive.getReceiveType())) {
+            accDetail.setTradeType(TradeType.HOUSE_CREDIT.getCode());
+        } else if (ReceiveType.DOWN_PAYMENT.getCode().equalsIgnoreCase(receive.getReceiveType())) {
+            accDetail.setTradeType(TradeType.HOUSE_DOWN_PAYMENT.getCode());
+        } else {
+            accDetail.setTradeType(TradeType.HOUSE_INCOME.getCode());
+        }
         accDetail.setContractNo(receive.getBusinessNo());
         accDetail.setRemark(receive.getRemark());
         accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
@@ -261,7 +264,7 @@ public class TradeService {
         account.setBalance(account.getBalance().subtract(refund.getApAmount()));
         account.setBalanceUsable(account.getBalanceUsable().subtract(refund.getApAmount()));
 
-        if(ContractStatus.CANCELING.getCode().equalsIgnoreCase(contract.getStatusFlag())) {
+        if (ContractStatus.CANCELING.getCode().equalsIgnoreCase(contract.getStatusFlag())) {
             contract.setStatusFlag(ContractStatus.END.getCode());
             contractService.updateRecord(contract);
         }
@@ -364,7 +367,7 @@ public class TradeService {
         if (refundService.isHasUnsend()) {
             throw new RuntimeException("有未发送的已入账合同退款记录，请先发送！");
         }
-        if(accDetailService.isHasUnSendInterest()) {
+        if (accDetailService.isHasUnSendInterest()) {
             throw new RuntimeException("有未发送的已入账利息记录，请先发送！");
         }
         return false;
