@@ -7,7 +7,7 @@ import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.*;
 import fdc.gateway.domain.T200.T2004Req;
 import fdc.gateway.domain.T200.T2005Req;
-import fdc.gateway.jms.ClientJmsTemplate;
+//import fdc.gateway.jms.ClientJmsTemplate;
 import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.utils.StringUtil;
 import fdc.gateway.xsocket.client.XSocketComponent;
@@ -53,8 +53,8 @@ public class ClientBiService {
 
     @Autowired
     private XSocketComponent xSocketComponent;
-    @Autowired
-    private ClientJmsTemplate clientJmsTemplate;
+   // @Autowired
+   // private ClientJmsTemplate clientJmsTemplate;
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
@@ -383,7 +383,8 @@ public class ClientBiService {
         if ("socket".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
             recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
         } else if ("mq".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
-            recvMsg = clientJmsTemplate.sendAndRecv(dataGram);
+            throw new RuntimeException("暂时取消JMS协议支持。");
+            //recvMsg = clientJmsTemplate.sendAndRecv(dataGram);
         } else if ("test".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
             recvMsg = new CommonRes().toXml();
         }
