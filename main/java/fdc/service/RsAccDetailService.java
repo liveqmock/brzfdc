@@ -39,8 +39,9 @@ public class RsAccDetailService {
                 .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                 .andDcheckFlagEqualTo("0")
                 .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
-               // .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
-                .andTradeDateEqualTo(sdf10.format(new Date()));
+                .andTradeTypeNotEqualTo(TradeType.HOUSE_CREDIT.getCode())
+                .andSendFlagEqualTo(SendFlag.UN_SEND.getCode());
+                //.andTradeDateEqualTo(sdf10.format(new Date()));
         return accDetailMapper.selectByExample(example);
     }
 
@@ -49,10 +50,10 @@ public class RsAccDetailService {
             example.createCriteria().andDeletedFlagEqualTo("0")
                     .andStatusFlagEqualTo(TradeStatus.SUCCESS.getCode())
                     .andTradeTypeEqualTo(TradeType.HOUSE_CREDIT.getCode())
-                    .andEcheckFlagNotEqualTo("2")
-                    .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode())
-                   // .andSendFlagEqualTo(SendFlag.UN_SEND.getCode())
-                    .andTradeDateEqualTo(sdf10.format(new Date()));
+                    .andChangeFlagNotEqualTo(ChangeFlag.CANCEL.getCode());
+                    //.andSendFlagEqualTo(SendFlag.UN_SEND.getCode());
+                    //.andTradeDateEqualTo(sdf10.format(new Date()));
+            example.setOrderByClause(" BANK_SERIAL ");
             return accDetailMapper.selectByExample(example);
         }
 

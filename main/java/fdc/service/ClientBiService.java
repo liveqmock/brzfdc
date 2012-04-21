@@ -1,5 +1,6 @@
 package fdc.service;
 
+import fdc.common.constant.InOutFlag;
 import fdc.common.constant.SendFlag;
 import fdc.common.constant.TradeType;
 import fdc.common.constant.WorkResult;
@@ -11,6 +12,7 @@ import fdc.gateway.domain.T200.T2005Req;
 import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.utils.StringUtil;
 import fdc.gateway.xsocket.client.XSocketComponent;
+import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +52,13 @@ public class ClientBiService {
     private RefundService refundService;
     @Autowired
     private RsAccDetailService accDetailService;
+    @Autowired
+    private CommonMapper commonMapper;
 
     @Autowired
     private XSocketComponent xSocketComponent;
-   // @Autowired
-   // private ClientJmsTemplate clientJmsTemplate;
+    // @Autowired
+    // private ClientJmsTemplate clientJmsTemplate;
 
     private SimpleDateFormat sdfdate8 = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdftime6 = new SimpleDateFormat("HHmmss");
@@ -70,10 +74,10 @@ public class ClientBiService {
         T0007Req req = new T0007Req();
         req.head.OpCode = "0007";
         for (RsAccDetail accDetail : accDetailList) {
-            RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(accDetail.getPkId());
+           /* RsAccDetail originRecord = accDetailService.selectAccDetailByPkid(accDetail.getPkId());
             if ("1".equals(originRecord.getDcheckFlag())) {
                 continue;
-            }
+            }*/
             T0007Req.Param.Record record = T0007Req.getRecord();
             record.BankSerial = accDetail.getBankSerial();
             record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
@@ -98,7 +102,7 @@ public class ClientBiService {
             return -1;
         } else {
             for (RsAccDetail record : accDetailList) {
-                //record.setSendFlag(SendFlag.SENT.getCode());
+                record.setSendFlag(SendFlag.SENT.getCode());
                 record.setDcheckFlag("1");
                 accDetailService.updateAccDetail(record);
             }
@@ -106,26 +110,32 @@ public class ClientBiService {
         }
     }
 
-    public int sendTodayLoanAccDetails(List<RsAccDetail> accDetailList) throws Exception {
+    public int sendTodayLoanAccDetails(List<RsAccDetail> accDetailList, String txnDate) throws Exception {
         T0007Req req = new T0007Req();
         req.head.OpCode = "0007";
-        for (RsAccDetail accDetail : accDetailList) {
-            T0007Req.Param.Record record = T0007Req.getRecord();
-            record.BankSerial = accDetail.getBankSerial();
-            record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
-            record.Time = "121212";
-            record.Flag = accDetail.getInoutFlag();
-            record.Type = accDetail.getTradeType();
-            record.ContractNum = accDetail.getContractNo();
-            record.PlanDetailNO = accDetail.getPlanCtrlNo();
-            record.AcctName = accDetail.getAccountName();
-            record.Acct = accDetail.getAccountCode();
-            record.ToName = accDetail.getToAccountName();
-            record.ToAcct = accDetail.getToAccountCode();
-            record.ToBankName = accDetail.getToHsBankName();
-            record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
-            record.Purpose = TradeType.HOUSE_CREDIT.valueOfAlias(accDetail.getTradeType()).getTitle();
-            req.param.recordList.add(record);
+        if (accDetailList.size() > 0) {
+            String bankSerial = accDetailList.get(0).getBankSerial();
+            List<RsAccDetail> loanAcctList = commonMapper.selectAcctLoanAmtListByDate(txnDate);
+            for (RsAccDetail accDetail : loanAcctList) {
+                T0007Req.Param.Record record = T0007Req.getRecord();
+                record.BankSerial = bankSerial;
+                record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
+                record.Time = "121212";
+                record.Flag = InOutFlag.IN.getCode();
+                record.Type = TradeType.HOUSE_CREDIT.getCode();
+                record.ContractNum = "";
+                record.PlanDetailNO = "";
+                record.AcctName = accDetail.getAccountName();
+                record.Acct = accDetail.getAccountCode();
+                record.ToName = "";
+                record.ToAcct = "";
+                record.ToBankName = "";
+                record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
+                record.Purpose = TradeType.HOUSE_CREDIT.getTitle();
+                req.param.recordList.add(record);
+            }
+        } else {
+
         }
         String dataGram = req.toFDCDatagram();                // 报文
 
@@ -134,7 +144,7 @@ public class ClientBiService {
             return -1;
         } else {
             for (RsAccDetail record : accDetailList) {
-                //record.setSendFlag(SendFlag.SENT.getCode());
+                record.setSendFlag(SendFlag.SENT.getCode());
                 record.setEcheckFlag("2");
                 accDetailService.updateAccDetail(record);
             }
@@ -377,9 +387,7 @@ public class ClientBiService {
     }
 
     private CommonRes sendMsgAndRecvRes(String dataGram) throws Exception {
-        // TODO 选定接口通信方式
         String recvMsg = null;
-
         if ("socket".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
             recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);
         } else if ("mq".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {

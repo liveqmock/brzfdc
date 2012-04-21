@@ -34,6 +34,8 @@ public class AccDetailAction {
     @ManagedProperty(value = "#{tradeService}")
     private TradeService tradeService;
 
+    private String txnDate;
+
     @PostConstruct
     public void init() {
         todayAccDetailList = accDetailService.selectTodayAccDetails();
@@ -42,7 +44,6 @@ public class AccDetailAction {
 
     public String onSend() {
         // 默认先检查是否有当日各种未入账交易
-
         try {
             if (!tradeService.isHasUnsendTrade()) {
                 if (todayAccDetailList.isEmpty()) {
@@ -65,7 +66,7 @@ public class AccDetailAction {
     // 2012-4-5 新增发送贷款交易记录
     public String onSendLoanDetails() {
         try {
-            if (clientBiService.sendTodayLoanAccDetails(todayLoanAccDetailList) == 1) {
+            if (clientBiService.sendTodayLoanAccDetails(todayLoanAccDetailList, txnDate) == 1) {
                 MessageUtil.addInfo("发送贷款记录完成！发送贷款笔数：" + todayLoanAccDetailList.size());
             } else {
                 MessageUtil.addError("发送贷款记录失败！");
@@ -117,5 +118,13 @@ public class AccDetailAction {
 
     public void setTodayLoanAccDetailList(List<RsAccDetail> todayLoanAccDetailList) {
         this.todayLoanAccDetailList = todayLoanAccDetailList;
+    }
+
+    public String getTxnDate() {
+        return txnDate;
+    }
+
+    public void setTxnDate(String txnDate) {
+        this.txnDate = txnDate;
     }
 }

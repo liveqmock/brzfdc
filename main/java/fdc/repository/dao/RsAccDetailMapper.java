@@ -2,9 +2,10 @@ package fdc.repository.dao;
 
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsAccDetailExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface RsAccDetailMapper {
