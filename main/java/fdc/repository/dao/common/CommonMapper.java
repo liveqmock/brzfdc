@@ -5,6 +5,7 @@ import fdc.repository.model.RsPayout;
 import fdc.view.payout.ParamPlan;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -48,4 +49,13 @@ public interface CommonMapper {
             " group by t.account_code, t.account_name, t.trade_date " +
             " having t.trade_date = #{txnDate}")
     List<RsAccDetail> selectAcctLoanAmtListByDate(@Param("txnDate") String txnDate);
+
+    @Select("select sys_elmt_seq from rs_sys_ctl where sys_elmt_id = '1' for update")
+    int selectSysSeq();
+
+    @Update("update rs_sys_ctl set sys_elmt_seq = #{seq}  where sys_elmt_id = '1'")
+    public int updateSysSeq(@Param("seq") int seq);
+
+    @Update("update rs_sys_ctl set sys_elmt_seq = #{seq}, sys_date = #{date}  where sys_elmt_id = '1'")
+    public int updateSeqAndSysDate(@Param("seq") int seq, @Param("date") String date);
 }

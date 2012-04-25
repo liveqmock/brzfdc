@@ -3,8 +3,10 @@ package fdc.gateway.service;
 import fdc.gateway.cbus.CbusSocketClient;
 import fdc.gateway.cbus.domain.base.MsgHeader;
 import fdc.gateway.cbus.domain.txn.*;
+import fdc.service.RsSysctlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import platform.service.PlatformService;
 import pub.platform.advance.utils.PropertyManager;
@@ -27,6 +29,8 @@ public class CbusTxnService {
     private static final String CBUS_SERVER_IP = PropertyManager.getProperty("bank.core.server.ip");
     private static final int CBUS_SERVER_PORT = PropertyManager.getIntProperty("bank.core.server.port");
     private static final int CBUS_SERVER_TIMEOUT = PropertyManager.getIntProperty("bank.core.server.timeout");
+    @Autowired
+    private RsSysctlService rsSysctlService;
 
     // 余额查询 测试帐号 "6228571080001329608"
     public QDJG01Res qdjg01QryActbal(String acccountNo) throws Exception {
@@ -38,7 +42,7 @@ public class CbusTxnService {
         } catch (Exception e) {
             header.setOperId("810201011002");
         }
-        header.setSerialNo("105302"); // TODO 生成交易流水号
+        header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1")));
         qdjg01Req.accountNo = acccountNo;
         String reqStr = qdjg01Req.toString();
         byte[] rtnBytes = sendUntilRcv(reqStr);
@@ -47,9 +51,13 @@ public class CbusTxnService {
         return qdjg01Res;
     }
 
-    // TODO 查询交易明细
-    public List<QDJG02Res> qdjg02qryActtxnsByInitReq(QDJG02Req qdjg02Req) throws Exception {
-        MsgHeader header = qdjg02Req.getHeader();
+    public List<QDJG02Res> qdjg02qryActtxnsByParams(String accountNo, String startDate, String endDate)
+            throws Exception {
+        QDJG02Req qdjg02Req = new QDJG02Req();
+        qdjg02Req.accountNo = accountNo;
+        qdjg02Req.startDate = startDate;
+        qdjg02Req.endDate = endDate;
+
         String operId = null;
         try {
             OperatorManager om = PlatformService.getOperatorManager();
@@ -57,25 +65,30 @@ public class CbusTxnService {
         } catch (Exception e) {
             operId = "810201011002";
         }
-        header.setOperId(operId);
-        QDJG02Res qdjg02Res = qdjg02qryActtxnsByReq(qdjg02Req);
+        qdjg02Req.getHeader().setOperId(operId);
+        return qdjg02qryAllActtxnsByReq(qdjg02Req);
+    }
+
+    // 查询全部交易明细
+    private List<QDJG02Res> qdjg02qryAllActtxnsByReq(QDJG02Req qdjg02Req) throws Exception {
+        QDJG02Res qdjg02Res = qdjg02qryOneActtxnsByReq(qdjg02Req);
         List<QDJG02Res> resList = new ArrayList<QDJG02Res>();
         resList.add(qdjg02Res);
         while (!"1".equals(qdjg02Res.isLast)) { // 不是最后一页
             qdjg02Req.preFirstKey = qdjg02Res.thisFirstKey;
             qdjg02Req.preLastKey = qdjg02Res.thisLastKey;
             int newSeqNo = Integer.parseInt(qdjg02Res.recordList.get(qdjg02Res.recordList.size() - 1).seqNo) + 1;
-            qdjg02Req.startDetailNo = String.valueOf(newSeqNo);
-            qdjg02Res = qdjg02qryActtxnsByReq(qdjg02Req);
+            qdjg02Req.startSeqNo = String.valueOf(newSeqNo);
+            qdjg02Res = qdjg02qryOneActtxnsByReq(qdjg02Req);
             resList.add(qdjg02Res);
         }
         return resList;
     }
 
-    //  查询交易明细
-    private QDJG02Res qdjg02qryActtxnsByReq(QDJG02Req qdjg02Req) throws Exception {
+    //  单次查询交易明细
+    private QDJG02Res qdjg02qryOneActtxnsByReq(QDJG02Req qdjg02Req) throws Exception {
 
-        qdjg02Req.getHeader().setSerialNo("105303"); // TODO 生成交易流水号
+        qdjg02Req.getHeader().setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1"))); //  生成交易流水号
         String reqStr = qdjg02Req.toString();
         byte[] rtnBytes = sendUntilRcv(reqStr);
         QDJG02Res qdjg02Res = new QDJG02Res();
@@ -93,7 +106,7 @@ public class CbusTxnService {
         } catch (Exception e) {
             header.setOperId("810201011002");
         }
-        header.setSerialNo("105303"); // TODO 生成交易流水号
+        header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1"))); //  生成交易流水号
         qdjg03Req.payOutAccount = payOutAct;
         qdjg03Req.payInAccount = payInAct;
         qdjg03Req.payAmt = payAmt;
@@ -139,7 +152,7 @@ public class CbusTxnService {
         } catch (Exception e) {
             header.setOperId("810201011002");
         }
-        header.setSerialNo("105303"); // TODO 生成交易流水号
+        header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1"))); //  生成交易流水号
         String reqStr = qdjg04Req.toString();
         byte[] rtnBytes = sendUntilRcv(reqStr);
         QDJG04Res qdjg04Res = new QDJG04Res();
