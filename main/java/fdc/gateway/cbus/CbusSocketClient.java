@@ -19,11 +19,10 @@ public class CbusSocketClient extends ConnectClient implements IConnectHandler {
     private static final Logger logger = LoggerFactory.getLogger(CbusSocketClient.class);
 
     private IBlockingConnection blockingConnection;
-    private INonBlockingConnection nonBlockingConnection;
 
     public CbusSocketClient(String serverIP, int serverPort, long timeoutMills) throws IOException {
         super(serverIP, serverPort);
-        nonBlockingConnection = new NonBlockingConnection(serverIP, serverPort, this);
+        INonBlockingConnection nonBlockingConnection = new NonBlockingConnection(serverIP, serverPort, this);
         blockingConnection = new BlockingConnection(nonBlockingConnection);
         blockingConnection.setConnectionTimeoutMillis(timeoutMills);
         blockingConnection.setEncoding("GBK");
@@ -76,10 +75,6 @@ public class CbusSocketClient extends ConnectClient implements IConnectHandler {
         if (blockingConnection != null && blockingConnection.isOpen()) {
             blockingConnection.close();
             blockingConnection = null;
-        }
-        if (nonBlockingConnection != null && nonBlockingConnection.isOpen()) {
-            nonBlockingConnection.close();
-            nonBlockingConnection = null;
         }
         return true;
     }
