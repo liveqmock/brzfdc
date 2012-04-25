@@ -1,7 +1,5 @@
 package fdc.gateway.xsocket.client.impl;
 
-import fdc.gateway.service.IMessageService;
-import fdc.gateway.service.impl.ClientMessageService;
 import fdc.gateway.xsocket.client.ConnectClient;
 import fdc.gateway.xsocket.crypt.des.DesCrypter;
 import org.apache.commons.lang.StringUtils;
@@ -10,16 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.xsocket.MaxReadSizeExceededException;
 import org.xsocket.connection.*;
 import pub.platform.advance.utils.PropertyManager;
-import sun.misc.BASE64Encoder;
 
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.nio.BufferUnderflowException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Formatter;
 
 /**
  * 客户端接收服务端信息

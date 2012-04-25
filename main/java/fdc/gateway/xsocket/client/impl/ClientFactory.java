@@ -1,7 +1,6 @@
 package fdc.gateway.xsocket.client.impl;
 
 import fdc.gateway.xsocket.client.IBlockConnect;
-import fdc.gateway.xsocket.client.IConnect;
 import pub.platform.advance.utils.PropertyManager;
 
 import java.io.IOException;
