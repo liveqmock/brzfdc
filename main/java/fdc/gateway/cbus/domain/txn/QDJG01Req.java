@@ -8,20 +8,11 @@ public class QDJG01Req extends AbstractReqMsg {
     /*
     ’À∫≈	28	◊Û∂‘∆Î”“≤πø’∏Ò
      */
-    private String accountNo;
+    public String accountNo;
 
     public String bodyToString() {
 
         return StringUtils.rightPad(accountNo, 28, ' ');
     }
 
-    // ------------------------------------------
-
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
-    }
 }

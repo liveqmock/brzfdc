@@ -9,8 +9,8 @@ public class QDJG03Res extends AbstractResMsg {
        金额	15
        交易流水号	19
      */
-    private String amt;
-    private String serialNo;
+    public String amt;
+    public String serialNo;
 
     @Override
     public void assembleBodyFields(byte[] buffer) {
@@ -25,23 +25,5 @@ public class QDJG03Res extends AbstractResMsg {
         serialNo = serialStr.trim();
 
         System.out.println("【交易金额】" + amt + "【交易流水号】" + serialNo);
-    }
-
-    // -----------------------------------------------
-
-    public String getAmt() {
-        return amt;
-    }
-
-    public void setAmt(String amt) {
-        this.amt = amt;
-    }
-
-    public String getSerialNo() {
-        return serialNo;
-    }
-
-    public void setSerialNo(String serialNo) {
-        this.serialNo = serialNo;
     }
 }

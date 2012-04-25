@@ -15,13 +15,13 @@ public class QDJG04Req extends AbstractReqMsg {
     汇款用途	RMT-PURP	C(64)
      */
 
-    private String sndToBkNo;         //  收报行  12
-    private String rmtrNameFl;        //  汇款人名称  64
-    private String rmtrAcctNo;        //  汇款人帐号 32
-    private String payeeNameFl;       //  收款人名称  64
-    private String payeeFlAcctNo;     //  收款人帐号  32
-    private String rmtAmt;            //  汇款金额  16
-    private String rmtPurp;           //  汇款用途  64
+    public String sndToBkNo;         //  收报行  12
+    public String rmtrNameFl;        //  汇款人名称  64
+    public String rmtrAcctNo;        //  汇款人帐号 32
+    public String payeeNameFl;       //  收款人名称  64
+    public String payeeFlAcctNo;     //  收款人帐号  32
+    public String rmtAmt;            //  汇款金额  16
+    public String rmtPurp;           //  汇款用途  64
 
 
     public String bodyToString() {
@@ -38,61 +38,4 @@ public class QDJG04Req extends AbstractReqMsg {
         return strBuilder.toString();
     }
 
-    // -----------------------------------------------
-
-    public String getPayeeFlAcctNo() {
-        return payeeFlAcctNo;
-    }
-
-    public void setPayeeFlAcctNo(String payeeFlAcctNo) {
-        this.payeeFlAcctNo = payeeFlAcctNo;
-    }
-
-    public String getPayeeNameFl() {
-        return payeeNameFl;
-    }
-
-    public void setPayeeNameFl(String payeeNameFl) {
-        this.payeeNameFl = payeeNameFl;
-    }
-
-    public String getRmtAmt() {
-        return rmtAmt;
-    }
-
-    public void setRmtAmt(String rmtAmt) {
-        this.rmtAmt = rmtAmt;
-    }
-
-    public String getRmtPurp() {
-        return rmtPurp;
-    }
-
-    public void setRmtPurp(String rmtPurp) {
-        this.rmtPurp = rmtPurp;
-    }
-
-    public String getRmtrAcctNo() {
-        return rmtrAcctNo;
-    }
-
-    public void setRmtrAcctNo(String rmtrAcctNo) {
-        this.rmtrAcctNo = rmtrAcctNo;
-    }
-
-    public String getRmtrNameFl() {
-        return rmtrNameFl;
-    }
-
-    public void setRmtrNameFl(String rmtrNameFl) {
-        this.rmtrNameFl = rmtrNameFl;
-    }
-
-    public String getSndToBkNo() {
-        return sndToBkNo;
-    }
-
-    public void setSndToBkNo(String sndToBkNo) {
-        this.sndToBkNo = sndToBkNo;
-    }
 }

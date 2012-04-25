@@ -16,7 +16,7 @@ public class MsgHeader extends AbstractFrameMsg {
     private String txnCode;    // 交易码	    6
     private String bankId = "810201011";     // 网点编号	9
     private String operId;     // 操作员编号	12	员工号
-    private String serialNo;   // TODO 操作员流水号	6	当天唯一
+    private String serialNo;   //  操作员流水号	6	当天唯一
     private String txnDate = new SimpleDateFormat("yyyyMMdd").format(new Date());    // 交易日期	8
     private String txnTime = new SimpleDateFormat("HHmmss").format(new Date());    // 交易时间	6
     private String channel = "08";    // 渠道	    2

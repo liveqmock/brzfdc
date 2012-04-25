@@ -11,11 +11,16 @@ import fdc.gateway.service.CbusTxnService;
  */
 public class CbusTest {
 
-
     public static void main(String[] args) {
         try {
+            CbusTxnService cbusTxnService = new CbusTxnService();
+
             // 查询账户余额
-            new CbusTxnService().qdjg01QryActbal("6228571080001329608");
+            cbusTxnService.qdjg01QryActbal("6228571080001329608");
+            // 行内转账 转出帐号，转入帐号，金额
+            // cbusTxnService.qdjg03payAmtInBank("6228571080001329608", "6228571080001329609", "1.00");
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

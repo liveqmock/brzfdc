@@ -10,7 +10,7 @@ package fdc.gateway.cbus.domain.base;
 public abstract class AbstractResMsg {
     protected MsgHeader header = new MsgHeader();
 
-    public void assembleFields(byte[] buffer) {
+    public void assembleFields(byte[] buffer) throws IllegalAccessException {
         byte[] headBytes = new byte[59];
         System.arraycopy(buffer, 0, headBytes, 0, 59);
         header.assembleFields(headBytes);
@@ -22,5 +22,5 @@ public abstract class AbstractResMsg {
         assembleBodyFields(bodyBytes);
     }
 
-    public abstract void assembleBodyFields(byte[] bodyBuffer);
+    public abstract void assembleBodyFields(byte[] bodyBuffer) throws IllegalAccessException;
 }

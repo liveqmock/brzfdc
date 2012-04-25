@@ -7,8 +7,8 @@ public class QDJG01Res extends AbstractResMsg {
     /*
        ’Àªß”‡∂Ó£¨ø…”√”‡∂Ó  15
      */
-    private String actbal;
-    private String avabal;
+    public String actbal;
+    public String avabal;
 
     @Override
     public void assembleBodyFields(byte[] buffer) {
@@ -22,23 +22,5 @@ public class QDJG01Res extends AbstractResMsg {
         String avabalStr = new String(avabalBytes);
         avabal = avabalStr.trim();
         System.out.println("°æ’Àªß”‡∂Ó°ø" + actbal + "°æø…”√”‡∂Ó°ø" + avabal);
-    }
-
-    // --------------------------------------------
-
-    public String getActbal() {
-        return actbal;
-    }
-
-    public void setActbal(String actbal) {
-        this.actbal = actbal;
-    }
-
-    public String getAvabal() {
-        return avabal;
-    }
-
-    public void setAvabal(String avabal) {
-        this.avabal = avabal;
     }
 }

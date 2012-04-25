@@ -9,8 +9,8 @@ public class QDJG04Res extends AbstractResMsg {
        汇划金额	RMT-AMT-2	C(15)
        支付交易序号	FM-TRNT-AMT-SQ-NO	C(8)
      */
-    private String rmtAmt;
-    private String fmTrntAmtSqNo;
+    public String rmtAmt;
+    public String fmTrntAmtSqNo;
 
     @Override
     public void assembleBodyFields(byte[] buffer) {
@@ -27,22 +27,4 @@ public class QDJG04Res extends AbstractResMsg {
         System.out.println("【汇款金额】" + rmtAmt + "【交易流水号】" + fmTrntAmtSqNo);
     }
 
-    // -----------------------------------------------
-
-
-    public String getFmTrntAmtSqNo() {
-        return fmTrntAmtSqNo;
-    }
-
-    public void setFmTrntAmtSqNo(String fmTrntAmtSqNo) {
-        this.fmTrntAmtSqNo = fmTrntAmtSqNo;
-    }
-
-    public String getRmtAmt() {
-        return rmtAmt;
-    }
-
-    public void setRmtAmt(String rmtAmt) {
-        this.rmtAmt = rmtAmt;
-    }
 }
