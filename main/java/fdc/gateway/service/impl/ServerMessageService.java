@@ -3,6 +3,8 @@ package fdc.gateway.service.impl;
 import fdc.common.constant.AccountStatus;
 import fdc.common.constant.ContractStatus;
 import fdc.common.constant.TradeType;
+import fdc.gateway.cbus.domain.txn.QDJG01Res;
+import fdc.gateway.domain.BaseBean;
 import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.T0001Req;
 import fdc.gateway.domain.T000.T0001Res;
@@ -10,8 +12,8 @@ import fdc.gateway.domain.T000.T0002Req;
 import fdc.gateway.domain.T000.T0002Res;
 import fdc.gateway.domain.T200.*;
 import fdc.gateway.service.BiDbService;
+import fdc.gateway.service.CbusTxnService;
 import fdc.gateway.service.IMessageService;
-import fdc.gateway.domain.BaseBean;
 import fdc.gateway.utils.BiRtnCode;
 import fdc.gateway.utils.StringUtil;
 import fdc.repository.model.*;
@@ -20,11 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import platform.service.SystemService;
-import pub.platform.utils.StringUtils;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +40,8 @@ public class ServerMessageService implements IMessageService {
     private static final Logger logger = LoggerFactory.getLogger(ServerMessageService.class);
     @Autowired
     private BiDbService biDbService;
+    @Autowired
+    private CbusTxnService cbusTxnService;
 
     @Override
     public synchronized String handleMessage(String message) {
@@ -66,9 +67,17 @@ public class ServerMessageService implements IMessageService {
                     t0001Res.head.RetCode = BiRtnCode.BI_RTN_CODE_NO_ACCOUNT.getCode();
                     t0001Res.head.RetMsg = "没有查到账户，请检查账户信息。";
                 } else {
-                    RsAccount account = accountList.get(0);
-                    t0001Res.param.Balance = StringUtil.toBiformatAmt(account.getBalance());
-                    t0001Res.param.UsableBalance = StringUtil.toBiformatAmt(account.getBalanceUsable());
+                    //RsAccount account = accountList.get(0);
+                    // CBUS 账户余额  2012-04-26
+                    QDJG01Res qdjg01Res = null;
+                    try {
+                        qdjg01Res = cbusTxnService.qdjg01QryActbal(t0001Req.param.Acct);
+                    } catch (Exception e) {
+                        t0001Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
+                        t0001Res.head.RetMsg = e.getMessage();
+                    }
+                    t0001Res.param.Balance = StringUtil.toBiformatAmt(new BigDecimal(qdjg01Res.actbal));
+                    t0001Res.param.UsableBalance = StringUtil.toBiformatAmt(new BigDecimal(qdjg01Res.avabal));
                 }
 
                 responseMsg = t0001Res.toFDCDatagram();
@@ -320,7 +329,7 @@ public class ServerMessageService implements IMessageService {
             default:
                 CommonRes otherData = new CommonRes();
                 otherData.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
-                otherData.head.RetMsg = "交易码[" + opCode + "]不存在，请联系我行管理员！";
+                otherData.head.RetMsg = "交易码[" + opCode + "]不存在！";
                 responseMsg = otherData.toFDCDatagram();
                 logger.error("====接收到无法处理交易：【交易码：" + opCode + "】");
 

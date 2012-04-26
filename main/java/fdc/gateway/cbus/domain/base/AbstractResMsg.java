@@ -23,4 +23,12 @@ public abstract class AbstractResMsg {
     }
 
     public abstract void assembleBodyFields(byte[] bodyBuffer) throws IllegalAccessException;
+
+    public MsgHeader getHeader() {
+        return header;
+    }
+
+    public void setHeader(MsgHeader header) {
+        this.header = header;
+    }
 }

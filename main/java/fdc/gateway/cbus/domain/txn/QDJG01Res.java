@@ -21,6 +21,5 @@ public class QDJG01Res extends AbstractResMsg {
         System.arraycopy(buffer, 15, avabalBytes, 0, 15);
         String avabalStr = new String(avabalBytes);
         avabal = avabalStr.trim();
-        System.out.println("°æ’Àªß”‡∂Ó°ø" + actbal + "°æø…”√”‡∂Ó°ø" + avabal);
     }
 }
