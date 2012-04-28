@@ -3,18 +3,14 @@ package fdc.service.account;
 import fdc.common.constant.AccountStatus;
 import fdc.common.constant.LimitStatus;
 import fdc.repository.dao.RsAccountMapper;
-import fdc.repository.model.RsAccDetailExample;
 import fdc.repository.model.RsAccount;
 import fdc.repository.model.RsAccountExample;
-import fdc.repository.model.RsFdccompany;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
-import javax.management.RuntimeErrorException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +37,7 @@ public class AccountService {
                 .andAccountCodeEqualTo(accountNo);
         List<RsAccount> accountList = accountMapper.selectByExample(accountExample);
         if (accountList.isEmpty()) {
-            throw new RuntimeException("没有查询到已监管账户！请确认该账户已开启监管！");
+            throw new RuntimeException("没有查询到已监管账户！！");
         }
         return accountList.get(0);
     }
@@ -100,6 +96,12 @@ public class AccountService {
         return accountMapper.selectByExample(example);
     }
 
+    public List<RsAccount> qryAllMonitRecords() {
+        RsAccountExample example = new RsAccountExample();
+        example.createCriteria().andDeletedFlagEqualTo("0").andStatusFlagEqualTo(AccountStatus.WATCH.getCode());
+        return accountMapper.selectByExample(example);
+    }
+
     /**
      * 查询
      */
@@ -141,8 +143,10 @@ public class AccountService {
         }
 
     }
+
     /**
-     * 通过主键更新*/
+     * 通过主键更新
+     */
     public int updateRecord(RsAccount account) {
         if (isModifiable(account)) {
             OperatorManager om = SystemService.getOperatorManager();
@@ -156,7 +160,8 @@ public class AccountService {
     }
 
     /**
-     * 利息入账更新余额*/
+     * 利息入账更新余额
+     */
 
     public int updateRecordBalance(RsAccount rsAccount) {
         BigDecimal tradeAmt = rsAccount.getBalance();
@@ -170,4 +175,4 @@ public class AccountService {
         rsAccount.setBalanceUsable(tmpRact.getBalanceUsable().add(tradeAmt));
         return updateRecord(rsAccount);
     }
- }
+}

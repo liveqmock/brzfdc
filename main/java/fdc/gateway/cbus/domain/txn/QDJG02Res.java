@@ -26,8 +26,8 @@ public class QDJG02Res extends AbstractResMsg {
 
     public String thisFirstKey;       //   本页第一笔资料的KEY 值	64	将该值送入下一笔请求的翻页控制信息，不足64 位右补空格，。
     public String thisLastKey;        //   本页最后一笔资料的KEY 值	64	 将该值送入下一笔请求的翻页控制信息，不足64 位右补空格
-    public String isLast;             //  1 表示没有下一页 0 或者null 表示有下一页
-    public String detailCnt;          //  明细笔数   7
+    public String isLast;             //   1 表示没有下一页 0 或者null 表示有下一页
+    public String detailCnt;          //   明细笔数   7
     // 以下循环
 
     @Override
@@ -70,15 +70,15 @@ public class QDJG02Res extends AbstractResMsg {
 
     // 长度 115
     public class TxnRecord {
-        public String seqNo;               // 明细号 7
-        public String debitAmt;           //   借方发生额 	15	输出借方发生额
+        public String seqNo;              //  明细号 7
+        public String debitAmt;           //  借方发生额 	15	输出借方发生额
         public String creditAmt;          //  贷方发生额	15	输出贷方发生额
-        public String txnType;            // 交易类别	1	"1-现金 2-转账"
+        public String txnType;            //  交易类别	1	"1-现金 2-转账"
         public String txnSerialNo;        //  交易流水号	19	输出交易流水号
-        public String summaryCode;        // 摘要代码	4	输出摘要代码
-        public String remark;             // 备注	40	输出备注
-        public String txnDate;            // 交易日期 8
-        public String txnTime;            // 交易时间 6
+        public String summaryCode;        //  摘要代码	4	输出摘要代码
+        public String remark;             //  备注	40	输出备注
+        public String txnDate;            //  交易日期 8
+        public String txnTime;            //  交易时间 6
 
         public void assembleMyFields(byte[] buf) throws IllegalAccessException {
             Class clazz = TxnRecord.class;

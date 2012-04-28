@@ -36,12 +36,6 @@ public class CbusTxnService {
     public QDJG01Res qdjg01QryActbal(String acccountNo) throws Exception {
         QDJG01Req qdjg01Req = new QDJG01Req();
         MsgHeader header = qdjg01Req.getHeader();
-        try {
-            OperatorManager om = PlatformService.getOperatorManager();
-            header.setOperId(om.getOperatorId());
-        } catch (Exception e) {
-            header.setOperId("810201011002");
-        }
         header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1")));
         qdjg01Req.accountNo = acccountNo;
         String reqStr = qdjg01Req.toString();
