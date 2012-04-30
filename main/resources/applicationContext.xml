@@ -25,12 +25,10 @@
         <property name="maxIdle" value="5"/>
     </bean>
 
-
     <!-- transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
 
     <!-- enable component scanning (beware that this does not enable mapper scanning!) -->
     <context:component-scan base-package="fdc,platform"/>
@@ -59,7 +57,6 @@
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="platform.repository.dao,fdc.repository.dao"/>
     </bean>
-
 
     <!--quartz-->
     <bean id="autoSendLoanTxnsJobDetailBean"
