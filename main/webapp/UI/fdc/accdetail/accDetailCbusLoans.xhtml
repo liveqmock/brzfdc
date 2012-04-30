@@ -47,24 +47,24 @@
                         <p:panel style="margin-top:10px">
                             <h:panelGrid columns="2" cellspacing="5" columnClasses="col-95,col-5">
                                 <h:panelGrid columns="4" cellspacing="5" style="text-align: right;">
-                                    <h:outputLabel value="起始日期:"/>
-                                    <p:inputText id="cardno" value="#{cdttxnAction.cardNo}" size="30"/>
-                                    <h:outputLabel value="起始日期:"/>
-                                    <p:inputText id="cardno" value="#{cdttxnAction.cardNo}" size="30"/>
+                                    <h:outputLabel value="日期:"/>
+                                    <p:inputText required="true" size="30"
+                                                 requiredMessage="日期不能为空。"
+                                                 onclick="WdatePicker({dateFmt:'yyyyMMdd'})"
+                                                 value="#{cbusAccDetailAction.startDate}"/>
                                 </h:panelGrid>
-                                <h:panelGrid>
+                                <h:panelGrid columns="2">
                                     <p:commandButton style="width:90px;" value="查询"
-                                                     action="#{cdttxnAction.onQuery}"
+                                                     action="#{cbusAccDetailAction.onQuery}"
+                                                     update="pdt,msgs">
+                                    </p:commandButton>
+                                    <p:commandButton style="width:90px;margin-left:10px;" value="发送"
+                                                     action="#{cbusAccDetailAction.onSend}"
                                                      update="pdt,msgs">
                                     </p:commandButton>
                                 </h:panelGrid>
                             </h:panelGrid>
                         </p:panel>
-                        <p:menubar>
-                            <p:menuitem type="push" value="全部发送" icon="ui-icon ui-icon-document"
-                                        action="#{accDetailAction.onSend}" update="msgs,pdt"
-                                        ajax="true"/>
-                        </p:menubar>
                         <p:ajaxStatus style="height:18px;text-align:center">
                             <f:facet name="start">
                                 <h:graphicImage value="/images/ajaxloadingbar.gif"/>
@@ -75,7 +75,7 @@
                         </p:ajaxStatus>
                         <p:dataTable id="pdt" style="width:100%;"
                                      dynamic="true"
-                                     value="#{accDetailAction.todayLoanAccDetailList}" var="record"
+                                     value="#{cbusAccDetailAction.cbsAccTxnList}" var="record"
                                      paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
@@ -83,40 +83,32 @@
                             <p:column style="display:none;" headerText="pkid">
                                 <h:outputText value="#{record.pkId}"/>
                             </p:column>
-                            <p:column headerText="监管账号" style="text-align:center" filterBy="#{record.accountCode}">
+                            <p:column headerText="监管账号" style="text-align:center">
                                 <h:outputText
-                                        value="#{record.accountCode}"/>
+                                        value="#{record.accountNo}"/>
                             </p:column>
-                            <p:column headerText="账户名称" style="text-align:center" filterBy="#{record.accountName}">
+                            <p:column headerText="账户名称" style="text-align:center">
                                 <h:outputText
                                         value="#{record.accountName}"/>
                             </p:column>
-                            <p:column headerText="对方账号" style="text-align:center" filterBy="#{record.toAccountCode}">
+                            <p:column headerText="交易金额" style="text-align:right">
                                 <h:outputText
-                                        value="#{record.toAccountCode}"/>
-                            </p:column>
-                            <p:column headerText="对方账户名称" style="text-align:center" filterBy="#{record.toAccountName}">
-                                <h:outputText
-                                        value="#{record.toAccountName}"/>
-                            </p:column>
-                            <p:column headerText="收支标志" style="text-align:center">
-                                <h:outputText
-                                        value="#{accDetailCancelAction.inoutFlag.valueOfAlias(record.inoutFlag).title}"/>
-                            </p:column>
-                            <p:column headerText="交易类型" style="text-align:center">
-                                <h:outputText
-                                        value="#{accDetailCancelAction.tradeType.valueOfAlias(record.tradeType).title}"/>
-                            </p:column>
-                            <p:column headerText="交易金额">
-                                <h:outputText value="#{record.tradeAmt}" style="float: right">
+                                        value="#{record.creditAmt}">
                                     <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
-                            <p:column headerText="交易时间" style="text-align:center">
-                                <h:outputText value="#{record.tradeDate}">
-                                </h:outputText>
+                            <p:column headerText="交易日期" style="text-align:center">
+                                <h:outputText
+                                        value="#{record.txnDate}"/>
                             </p:column>
-
+                            <p:column headerText="发送标志" style="text-align:center">
+                                <h:outputText
+                                        value="#{cbusAccDetailAction.sendFlag.valueOfAlias(record.sendFlag).title}"/>
+                            </p:column>
+                            <p:column headerText="交易类型" style="text-align:center">
+                                <h:outputText
+                                        value="按揭贷款"/>
+                            </p:column>
                         </p:dataTable>
                     </h:form>
                 </p:tab>

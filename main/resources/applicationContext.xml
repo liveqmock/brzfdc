@@ -62,5 +62,14 @@
 
 
     <!--quartz-->
-
+    <bean id="autoSendLoanTxnsJobDetailBean"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="cbusFdcActtxnService"/>
+        <property name="targetMethod" value="autoSendLoanTxns"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <bean id="autoSendLoanTxnsCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="autoSendLoanTxnsJobDetailBean"/>
+        <property name="cronExpression" value="0 0 6 * * ?"/>
+    </bean>
 </beans>

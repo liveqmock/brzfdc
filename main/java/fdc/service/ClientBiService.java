@@ -386,7 +386,7 @@ public class ClientBiService {
         }
     }
 
-    private CommonRes sendMsgAndRecvRes(String dataGram) throws Exception {
+    public CommonRes sendMsgAndRecvRes(String dataGram) throws Exception {
         String recvMsg = null;
         if ("socket".equalsIgnoreCase(PropertyManager.getProperty("bank.dep.bi.type"))) {
             recvMsg = xSocketComponent.sendAndRecvDataByBlockConn(dataGram);

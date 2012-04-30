@@ -1,5 +1,6 @@
 package fdc.repository.dao.common;
 
+import fdc.repository.model.CbsAccTxn;
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsPayout;
 import fdc.view.payout.ParamPlan;
@@ -50,12 +51,31 @@ public interface CommonMapper {
             " having t.trade_date = #{txnDate}")
     List<RsAccDetail> selectAcctLoanAmtListByDate(@Param("txnDate") String txnDate);
 
-    @Select("select sys_elmt_seq from rs_sys_ctl where sys_elmt_id = '1' for update")
+    @Select("select seq_no from rs_sys_ctl where SYS_NO = '1' for update")
     int selectSysSeq();
 
-    @Update("update rs_sys_ctl set sys_elmt_seq = #{seq}  where sys_elmt_id = '1'")
+    @Update("update rs_sys_ctl set seq_no = #{seq}  where SYS_NO = '1'")
     public int updateSysSeq(@Param("seq") int seq);
 
-    @Update("update rs_sys_ctl set sys_elmt_seq = #{seq}, sys_date = #{date}  where sys_elmt_id = '1'")
+    @Update("update rs_sys_ctl set seq_no = #{seq}, sys_date = #{date}  where SYS_NO = '1'")
     public int updateSeqAndSysDate(@Param("seq") int seq, @Param("date") String date);
+
+    @Select("select min(t.txn_serial_no) from CBS_ACC_TXN t" +
+            " where t.txn_date = #{date} " +
+            " and t.send_flag is not null")
+    String qryBatchSerialNo(@Param("date") String date);
+
+    @Select("select acc.account_code as accountNo, sum(debit_amt) as debitAmt,sum(credit_amt) as creditAmt," +
+            " t.txn_date as txnDate,t.send_flag as sendFlag " +
+            "from rs_account acc " +
+            "left join CBS_ACC_TXN t " +
+            "on acc.account_code = t.account_no " +
+            "group by acc.account_code,t.txn_date,t.send_flag,acc.status_flag " +
+            "having acc.status_flag = '0' " +
+            " and t.txn_date = #{date}" +
+            " and t.send_flag = #{sendFlag}")
+    public List<CbsAccTxn> qryCbsAcctxnsByDateAndFlag(@Param("date") String date, @Param("sendFlag")String sendFlag);
+
+    @Update("update CBS_ACC_TXN t set t.send_flag = '1' where t.txn_date = #{date} and t.send_flag = '0'")
+    public int updateCbsActtxnsSent(@Param("date") String date);
 }

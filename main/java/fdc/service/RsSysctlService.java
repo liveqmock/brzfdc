@@ -28,9 +28,9 @@ public class RsSysctlService {
     private CommonMapper commonMapper;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public int generateTxnSeq(String elmtId) {
+    public int generateTxnSeq(String sysNo) {
         RsSysCtlExample example = new RsSysCtlExample();
-        example.createCriteria().andSysElmtIdEqualTo(elmtId);
+        example.createCriteria().andSysNoEqualTo(sysNo);
         RsSysCtl rsSysCtl = rsSysCtlMapper.selectByExample(example).get(0);
 
         String date = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -43,5 +43,4 @@ public class RsSysctlService {
         }
         return txnSeq;
     }
-
 }
