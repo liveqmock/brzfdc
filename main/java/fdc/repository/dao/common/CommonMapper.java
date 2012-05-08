@@ -65,16 +65,18 @@ public interface CommonMapper {
             " and t.send_flag is not null")
     String qryBatchSerialNo(@Param("date") String date);
 
-    @Select("select acc.account_code as accountNo, sum(debit_amt) as debitAmt,sum(credit_amt) as creditAmt," +
-            " t.txn_date as txnDate,t.send_flag as sendFlag " +
-            "from rs_account acc " +
-            "left join CBS_ACC_TXN t " +
-            "on acc.account_code = t.account_no " +
-            "group by acc.account_code,t.txn_date,t.send_flag,acc.status_flag " +
-            "having acc.status_flag = '0' " +
-            " and t.txn_date = #{date}" +
-            " and t.send_flag = #{sendFlag}")
-    public List<CbsAccTxn> qryCbsAcctxnsByDateAndFlag(@Param("date") String date, @Param("sendFlag")String sendFlag);
+    @Select("select acc.account_code as accountNo,acc.account_name as accountName, " +
+            "             nvl(sum(debit_amt), '0') as debitAmt," +
+            "              nvl(sum(credit_amt), '0') as creditAmt, " +
+            "             t.txn_date as txnDate,'0' as sendFlag  " +
+            "            from rs_account acc  " +
+            "            left join " +
+            "            (select * from CBS_ACC_TXN where txn_date = #{date}" +
+            "             and send_flag = '0') t  " +
+            "            on acc.account_code = t.account_no  " +
+            "            group by acc.account_code,t.txn_date,t.send_flag,acc.status_flag,acc.account_name  " +
+            "            having acc.status_flag = '0' ")
+    public List<CbsAccTxn> qryCbsAcctxnsByDateAndFlag(@Param("date") String date);
 
     @Update("update CBS_ACC_TXN t set t.send_flag = '1' where t.txn_date = #{date} and t.send_flag = '0'")
     public int updateCbsActtxnsSent(@Param("date") String date);

@@ -80,21 +80,13 @@
                                      paginator="true" rows="15" paginatorPosition="bottom"
                                      rowsPerPageTemplate="100,50,30,15,5"
                                      emptyMessage="数据记录为空...">
-                            <p:column style="display:none;" headerText="pkid">
-                                <h:outputText value="#{record.pkId}"/>
-                            </p:column>
                             <p:column headerText="监管账号" style="text-align:center">
                                 <h:outputText
                                         value="#{record.accountNo}"/>
                             </p:column>
-                            <p:column headerText="账户名称" style="text-align:center">
-                                <h:outputText
-                                        value="#{record.accountName}"/>
-                            </p:column>
                             <p:column headerText="交易金额" style="text-align:right">
                                 <h:outputText
                                         value="#{record.creditAmt}">
-                                    <f:convertNumber type="number" pattern="#,###,###,###,##0.00"/>
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="交易日期" style="text-align:center">

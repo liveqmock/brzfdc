@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import platform.service.SystemService;
+import pub.platform.advance.utils.PropertyManager;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -71,13 +72,20 @@ public class ServerMessageService implements IMessageService {
                     // CBUS ’Àªß”‡∂Ó  2012-04-26
                     QDJG01Res qdjg01Res = null;
                     try {
-                        qdjg01Res = cbusTxnService.qdjg01QryActbal(t0001Req.param.Acct);
+                        if ("cbus".equals(PropertyManager.getProperty("bank.act.flag"))) {
+                            qdjg01Res = cbusTxnService.qdjg01QryActbal(t0001Req.param.Acct);
+                            t0001Res.param.Balance = StringUtil.toBiformatAmt(new BigDecimal(qdjg01Res.actbal));
+                            t0001Res.param.UsableBalance = StringUtil.toBiformatAmt(new BigDecimal(qdjg01Res.avabal));
+                        } else {
+                            RsAccount account = accountList.get(0);
+                            t0001Res.param.Balance = StringUtil.toBiformatAmt(account.getBalance());
+                            t0001Res.param.UsableBalance = StringUtil.toBiformatAmt(account.getBalanceUsable());
+                        }
                     } catch (Exception e) {
                         t0001Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
                         t0001Res.head.RetMsg = e.getMessage();
                     }
-                    t0001Res.param.Balance = StringUtil.toBiformatAmt(new BigDecimal(qdjg01Res.actbal));
-                    t0001Res.param.UsableBalance = StringUtil.toBiformatAmt(new BigDecimal(qdjg01Res.avabal));
+
                 }
 
                 responseMsg = t0001Res.toFDCDatagram();

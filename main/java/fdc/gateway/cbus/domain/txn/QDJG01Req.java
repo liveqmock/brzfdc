@@ -10,6 +10,7 @@ public class QDJG01Req extends AbstractReqMsg {
      */
     public String accountNo;
 
+    @Override
     public String bodyToString() {
 
         return StringUtils.rightPad(accountNo, 28, ' ');

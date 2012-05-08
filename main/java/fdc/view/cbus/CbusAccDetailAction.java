@@ -1,8 +1,9 @@
-package fdc.view.accdetail;
+package fdc.view.cbus;
 
 import fdc.common.constant.SendFlag;
 import fdc.repository.model.CbsAccTxn;
 import fdc.service.account.CbusFdcActtxnService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
 
@@ -38,11 +39,12 @@ public class CbusAccDetailAction {
                 return null;
             }
 
-            if (!cbusFdcActtxnService.isQryedActtxns(endDate)) {
+            boolean isQryed = cbusFdcActtxnService.isQryedActtxns(endDate);
+            if (!isQryed) {
                 cbusFdcActtxnService.qrySaveActtxnsCbusByDate(startDate, endDate);
             }
             MessageUtil.addInfo(endDate + "交易明细数据已从核心系统获取完成。");
-            cbsAccTxnList = cbusFdcActtxnService.qryCbsAccTotalTxnsByDateAndFlag(endDate, "0");
+            cbsAccTxnList = cbusFdcActtxnService.qryCbsAccTotalTxnsByDateAndFlag(endDate);
             if (cbsAccTxnList.isEmpty()) {
                 MessageUtil.addWarn(endDate + "贷款明细数据为空！");
             }
@@ -55,17 +57,22 @@ public class CbusAccDetailAction {
 
     public String onSend() {
         try {
+            if (StringUtils.isEmpty(startDate)) {
+                MessageUtil.addError("日期不能为空。");
+                return null;
+            }
+            endDate = startDate;
             if (cbusFdcActtxnService.isSentActtxns(endDate)) {
                 MessageUtil.addWarn(endDate + "贷款汇总数据已发送完成！");
                 return null;
             }
-            cbsAccTxnList = cbusFdcActtxnService.qryCbsAccTotalTxnsByDateAndFlag(endDate, "0");
+            cbsAccTxnList = cbusFdcActtxnService.qryCbsAccTotalTxnsByDateAndFlag(endDate);
             if (cbsAccTxnList == null || cbsAccTxnList.isEmpty()) {
                 MessageUtil.addWarn("没有待发送数据！");
                 return null;
             } else {
                 MessageUtil.addInfo(endDate + "交易明细数据已从核心系统获取完成。");
-                cbusFdcActtxnService.sendAccTxns(cbsAccTxnList);
+                cbusFdcActtxnService.sendAccTxns(endDate, cbsAccTxnList);
             }
             MessageUtil.addInfo(endDate + "贷款交易汇总发送成功！");
         } catch (Exception e) {

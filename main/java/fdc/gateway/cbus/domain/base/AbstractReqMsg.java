@@ -15,14 +15,14 @@ public abstract class AbstractReqMsg {
     public abstract String bodyToString();
 
     {
-            header.setTxnCode(this.getClass().getSimpleName().substring(0, 6));
-        }
+        header.setTxnCode(this.getClass().getSimpleName().substring(0, 6));
+    }
 
     public String toString() {
         String bodyStr = bodyToString();
         header.setDataLength(StringUtils.leftPad("" + bodyStr.getBytes().length, 4, "0"));
         String headerStr = header.toString();
-        String totalLength = StringUtils.leftPad("" + headerStr.getBytes().length, 6, "0");
+        String totalLength = StringUtils.leftPad("" + (headerStr + bodyStr).getBytes().length, 6, "0");
         return totalLength + headerStr + bodyStr;
     }
 

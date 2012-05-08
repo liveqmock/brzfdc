@@ -10,7 +10,10 @@ import fdc.gateway.utils.StringUtil;
 import fdc.repository.dao.CbsAccTxnMapper;
 import fdc.repository.dao.RsSendLogMapper;
 import fdc.repository.dao.common.CommonMapper;
-import fdc.repository.model.*;
+import fdc.repository.model.CbsAccTxn;
+import fdc.repository.model.RsAccount;
+import fdc.repository.model.RsSendLog;
+import fdc.repository.model.RsSendLogExample;
 import fdc.service.ClientBiService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -19,8 +22,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,13 +51,18 @@ public class CbusFdcActtxnService {
     @Autowired
     private ClientBiService clientBiService;
 
-    // 自动发送当日贷款交易汇总
+    // TODO 自动发送昨日贷款交易汇总
     public int autoSendLoanTxns() {
-        String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
+
+        Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
+        cal.add(Calendar.DAY_OF_MONTH, -1);//取当前日期的前一天.
+
+        String yesterday = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+
         try {
-            qrySaveActtxnsCbusByDate(today, today);
-            List<CbsAccTxn> accTxnList = qryCbsAccTotalTxnsByDateAndFlag(today, "0");
-            sendAccTxns(accTxnList);
+            qrySaveActtxnsCbusByDate(yesterday, yesterday);
+            List<CbsAccTxn> accTxnList = qryCbsAccTotalTxnsByDateAndFlag(yesterday);
+            sendAccTxns(yesterday, accTxnList);
         } catch (Exception e) {
             logger.error("自动发送当日贷款交易汇总异常。", e);
         }
@@ -62,7 +72,9 @@ public class CbusFdcActtxnService {
     public boolean isQryedActtxns(String endDate) {
         RsSendLogExample example = new RsSendLogExample();
         example.createCriteria().andTxnDateEqualTo(endDate).andTxnResultEqualTo("1");
-        return rsSendLogMapper.countByExample(example) > 0;
+        int cnt = rsSendLogMapper.countByExample(example);
+        logger.info("【发送日志里的记录数】：" + cnt);
+        return (cnt > 0);
     }
 
     public boolean isSentActtxns(String endDate) {
@@ -80,6 +92,7 @@ public class CbusFdcActtxnService {
             for (QDJG02Res res : resList) {
                 for (QDJG02Res.TxnRecord txnRecord : res.recordList) {
                     CbsAccTxn cbsAccTxn = new CbsAccTxn();
+                    cbsAccTxn.setPkid(UUID.randomUUID().toString());
                     cbsAccTxn.setAccountNo(account.getAccountCode());
                     cbsAccTxn.setAccountName(account.getAccountName());
                     cbsAccTxn.setBankId(res.getHeader().getBankId());
@@ -97,7 +110,7 @@ public class CbusFdcActtxnService {
                     cbsAccTxn.setTxnDate(txnRecord.txnDate);
                     cbsAccTxn.setTxnTime(txnRecord.txnTime);
                     // TODO 判断该笔交易是否是贷款项
-                    if (!StringUtils.isEmpty(txnRecord.remark) && txnRecord.remark.contains("贷款")) {
+                    if (!StringUtils.isEmpty(txnRecord.remark) && txnRecord.remark.contains("按揭贷款")) {
                         cbsAccTxn.setSendFlag("0");
                     } else {
                         cbsAccTxn.setSendFlag(null);
@@ -113,24 +126,20 @@ public class CbusFdcActtxnService {
     }
 
 
-    public List<CbsAccTxn> qryCbsAccTotalTxnsByDateAndFlag(String date, String sendFlag) {
-        return commonMapper.qryCbsAcctxnsByDateAndFlag(date, sendFlag);
+    public List<CbsAccTxn> qryCbsAccTotalTxnsByDateAndFlag(String date) {
+        return commonMapper.qryCbsAcctxnsByDateAndFlag(date);
     }
 
-    public int sendAccTxns(List<CbsAccTxn> cbsAccTxnList) throws Exception {
+    public int sendAccTxns(String txnDate, List<CbsAccTxn> cbsAccTxnList) throws Exception {
         T0007Req req = new T0007Req();
         req.head.OpCode = "0007";
-        String txnDate = null;
         String bankSerial = null;
         for (CbsAccTxn accTxn : cbsAccTxnList) {
             T0007Req.Param.Record record = T0007Req.getRecord();
-            record.Date = accTxn.getTxnDate();
-            if (txnDate == null) {
-                txnDate = accTxn.getTxnDate();
-                bankSerial = commonMapper.qryBatchSerialNo(txnDate);
-            }
+            bankSerial = commonMapper.qryBatchSerialNo(txnDate);
+            record.Date = txnDate;
             record.BankSerial = bankSerial;
-            record.Time = accTxn.getTxnTime();
+            record.Time = "121212";
             record.Flag = InOutFlag.IN.getCode();
             record.Type = TradeType.HOUSE_CREDIT.getCode();
             record.ContractNum = "";
@@ -166,6 +175,7 @@ public class CbusFdcActtxnService {
         rsSendLog.setTxnDate(txnDate);
         rsSendLog.setTxnNam(txnName);
         rsSendLog.setTxnResult(txnResult);
-        return rsSendLogMapper.insertSelective(rsSendLog);
+        rsSendLog.setPkid(UUID.randomUUID().toString());
+        return rsSendLogMapper.insert(rsSendLog);
     }
 }

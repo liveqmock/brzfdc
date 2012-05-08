@@ -1,7 +1,6 @@
 package fdc.gateway.utils;
 
 import java.math.BigDecimal;
-import java.text.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,5 +68,31 @@ public class StringUtil {
     public static String transDate8ToDate10(String strDate8) {
         return strDate8.substring(0, 4) + "-" + strDate8.substring(4, 6) + "-" + strDate8.substring(6, 8);
     }
+
+    public static String rightPad4ChineseToByteLength(String srcStr, int totalByteLength, String padStr) {
+        if (srcStr == null) {
+            return null;
+        }
+        int srcByteLength = srcStr.getBytes().length;
+
+        if (padStr == null || "".equals(padStr)) {
+            padStr = " ";
+        } else if (padStr.getBytes().length > 1 || totalByteLength <= 0) {
+            throw new RuntimeException("²ÎÊý´íÎó");
+        }
+        StringBuilder rtnStrBuilder = new StringBuilder();
+        if (totalByteLength >= srcByteLength) {
+            rtnStrBuilder.append(srcStr);
+            for (int i = 0; i < totalByteLength - srcByteLength; i++) {
+                rtnStrBuilder.append(padStr);
+            }
+        } else {
+            byte[] rtnBytes = new byte[totalByteLength];
+            System.arraycopy(srcStr.getBytes(), 0, rtnBytes, 0, totalByteLength);
+            rtnStrBuilder.append(rtnBytes);
+        }
+        return rtnStrBuilder.toString();
+    }
+
 
 }

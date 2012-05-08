@@ -14,11 +14,17 @@ public abstract class AbstractResMsg {
         byte[] headBytes = new byte[59];
         System.arraycopy(buffer, 0, headBytes, 0, 59);
         header.assembleFields(headBytes);
-        byte[] bodyBytes = new byte[buffer.length - 59];
-        System.arraycopy(buffer, 59, bodyBytes, 0, bodyBytes.length);
+        int bodyLength = Integer.parseInt(header.getDataLength());
+        byte[] bodyBytes;
         if ("99".equals(header.getRtnCode())) {
-             throw new RuntimeException("99与核心交易失败。" + new String(bodyBytes));
+            bodyBytes = new byte[100];
+            System.arraycopy(buffer, 59, bodyBytes, 0, bodyBytes.length);
+            throw new RuntimeException("与核心交易失败。" + new String(bodyBytes));
+        } else {
+            bodyBytes = new byte[bodyLength];
+            System.arraycopy(buffer, 59, bodyBytes, 0, bodyBytes.length);
         }
+
         assembleBodyFields(bodyBytes);
     }
 

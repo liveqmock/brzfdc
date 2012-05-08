@@ -68,13 +68,17 @@ public class CbusTxnService {
         QDJG02Res qdjg02Res = qdjg02qryOneActtxnsByReq(qdjg02Req);
         List<QDJG02Res> resList = new ArrayList<QDJG02Res>();
         resList.add(qdjg02Res);
+        int pageIndex = 1;   // 1- 第二页
+        System.out.println("【是否最后一页】" + qdjg02Res.isLast);
         while (!"1".equals(qdjg02Res.isLast)) { // 不是最后一页
+            qdjg02Req.firstFlag = String.valueOf(pageIndex);
             qdjg02Req.preFirstKey = qdjg02Res.thisFirstKey;
             qdjg02Req.preLastKey = qdjg02Res.thisLastKey;
-            int newSeqNo = Integer.parseInt(qdjg02Res.recordList.get(qdjg02Res.recordList.size() - 1).seqNo) + 1;
-            qdjg02Req.startSeqNo = String.valueOf(newSeqNo);
+//            int newSeqNo = Integer.parseInt(qdjg02Res.recordList.get(qdjg02Res.recordList.size() - 1).seqNo) + 1;
+//            qdjg02Req.startSeqNo = String.valueOf(newSeqNo);
             qdjg02Res = qdjg02qryOneActtxnsByReq(qdjg02Req);
             resList.add(qdjg02Res);
+            pageIndex++;
         }
         return resList;
     }

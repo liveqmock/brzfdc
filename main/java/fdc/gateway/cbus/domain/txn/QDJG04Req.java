@@ -1,6 +1,7 @@
 package fdc.gateway.cbus.domain.txn;
 
 import fdc.gateway.cbus.domain.base.AbstractReqMsg;
+import fdc.gateway.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 
 public class QDJG04Req extends AbstractReqMsg {
@@ -23,17 +24,23 @@ public class QDJG04Req extends AbstractReqMsg {
     public String rmtAmt;            //  汇款金额  16
     public String rmtPurp;           //  汇款用途  64
 
+    /*public String voucherType;      // 凭证种类  4
+    public String voucherNo;        // 凭证号码  16
+    public String remark;           // 备注     40*/
 
     public String bodyToString() {
 
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(StringUtils.rightPad(sndToBkNo, 12, ' '));
-        strBuilder.append(StringUtils.rightPad(rmtrNameFl, 64, ' '));
+        strBuilder.append(StringUtil.rightPad4ChineseToByteLength(rmtrNameFl, 64, " "));
         strBuilder.append(StringUtils.rightPad(rmtrAcctNo, 32, ' '));
-        strBuilder.append(StringUtils.rightPad(payeeNameFl, 64, ' '));
+        strBuilder.append(StringUtil.rightPad4ChineseToByteLength(payeeNameFl, 64, " "));
         strBuilder.append(StringUtils.rightPad(payeeFlAcctNo, 32, ' '));
         strBuilder.append(StringUtils.rightPad(rmtAmt, 16, ' '));
-        strBuilder.append(StringUtils.rightPad(rmtPurp, 64, ' '));
+        strBuilder.append(StringUtil.rightPad4ChineseToByteLength(rmtPurp, 64, " "));
+        /*strBuilder.append(StringUtils.rightPad(voucherType, 4, ' '));
+        strBuilder.append(StringUtils.rightPad(voucherNo, 16, ' '));
+        strBuilder.append(StringUtil.rightPad4ChineseToByteLength(remark, 40, " "));*/
 
         return strBuilder.toString();
     }
