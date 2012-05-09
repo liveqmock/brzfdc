@@ -67,6 +67,18 @@
     </bean>
     <bean id="autoSendLoanTxnsCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="autoSendLoanTxnsJobDetailBean"/>
-        <property name="cronExpression" value="0 0 6 * * ?"/>
+        <property name="cronExpression" value="0 0 8 * * ?"/>
+    </bean>
+
+    <bean id="autoQryTxnsJobDetailBean"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="cbusFdcActtxnService"/>
+        <property name="targetMethod" value="qrySaveTodayCbusTxns"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <bean id="autoQryTxnsCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="autoQryTxnsJobDetailBean"/>
+       <!--  每隔一小时 8：30 到 17：30 -->
+        <property name="cronExpression" value="0 30 8-17 * * ?"/>
     </bean>
 </beans>

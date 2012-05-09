@@ -17,6 +17,8 @@ import fdc.gateway.service.IMessageService;
 import fdc.gateway.utils.BiRtnCode;
 import fdc.gateway.utils.StringUtil;
 import fdc.repository.model.*;
+import fdc.service.account.CbusFdcActtxnService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class ServerMessageService implements IMessageService {
     private BiDbService biDbService;
     @Autowired
     private CbusTxnService cbusTxnService;
+    @Autowired
+    private CbusFdcActtxnService cbusFdcActtxnService;
 
     @Override
     public synchronized String handleMessage(String message) {
@@ -102,29 +106,76 @@ public class ServerMessageService implements IMessageService {
                     responseMsg = t0002Res.toFDCDatagram();
                     break;
                 }
-                List<RsAccDetail> accDetailList = biDbService.selectAccDetailsByCodeNameDate(t0002Req.param.Acct,
-                        t0002Req.param.AcctName, StringUtil.transDate8ToDate10(t0002Req.param.BeginDate),
-                        StringUtil.transDate8ToDate10(t0002Req.param.EndDate));
-                if (!accDetailList.isEmpty()) {
-                    t0002Res.param.DetailNum = String.valueOf(accDetailList.size());
-                    for (RsAccDetail accDetail : accDetailList) {
-                        T0002Res.Param.Record record = T0002Res.getRecord();
-                        record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
-                        record.Time = "121212";
+                // 核心
+                if ("cbus".equals(PropertyManager.getProperty("bank.act.txn.flag"))) {
+                    List<CbsAccTxn> accTxnList = cbusFdcActtxnService.qryAccTxns(t0002Req.param.Acct, t0002Req.param.BeginDate,
+                            t0002Req.param.EndDate);
+                    if (!accTxnList.isEmpty()) {
+                        t0002Res.param.DetailNum = String.valueOf(accTxnList.size());
+                        for (CbsAccTxn accTxn : accTxnList) {
+                            T0002Res.Param.Record record = T0002Res.getRecord();
+                            record.Date = accTxn.getTxnDate();
+                            record.Time = accTxn.getTxnTime();
 
-                        record.Flag = accDetail.getInoutFlag();
-                        record.Type = accDetail.getTradeType();
-                        record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
-                        record.ContractNum = accDetail.getContractNo();
-                        record.ToAcct = accDetail.getToAccountCode();
-                        record.ToAcctName = accDetail.getToAccountName();
-                        record.ToBankName = accDetail.getToHsBankName();
-                        record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
-                        t0002Res.param.recordList.add(record);
+                            /*record.Flag = accDetail.getInoutFlag();
+                            record.Type = accDetail.getTradeType();
+                            if()*/
+                            String creditAmt = accTxn.getCreditAmt();
+                            String debitAmt = accTxn.getDebitAmt();
+                            double camt = StringUtils.isEmpty(creditAmt) ? 0.00 : Double.parseDouble(creditAmt);
+                            double damt = StringUtils.isEmpty(debitAmt) ? 0.00 : Double.parseDouble(debitAmt);
+                            if(camt > 0) {
+                                // 收入
+                                record.Flag = "1";
+                                record.Amt = StringUtil.toBiformatAmt(new BigDecimal(creditAmt));
+                            } else if(damt > 0) {
+                                // 支出
+                                record.Flag = "0";
+                                record.Amt = StringUtil.toBiformatAmt(new BigDecimal(debitAmt));
+                            } else {
+                                record.Amt = "000";
+                                record.Flag = "0";
+                            }
+                            record.Type = "09";
+                            // 0-支出 1-收入
+                            record.ContractNum = "";
+                            /*record.ToAcct = accDetail.getToAccountCode();
+                            record.ToAcctName = accDetail.getToAccountName();
+                            record.ToBankName = accDetail.getToHsBankName();*/
+                            record.Purpose = accTxn.getRemark();
+                            t0002Res.param.recordList.add(record);
+                        }
+                    } else {
+                        t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
+                        t0002Res.head.RetMsg = "交易明细记录为空！";
                     }
-                } else {
-                    t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
-                    t0002Res.head.RetMsg = "交易明细记录为空！";
+                }
+                // 非核心
+                else {
+                    List<RsAccDetail> accDetailList = biDbService.selectAccDetailsByCodeNameDate(t0002Req.param.Acct,
+                            t0002Req.param.AcctName, StringUtil.transDate8ToDate10(t0002Req.param.BeginDate),
+                            StringUtil.transDate8ToDate10(t0002Req.param.EndDate));
+                    if (!accDetailList.isEmpty()) {
+                        t0002Res.param.DetailNum = String.valueOf(accDetailList.size());
+                        for (RsAccDetail accDetail : accDetailList) {
+                            T0002Res.Param.Record record = T0002Res.getRecord();
+                            record.Date = StringUtil.transDate10ToDate8(accDetail.getTradeDate());
+                            record.Time = "121212";
+
+                            record.Flag = accDetail.getInoutFlag();
+                            record.Type = accDetail.getTradeType();
+                            record.Amt = StringUtil.toBiformatAmt(accDetail.getTradeAmt());
+                            record.ContractNum = accDetail.getContractNo();
+                            record.ToAcct = accDetail.getToAccountCode();
+                            record.ToAcctName = accDetail.getToAccountName();
+                            record.ToBankName = accDetail.getToHsBankName();
+                            record.Purpose = TradeType.HOUSE_INCOME.valueOfAlias(accDetail.getTradeType()).getTitle();
+                            t0002Res.param.recordList.add(record);
+                        }
+                    } else {
+                        t0002Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
+                        t0002Res.head.RetMsg = "交易明细记录为空！";
+                    }
                 }
 
                 responseMsg = t0002Res.toFDCDatagram();

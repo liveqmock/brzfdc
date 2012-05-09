@@ -28,6 +28,7 @@
             text-align: left;
         }
     </style>
+    <script type="text/javascript" src="#{request.contextPath}/UI/support/pub.js"/>
     <script type="text/javascript" language="javascript">
         document.onkeydown = function TabReplace() {
             if (event.keyCode == 13) {
@@ -40,7 +41,7 @@
         function qryBanks() {
             var sfeature = "dialogwidth:800px; dialogheight:600px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
             var arg = new Object();
-            var rtn = dialog("../common/companyList.xhtml", arg, sfeature);
+            var rtn = dialog("../common/bankList.xhtml", arg, sfeature);
             if (rtn != null) {
                 document.getElementById("form:toBankCode").value = rtn.bankCode;
                 document.getElementById("form:toBankName").value = rtn.bankName;
@@ -90,16 +91,26 @@
                                     <p:inputText id="toAccountCode" value="#{cbusPayoutAction.rsPayout.recAccount}"
                                                  readonly="false" style="width:160px;" required="true"
                                                  requiredMessage="必须输入收款方账号！"/>
+
                                     <h:outputLabel value="*收款方户名:" for="toAccountName" size="35"
                                                    style="margin-left: 25px;"/>
                                     <p:inputText id="toAccountName" value="#{cbusPayoutAction.rsPayout.recCompanyName}"
                                                  readonly="false" required="true" requiredMessage="必须输入收款方户名！"
                                                  style="width:260px;"/>
 
-                                    <h:outputLabel value="*收款行:" for="toBankCode" size="35" style="margin-left: 25px;"/>
+                                    <h:outputLabel value="转账方式:" for="transType"/>
+                                    <p:selectOneMenu id="transType" style="width:170px;"
+                                                     value="#{cbusPayoutAction.payType}">
+                                        <f:selectItems value="#{cbusPayoutAction.payTypes}"/>
+                                        <p:ajax update="reasons" listener="#{cbusPayoutAction.handleChange}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel/>
+                                    <h:outputLabel/>
+
+                                    <h:outputLabel value="收款行:" for="toBankCode" size="35" style="margin-left: 25px;"/>
                                     <p:inputText id="toBankCode" style="width:160px;"
                                                  value="#{cbusPayoutAction.rsPayout.recBankCode}"
-                                                 required="true" requiredMessage="收款行不能为空" onclick="qryBanks()"/>
+                                                 onclick="qryBanks()"/>
 
                                     <h:outputLabel value="收款行全称:" for="toBankName" size="35"
                                                    style="margin-left: 25px;"/>
@@ -128,9 +139,9 @@
                                                  value="#{cbusPayoutAction.rsPayout.payAccount}">
                                     </p:inputText>
 
-                                    <h:outputLabel value="*单据号:" for="docNo" size="35" style="margin-left: 25px;"/>
+                                    <h:outputLabel value="*凭证号:" for="docNo" size="35" style="margin-left: 25px;"/>
                                     <p:inputText id="docNo" value="#{cbusPayoutAction.rsPayout.docNo}" required="true"
-                                                 requiredMessage="必须输入单据号！" style="width:160px;"
+                                                 requiredMessage="必须输入凭证号！" style="width:160px;"
                                                  onfocus="this.select()"/>
 
                                     <h:outputLabel value="*申请金额:" for="applyAmt" size="35" style="margin-left: 25px;"/>
@@ -186,7 +197,7 @@
                          rowsPerPageTemplate="100,50,30,15,5"
                          emptyMessage="数据记录为空...">
 
-                <p:column headerText="单据号" style="text-align:center">
+                <p:column headerText="凭证号" style="text-align:center">
                     <h:outputText value="#{record.docNo}"/>
                 </p:column>
 

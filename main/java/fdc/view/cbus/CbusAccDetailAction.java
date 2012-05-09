@@ -72,7 +72,7 @@ public class CbusAccDetailAction {
                 return null;
             } else {
                 MessageUtil.addInfo(endDate + "交易明细数据已从核心系统获取完成。");
-                cbusFdcActtxnService.sendAccTxns(endDate, cbsAccTxnList);
+                cbusFdcActtxnService.sendAccTotalLoanTxns(endDate, cbsAccTxnList);
             }
             MessageUtil.addInfo(endDate + "贷款交易汇总发送成功！");
         } catch (Exception e) {

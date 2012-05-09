@@ -6,11 +6,13 @@ import fdc.common.constant.WorkResult;
 import fdc.repository.model.RsAccount;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPlanCtrl;
+import fdc.service.BankInfoService;
 import fdc.service.PayoutService;
 import fdc.service.account.AccountService;
 import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.commandbutton.CommandButton;
+import org.primefaces.component.inputtext.InputText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -24,7 +26,9 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,13 +51,19 @@ public class CbusPayoutAction {
     private AccountService accountService;
     @ManagedProperty(value = "#{toolsService}")
     private ToolsService toolsService;
+    @ManagedProperty(value = "#{bankInfoService}")
+    private BankInfoService bankInfoService;
+
     private List<RsPayout> rsPayoutList;
     private List<RsPayout> chkPayoutList;
     private List<RsPayout> editPayoutList;
     private List<RsPayout> passPayoutList;
     private List<RsPayout> refusePayoutList;
     private List<RsPlanCtrl> rsPlanCtrlList;
-    private List<SelectItem> bankCodeList;
+    private List<SelectItem> bankList;
+    private Map<String, String> payTypes;
+
+    private String payType;
 
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
@@ -69,6 +79,9 @@ public class CbusPayoutAction {
         if (!initPayout()) {
             initTabList();
         }
+        payTypes = new HashMap<String, String>();
+        payTypes.put("10", "行内转账");
+        payTypes.put("20", "他行电汇");
     }
 
     private boolean initPayout() {
@@ -85,12 +98,11 @@ public class CbusPayoutAction {
             rsPayout.setPayCompanyName(planCtrl.getCompanyName());
             rsPayout.setPayAccount(planCtrl.getAccountCode());
             rsPayout.setPurpose(planCtrl.getPlanDesc());
-            bankCodeList = toolsService.getEnuSelectItemList("BANK_CODE", false, false);
             return true;
         } else if (!StringUtils.isEmpty(pkid) && "edit".equalsIgnoreCase(action)) {
             rsPayout = payoutService.selectPayoutByPkid(pkid);
             planCtrl = expensesPlanService.selectPlanCtrlByPlanNo(rsPayout.getBusinessNo());
-            bankCodeList = toolsService.getEnuSelectItemList("BANK_CODE", false, false);
+//            bankCodeList = toolsService.getEnuSelectItemList("BANK_CODE", false, false);
             return true;
         } else if (!StringUtils.isEmpty(pkid) && "query".equalsIgnoreCase(action)) {
             rsPayout = payoutService.selectPayoutByPkid(pkid);
@@ -109,8 +121,17 @@ public class CbusPayoutAction {
     }
 
     public String onSave() {
-
         try {
+            if ("20".equals(payType)) {
+                if (StringUtils.isEmpty(rsPayout.getRecBankCode())) {
+                    MessageUtil.addError("收款行不能为空！");
+                    return null;
+                }
+                if (StringUtils.isEmpty(rsPayout.getRecBankName())) {
+                    MessageUtil.addError("收款行名不能为空！");
+                    return null;
+                }
+            }
             RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
             if (account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())) {
                 MessageUtil.addError("该账户已被限制付款！");
@@ -127,7 +148,7 @@ public class CbusPayoutAction {
             }
         } catch (Exception e) {
             logger.error("受理用款失败！", e.getMessage());
-            MessageUtil.addError("受理用款失败！"+e.getMessage());
+            MessageUtil.addError("受理用款失败！" + e.getMessage());
         }
         return null;
     }
@@ -153,7 +174,7 @@ public class CbusPayoutAction {
             }
         } catch (Exception e) {
             logger.error("受理用款修改失败！", e.getMessage());
-            MessageUtil.addError("受理用款修改失败！"+e.getMessage());
+            MessageUtil.addError("受理用款修改失败！" + e.getMessage());
         }
         return null;
     }
@@ -161,7 +182,6 @@ public class CbusPayoutAction {
     public String onDelete() {
 
         try {
-
             rsPayout.setDeletedFlag("1");
             if (payoutService.updateRsPayout(rsPayout) == 1) {
                 MessageUtil.addInfo("受理用款修删除成功！");
@@ -173,7 +193,7 @@ public class CbusPayoutAction {
             }
         } catch (Exception e) {
             logger.error("受理用款删除失败！", e.getMessage());
-            MessageUtil.addError("受理用款删除失败！"+e.getMessage());
+            MessageUtil.addError("受理用款删除失败！" + e.getMessage());
         }
         return null;
     }
@@ -195,6 +215,14 @@ public class CbusPayoutAction {
         return null;
     }
 
+    public Map<String, String> getPayTypes() {
+        return payTypes;
+    }
+
+    public void setPayTypes(Map<String, String> payTypes) {
+        this.payTypes = payTypes;
+    }
+
     public String onRefuse() {
         if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("请至少选择一笔记录！");
@@ -212,11 +240,34 @@ public class CbusPayoutAction {
         return null;
     }
 
-    /* public void onTabChange(TabChangeEvent event) {
-         initTabList();
-      }*/
+    public void handleChange() {
+        if ("10".equalsIgnoreCase(payType)) {
+            UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+            InputText toBankCode = (InputText) viewRoot.findComponent("form:toBankCode");
+            toBankCode.setDisabled(true);
+            InputText toBankName = (InputText) viewRoot.findComponent("form:toBankName");
+            toBankName.setDisabled(true);
+        }
+    }
 
-    //=========================================
+    //===================================================================
+
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+    public BankInfoService getBankInfoService() {
+        return bankInfoService;
+    }
+
+    public void setBankInfoService(BankInfoService bankInfoService) {
+        this.bankInfoService = bankInfoService;
+    }
 
     public RsPayout getRsPayout() {
         return rsPayout;
@@ -230,12 +281,12 @@ public class CbusPayoutAction {
         return payoutService;
     }
 
-    public List<SelectItem> getBankCodeList() {
-        return bankCodeList;
+    public List<SelectItem> getBankList() {
+        return bankList;
     }
 
-    public void setBankCodeList(List<SelectItem> bankCodeList) {
-        this.bankCodeList = bankCodeList;
+    public void setBankList(List<SelectItem> bankList) {
+        this.bankList = bankList;
     }
 
     public List<RsPayout> getEditPayoutList() {

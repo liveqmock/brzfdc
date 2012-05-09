@@ -53,7 +53,7 @@
                                 <h:panelGrid columns="1">
                                     <h:panelGrid columns="4" cellspacing="2" style="width: 100%"
                                                  columnClasses="col-95,col-5,col-95,col-5">
-                                        <h:outputLabel value="单据号:" for="docNo"/>
+                                        <h:outputLabel value="凭证号:" for="docNo"/>
                                         <p:inputText id="docNo" value="#{biplanAction.paramPlan.docNo}"
                                                      style="width:160px;"/>
 
@@ -154,7 +154,7 @@
                              rowsPerPageTemplate="100,50,30,15,5"
                              emptyMessage="数据记录为空...">
 
-                    <p:column headerText="单据号" style="text-align:center">
+                    <p:column headerText="凭证号" style="text-align:center">
                         <h:outputText value="#{record.docNo}"/>
                     </p:column>
 

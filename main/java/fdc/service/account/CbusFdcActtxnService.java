@@ -10,10 +10,7 @@ import fdc.gateway.utils.StringUtil;
 import fdc.repository.dao.CbsAccTxnMapper;
 import fdc.repository.dao.RsSendLogMapper;
 import fdc.repository.dao.common.CommonMapper;
-import fdc.repository.model.CbsAccTxn;
-import fdc.repository.model.RsAccount;
-import fdc.repository.model.RsSendLog;
-import fdc.repository.model.RsSendLogExample;
+import fdc.repository.model.*;
 import fdc.service.ClientBiService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -62,11 +59,17 @@ public class CbusFdcActtxnService {
         try {
             qrySaveActtxnsCbusByDate(yesterday, yesterday);
             List<CbsAccTxn> accTxnList = qryCbsAccTotalTxnsByDateAndFlag(yesterday);
-            sendAccTxns(yesterday, accTxnList);
+            sendAccTotalLoanTxns(yesterday, accTxnList);
         } catch (Exception e) {
             logger.error("自动发送当日贷款交易汇总异常。", e);
         }
         return 0;
+    }
+
+    public int deleteTxnsByDate(String startDate, String endDate) {
+        CbsAccTxnExample example = new CbsAccTxnExample();
+        example.createCriteria().andTxnDateBetween(startDate, endDate);
+        return cbsAccTxnMapper.deleteByExample(example);
     }
 
     public boolean isQryedActtxns(String endDate) {
@@ -83,8 +86,14 @@ public class CbusFdcActtxnService {
         return rsSendLogMapper.countByExample(example) > 0;
     }
 
+    public int qrySaveTodayCbusTxns() throws Exception {
+        String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return qrySaveActtxnsCbusByDate(date, date);
+    }
+
     // 查询并保存所有监管账户的交易明细
     public int qrySaveActtxnsCbusByDate(String startDate, String endDate) throws Exception {
+        deleteTxnsByDate(startDate, endDate);
         List<RsAccount> accountList = accountService.qryAllMonitRecords();
         int cnt = 0;
         for (RsAccount account : accountList) {
@@ -125,12 +134,18 @@ public class CbusFdcActtxnService {
         return cnt;
     }
 
+    public List<CbsAccTxn> qryAccTxns(String accountNo, String startDate, String endDate) {
+        CbsAccTxnExample example = new CbsAccTxnExample();
+        example.createCriteria().andAccountNoEqualTo(accountNo).andTxnDateBetween(startDate, endDate);
+        return cbsAccTxnMapper.selectByExample(example);
+    }
+
 
     public List<CbsAccTxn> qryCbsAccTotalTxnsByDateAndFlag(String date) {
         return commonMapper.qryCbsAcctxnsByDateAndFlag(date);
     }
 
-    public int sendAccTxns(String txnDate, List<CbsAccTxn> cbsAccTxnList) throws Exception {
+    public int sendAccTotalLoanTxns(String txnDate, List<CbsAccTxn> cbsAccTxnList) throws Exception {
         T0007Req req = new T0007Req();
         req.head.OpCode = "0007";
         String bankSerial = null;
