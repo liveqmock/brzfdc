@@ -1,7 +1,10 @@
 package fdc.view.cbus;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
 import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
+import fdc.gateway.utils.StringUtil;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPlanCtrl;
 import fdc.service.CbusPayoutService;
@@ -9,15 +12,26 @@ import fdc.service.ClientBiService;
 import fdc.service.PayoutService;
 import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
+import org.primefaces.component.commandbutton.CommandButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
+import platform.service.PlatformService;
+import pub.platform.security.OperatorManager;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +58,7 @@ public class CbusPayoutExecAction {
 
     private List<RsPayout> passPayoutList;
     private List<RsPayout> payOverList;
+    private List<RsPayout> payFailList;
     private List<RsPayout> sendOverList;
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
@@ -54,9 +69,11 @@ public class CbusPayoutExecAction {
 
     @PostConstruct
     public void init() {
-        rsPayout = new RsPayout();
+//        rsPayout = new RsPayout();
         passPayoutList = cbusPayoutService.selectRecordsByWorkResult(WorkResult.PASS.getCode());
         payOverList = cbusPayoutService.selectRecordsByWorkResult(WorkResult.COMMIT.getCode());
+        payFailList = cbusPayoutService.selectRecordsByWorkResult(WorkResult.NOT_KNOWN.getCode());
+
         sendOverList = cbusPayoutService.selectRecordsByWorkResult(WorkResult.SENT.getCode());
 
         FacesContext context = FacesContext.getCurrentInstance();
@@ -66,23 +83,181 @@ public class CbusPayoutExecAction {
         if (!StringUtils.isEmpty(pkid) && "act".equalsIgnoreCase(action)) {
             rsPayout = payoutService.selectPayoutByPkid(pkid);
             planCtrl = expensesPlanService.selectPlanCtrlByPlanNo(rsPayout.getBusinessNo());
+            UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+            CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:directPrint");
+            saveBtn.setDisabled(true);
         }
     }
 
     public String onExecute() {
         try {
-            if (cbusPayoutService.updateRsPayoutToExec(rsPayout) == -1) {
-                throw new RuntimeException("【记录更新失败】付款监管账号：" + rsPayout.getPayAccount());
+//            int cnt = cbusPayoutService.updateRsPayoutToExec(rsPayout);
+            int cnt = 1;
+            if (cnt == 1) {
+                MessageUtil.addInfo("入账完成!");
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                CommandButton prtnBtn = (CommandButton) viewRoot.findComponent("form:directPrint");
+                prtnBtn.setDisabled(false);
+                CommandButton execBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+                execBtn.setDisabled(true);
             }
         } catch (Exception e) {
-            logger.error("操作失败." + e.getMessage());
-            MessageUtil.addError("操作失败." + e.getMessage());
+            logger.error("入账异常." + e.getMessage());
+            MessageUtil.addError("入账异常." + e.getMessage());
             return null;
         }
-        MessageUtil.addInfo("入账完成!");
         init();
         return null;
     }
+
+    public void onPrintVoucher(ActionEvent event) {
+        try {
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            HttpServletResponse response = (HttpServletResponse) ctx.getExternalContext().getResponse();
+            Document document = new Document(PageSize.A3, 36, 36, 36, 90);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            PdfWriter writer = PdfWriter.getInstance(document, bos);
+            writer.setPageEvent(new PdfPageEventHelper());
+//            writer.setPageEvent(new PdfVoucherHelper());
+            document.open();
+
+            document.add(transToPdfTable());
+            document.close();
+            response.reset();
+            ServletOutputStream out = response.getOutputStream();
+            response.setContentType("application/pdf");
+            response.setHeader("Content-disposition", "inline");
+            response.setContentLength(bos.size());
+            response.setHeader("Cache-Control", "max-age=30");
+            bos.writeTo(out);
+            out.flush();
+            out.close();
+            ctx.responseComplete();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //
+    private PdfPTable transToPdfTable() throws IOException, DocumentException {
+        PdfPTable table = new PdfPTable(new float[]{800f});// 建立一个pdf表格
+        OperatorManager om = PlatformService.getOperatorManager();
+
+        table.setSpacingBefore(130f);// 设置表格上面空白宽度
+        table.setTotalWidth(535);// 设置表格的宽度
+        table.setLockedWidth(false);// 设置表格的宽度固定
+        table.setSpacingAfter(200f);
+        table.getDefaultCell().setBorder(0);//设置表格默认为无边框
+        BaseFont bfChinese = BaseFont.createFont("c:\\windows\\fonts\\simsun.ttc,1", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        Font headFont1 = new Font(bfChinese, 14, Font.BOLD);// 设置字体大小
+        Font headFont2 = new Font(bfChinese, 12, Font.NORMAL);// 设置字体大小
+        // 电汇凭证
+        if ("20".equals(rsPayout.getTransType())) {
+            PdfPCell cell = new PdfPCell(new Paragraph("汇划业务凭证", headFont1));
+            cell.setBorder(0);
+            cell.setFixedHeight(40);//单元格高度
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);// 设置内容水平居中显示
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+            int[] rowWidths = new int[]{30, 48, 30};
+            String[][] rows = new String[][]{
+                    new String[]{"机构代号：" + om.getOperator().getDeptid(),
+                            "记账时间：" + new SimpleDateFormat("yyyy/MM/dd hh:MM:ss").format(new Date()),
+                            "流水号：" + (StringUtils.isEmpty(rsPayout.getBankSerial()) ? " " : rsPayout.getBankSerial().substring(12))},
+                    new String[]{"录入员代号：" + rsPayout.getApplyUserId().substring(9),
+                            "复核员代码：" + rsPayout.getAuditUserId().substring(9),
+                            "主管代号：" + rsPayout.getApplyUserId().substring(9)},
+                    new String[]{" ", " ", " "},
+                    new String[]{"币别代码：人民币",
+                            "凭证号：" + rsPayout.getDocNo(),
+                            "汇划日期：" + rsPayout.getTradeDate()},
+                    new String[]{"支付渠道：大额支付",
+                            "支付交易序号：" + rsPayout.getWfInstanceId(),
+                            "业务种类：普通汇兑"},
+                    new String[]{"接收行行号：" + rsPayout.getRecBankCode(),
+                            "接收行名称：" + rsPayout.getRecBankName(),
+                            " "},
+            };
+            //内容
+            for (String[] row : rows) {
+                cell = new PdfPCell(new Paragraph(getStrLine(rowWidths, row), headFont2));
+                cell.setBorder(0);
+                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(cell);
+            }
+
+            cell = new PdfPCell(new Paragraph("付款人账号：" + rsPayout.getPayAccount() + "          付款人名称："
+                    + rsPayout.getPayCompanyName(), headFont2));
+            cell.setBorder(0);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("收款人账号：" + rsPayout.getRecAccount() + "           收款人名称："
+                    + rsPayout.getRecCompanyName(), headFont2));
+            cell.setBorder(0);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("汇出金额：" + String.format("%.2f", rsPayout.getApAmount()), headFont2));
+            cell.setBorder(0);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(cell);
+        } else {
+            PdfPCell cell = new PdfPCell(new Paragraph("单位活期取款凭证", headFont1));
+            cell.setBorder(0);
+            cell.setFixedHeight(40);//单元格高度
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);// 设置内容水平居中显示
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
+            int[] rowWidths = new int[]{30, 48, 30};
+            String[][] rows = new String[][]{
+                    new String[]{"机构代号：" + om.getOperator().getDeptid(),
+                            "记账时间：" + new SimpleDateFormat("yyyy/MM/dd hh:MM:ss").format(new Date()),
+                            "交易流水号：" + (StringUtils.isEmpty(rsPayout.getBankSerial()) ? " " : rsPayout.getBankSerial().substring(12))},
+                    new String[]{"柜员代号：" + rsPayout.getApplyUserId().substring(9),
+                            "主管代号：" + rsPayout.getAuditUserId().substring(9),
+                            "币别：人民币"},
+            };
+            //内容
+            for (String[] row : rows) {
+                cell = new PdfPCell(new Paragraph(getStrLine(rowWidths, row), headFont2));
+                cell.setBorder(0);
+                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(cell);
+            }
+
+            String[] singleRows = new String[]{"付款人账号：" + rsPayout.getPayAccount(), "付款人户名：" + rsPayout.getPayCompanyName(),
+                    "收款人账号：" + rsPayout.getRecAccount(), "收款人户名：" + rsPayout.getRecCompanyName(),
+                    "交易金额：" + StringUtils.rightPad(String.format("%.2f", rsPayout.getApAmount()), 40, " ") + "交易类别：转账",
+                    "存款种类：" + StringUtil.rightPad4ChineseToByteLength("建筑业企业活期存款", 40, " ") + "存单存折印刷号：",
+                    "凭证号码："
+            };
+            for (String snglRow : singleRows) {
+                cell = new PdfPCell(new Paragraph(snglRow, headFont2));
+                cell.setBorder(0);
+                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(cell);
+            }
+        }
+        return table;
+
+    }
+
+    private String getStrLine(int[] rowWidths, String[] strs) {
+        String str = "";
+        for (int i = 0; i < rowWidths.length; i++) {
+            if (" ".equals(strs[i])) {
+                str += " ";
+            } else if (strs[i].getBytes().length <= rowWidths[i]) {
+                str += StringUtil.rightPad4ChineseToByteLength(strs[i], rowWidths[i], " ");
+            } else {
+                str += strs[i];
+            }
+        }
+
+        return str;
+    }
+
 
     public String onAllExecute() {
         if (passPayoutList.isEmpty()) {
@@ -174,6 +349,14 @@ public class CbusPayoutExecAction {
     }
 
     //=========================================
+
+    public List<RsPayout> getPayFailList() {
+        return payFailList;
+    }
+
+    public void setPayFailList(List<RsPayout> payFailList) {
+        this.payFailList = payFailList;
+    }
 
     public ExpensesPlanService getExpensesPlanService() {
         return expensesPlanService;

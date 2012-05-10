@@ -151,8 +151,9 @@
                                          style="margin-left:235px;width:90px"
                                          update="input,pdt,msgs">
                         </p:commandButton>
-                        <p:commandButton ajax="true" id="clsBtn" value="关闭" onclick="window.close();"
-                                         style="width:90px;margin-left:15px" update="input,msgs"/>
+                        <p:commandButton id="directPrint" ajax="false" value="打印"
+                                         actionListener="#{cbusPayoutExecAction.onPrintVoucher}"
+                                         style="margin-left:10px;"/>
                     </h:panelGrid>
                 </h:panelGrid>
             </p:panel>
@@ -164,51 +165,6 @@
                     <h:outputText value=""/>
                 </f:facet>
             </p:ajaxStatus>
-
-            <p:dataTable id="pdt" style="width:100%;"
-                         dynamic="true" selectionMode="single"
-                         value="#{cbusPayoutExecAction.rsPayoutList}" var="record"
-                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         paginator="true" rows="15" paginatorPosition="bottom"
-                         rowsPerPageTemplate="100,50,30,15,5"
-                         emptyMessage="数据记录为空...">
-
-                <p:column headerText="凭证号" style="text-align:center">
-                    <h:outputText value="#{record.docNo}"/>
-                </p:column>
-
-                <p:column headerText="付款开发商" style="text-align:center">
-                    <h:outputText value="#{record.payCompanyName}"/>
-                </p:column>
-
-                <p:column headerText="付款账号" style="text-align:center">
-                    <h:outputText value="#{record.payAccount}"/>
-                </p:column>
-
-                <p:column headerText="收款户名" style="text-align:left">
-                    <h:outputText value="#{record.recCompanyName}"/>
-                </p:column>
-
-                <p:column headerText="收款账号" style="text-align:center">
-                    <h:outputText value="#{record.recAccount}"/>
-                </p:column>
-
-                <p:column headerText="申请金额" style="text-align:center">
-                    <h:outputText value="#{record.plAmount}" style="float:right">
-                        <f:convertNumber pattern="#,###,###,###,##0.00"/>
-                    </h:outputText>
-                </p:column>
-
-                <p:column headerText="申请人" style="text-align:center">
-                    <h:outputText value="#{record.applyUserId}"/>
-                </p:column>
-
-                <p:column headerText="申请日期" style="text-align:center">
-                    <h:outputText value="#{record.applyDate}">
-                    </h:outputText>
-                </p:column>
-
-            </p:dataTable>
         </h:form>
     </div>
 </ui:define>

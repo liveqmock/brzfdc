@@ -14,6 +14,9 @@ public class QDJG04Req extends AbstractReqMsg {
     收款人帐号	PAYEE-FL-ACCT-NO	C(32)
     汇款金额	RMT-AMT	N(13，2)
     汇款用途	RMT-PURP	C(64)
+    凭证种类  4
+    凭证号码  16
+    备注   40
      */
 
     public String sndToBkNo;         //  收报行  12
@@ -21,12 +24,12 @@ public class QDJG04Req extends AbstractReqMsg {
     public String rmtrAcctNo;        //  汇款人帐号 32
     public String payeeNameFl;       //  收款人名称  64
     public String payeeFlAcctNo;     //  收款人帐号  32
-    public String rmtAmt;            //  汇款金额  16
+    public String rmtAmt;            //  汇款金额  15
     public String rmtPurp;           //  汇款用途  64
 
-    /*public String voucherType;      // 凭证种类  4
+    public String voucherType;      // 凭证种类  4
     public String voucherNo;        // 凭证号码  16
-    public String remark;           // 备注     40*/
+    public String remark;           // 备注   40
 
     public String bodyToString() {
 
@@ -36,11 +39,11 @@ public class QDJG04Req extends AbstractReqMsg {
         strBuilder.append(StringUtils.rightPad(rmtrAcctNo, 32, ' '));
         strBuilder.append(StringUtil.rightPad4ChineseToByteLength(payeeNameFl, 64, " "));
         strBuilder.append(StringUtils.rightPad(payeeFlAcctNo, 32, ' '));
-        strBuilder.append(StringUtils.rightPad(rmtAmt, 16, ' '));
+        strBuilder.append(StringUtils.rightPad(rmtAmt, 15, ' '));
         strBuilder.append(StringUtil.rightPad4ChineseToByteLength(rmtPurp, 64, " "));
-        /*strBuilder.append(StringUtils.rightPad(voucherType, 4, ' '));
-        strBuilder.append(StringUtils.rightPad(voucherNo, 16, ' '));
-        strBuilder.append(StringUtil.rightPad4ChineseToByteLength(remark, 40, " "));*/
+        strBuilder.append(StringUtils.rightPad(voucherType, 4, ' '));
+        strBuilder.append(StringUtils.leftPad(voucherNo, 16, "0"));
+        strBuilder.append(StringUtil.rightPad4ChineseToByteLength(remark, 40, " "));
 
         return strBuilder.toString();
     }

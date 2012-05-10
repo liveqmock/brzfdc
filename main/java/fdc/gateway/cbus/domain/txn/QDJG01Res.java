@@ -13,6 +13,9 @@ public class QDJG01Res extends AbstractResMsg {
 
     @Override
     public void assembleBodyFields(byte[] buffer) {
+        if("99".equals(header.getRtnCode())) {
+            rtnMsg = new String(buffer);
+        }
         byte[] actbalBytes = new byte[15];
         System.arraycopy(buffer, 0, actbalBytes, 0, 15);
         String actbalStr = new String(actbalBytes);

@@ -182,8 +182,9 @@
                                              style="margin-left:235px;width:90px"
                                              update="input,pdt,msgs">
                             </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="关闭" onclick="window.close();"
-                                             style="width:90px;margin-left:10px" update="input,msgs"/>
+                            <p:commandButton id="directPrint" ajax="false" value="打印凭证"
+                                             actionListener="#{cbusPayoutExecAction.onPrintVoucher}"
+                                             style="margin-left:10px;width:90px;"/>
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:panel>

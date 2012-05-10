@@ -1,6 +1,7 @@
 package fdc.gateway.cbus;
 
 import fdc.gateway.cbus.domain.txn.QDJG02Res;
+import fdc.gateway.cbus.domain.txn.QDJG03Res;
 import fdc.gateway.service.CbusTxnService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -18,11 +19,11 @@ public class CbusTest {
 
     public static void main(String[] args) {
         try {
-//              test04();
+//            test04();
             // 374100201020000640  4-27
-            test02();
+//            test02();
 //            test03();
-//            test01("810200101421001610");
+            test01("810200101421001610");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -34,8 +35,8 @@ public class CbusTest {
         CbusTxnService cbusTxnService = (CbusTxnService) context.getBean("cbusTxnService");
         // 查询交易明细
 //        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("374100201020000640", "20120427", "20120427");
-//        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("810200101421001610", "20120501", "20120507");
-        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("374100201020000640", "20111001", "20120507");
+        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("810200101421001610", "20120508", "20120509");
+//        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("374100201020000640", "20111001", "20120507");
         System.out.println("[报文包数]: " + res02List.size());
         int i = 1;
         for (QDJG02Res res : res02List) {
@@ -52,8 +53,8 @@ public class CbusTest {
     public static void test03() throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml"});
         CbusTxnService cbusTxnService = (CbusTxnService) context.getBean("cbusTxnService");
-        cbusTxnService.qdjg03payAmtInBank("810200101421001610", "810200101421001548", "10.0");
-
+        QDJG03Res res = cbusTxnService.qdjg03payAmtInBank("810200101421001610", "810200101421001548", "1.0", "行内转账2");
+        System.out.println(res.getHeader().getRtnCode() + res.rtnMsg);
     }
 
     public static void test04() throws Exception {
@@ -68,7 +69,10 @@ public class CbusTest {
         String amt = "1.0";
         String purpose = "电汇";
 
-        cbusTxnService.qdjg04payAmtBtwnBank(bankNo, payOutAcctName, payOutAcctNo, payInAcctName, payInAcctNo, amt, purpose);
+
+
+        cbusTxnService.qdjg04payAmtBtwnBank(bankNo, payOutAcctName, payOutAcctNo, payInAcctName, payInAcctNo, amt, purpose,
+                "0703", "11", "测试电汇");
 
     }
 }

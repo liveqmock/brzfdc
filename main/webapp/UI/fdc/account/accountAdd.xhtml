@@ -37,14 +37,14 @@
                 }
             }
             function openCom() {
-                var sfeature = "dialogwidth:300px; dialogheight:420px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
-                var arg = new Object();
-                var rtn = dialog("../common/companyList.xhtml", arg, sfeature);
-                if (rtn != null) {
-                    document.getElementById("form:companyId").value = rtn.companyid;
-                    document.getElementById("form:companyName").value = rtn.companyname;
-                }
-            }
+             var sfeature = "dialogwidth:300px; dialogheight:420px;center:yes;help:yes;resizable:yes;scroll:yes;status:yes";
+             var arg = new Object();
+             var rtn = dialog("../common/companyList.xhtml", arg, sfeature);
+             if (rtn != null) {
+             document.getElementById("form:companyId").value = rtn.companyid;
+             document.getElementById("form:companyName").value = rtn.companyname;
+             }
+             }
         </script>
     </ui:define>
     <ui:define name="content">
@@ -53,22 +53,19 @@
             <h:form id="form">
                 <p:panel id="input" header="【监管账户信息】新增录入">
                     <h:panelGrid columns="2" cellspacing="3" style="width:100%">
-                        <h:panelGrid columns="4" cellspacing="3" style="width:90%" columnClasses="col-95,col-5,col-95,col-5">
+                        <h:panelGrid columns="4" cellspacing="3" style="width:90%"
+                                     columnClasses="col-95,col-5,col-95,col-5">
 
                             <h:outputLabel value="*【账户名称】:" for="accountName"/>
                             <h:inputText id="accountName" value="#{accountAction.account.accountName}"
-                                        required="true" requiredMessage="必须输入账户名称！" style="width:192px;"/>
+                                         required="true" requiredMessage="必须输入账户名称！" style="width:192px;"/>
 
                             <h:outputLabel value="*【房产商】:" for="companyId"/>
-
                             <h:panelGroup>
-                                <p:inputText readonly="true" autocomplete="off" id="companyName" style="width:192px;"
-                                             required="true"
-                                             requiredMessage="必须选择房产商！" value="">
-                                </p:inputText>
-                                <h:inputHidden id="companyId" value="#{accountAction.account.companyId}"/>
-                                <h:commandButton type="button" id="btnComSel" onclick="openCom()" value="选择">
-                                </h:commandButton>
+                                <h:selectOneMenu id="companyId" style="width:190px;"
+                                                 value="#{accountAction.account.companyId}">
+                                    <f:selectItems value="#{accountAction.companyList}"/>
+                                </h:selectOneMenu>
                             </h:panelGroup>
 
                             <h:outputLabel value="*【监管账号】:" for="accountCode"/>

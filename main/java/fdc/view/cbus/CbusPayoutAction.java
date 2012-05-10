@@ -12,7 +12,6 @@ import fdc.service.account.AccountService;
 import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.commandbutton.CommandButton;
-import org.primefaces.component.inputtext.InputText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -26,9 +25,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,7 +58,8 @@ public class CbusPayoutAction {
     private List<RsPayout> refusePayoutList;
     private List<RsPlanCtrl> rsPlanCtrlList;
     private List<SelectItem> bankList;
-    private Map<String, String> payTypes;
+    private List<SelectItem> payTypes;
+    private List<SelectItem> voucherTypes;
 
     private String payType;
 
@@ -79,9 +77,10 @@ public class CbusPayoutAction {
         if (!initPayout()) {
             initTabList();
         }
-        payTypes = new HashMap<String, String>();
-        payTypes.put("10", "行内转账");
-        payTypes.put("20", "他行电汇");
+        payTypes = new ArrayList<SelectItem>();
+        payTypes.add(new SelectItem("10", "行内转账"));
+        payTypes.add(new SelectItem("20", "他行电汇"));
+        voucherTypes = toolsService.getEnuSelectItemList("VOUCHER_TYPE", false, false);
     }
 
     private boolean initPayout() {
@@ -122,7 +121,7 @@ public class CbusPayoutAction {
 
     public String onSave() {
         try {
-            if ("20".equals(payType)) {
+            if ("20".equals(rsPayout.getTransType())) {
                 if (StringUtils.isEmpty(rsPayout.getRecBankCode())) {
                     MessageUtil.addError("收款行不能为空！");
                     return null;
@@ -131,6 +130,12 @@ public class CbusPayoutAction {
                     MessageUtil.addError("收款行名不能为空！");
                     return null;
                 }
+                if (StringUtils.isEmpty(rsPayout.getDocNo())) {
+                    MessageUtil.addError("电汇凭证号不能为空！");
+                    return null;
+                }
+            } else { // 行内转账
+                rsPayout.setVoucherType("0");
             }
             RsAccount account = accountService.selectCanPayAccountByNo(rsPayout.getPayAccount());
             if (account.getLimitFlag().equalsIgnoreCase(LimitStatus.LIMITED.getCode())) {
@@ -215,14 +220,6 @@ public class CbusPayoutAction {
         return null;
     }
 
-    public Map<String, String> getPayTypes() {
-        return payTypes;
-    }
-
-    public void setPayTypes(Map<String, String> payTypes) {
-        this.payTypes = payTypes;
-    }
-
     public String onRefuse() {
         if (selectedRecords == null || selectedRecords.length == 0) {
             MessageUtil.addWarn("请至少选择一笔记录！");
@@ -240,18 +237,7 @@ public class CbusPayoutAction {
         return null;
     }
 
-    public void handleChange() {
-        if ("10".equalsIgnoreCase(payType)) {
-            UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
-            InputText toBankCode = (InputText) viewRoot.findComponent("form:toBankCode");
-            toBankCode.setDisabled(true);
-            InputText toBankName = (InputText) viewRoot.findComponent("form:toBankName");
-            toBankName.setDisabled(true);
-        }
-    }
-
     //===================================================================
-
 
     public String getPayType() {
         return payType;
@@ -259,6 +245,22 @@ public class CbusPayoutAction {
 
     public void setPayType(String payType) {
         this.payType = payType;
+    }
+
+    public List<SelectItem> getVoucherTypes() {
+        return voucherTypes;
+    }
+
+    public void setVoucherTypes(List<SelectItem> voucherTypes) {
+        this.voucherTypes = voucherTypes;
+    }
+
+    public List<SelectItem> getPayTypes() {
+        return payTypes;
+    }
+
+    public void setPayTypes(List<SelectItem> payTypes) {
+        this.payTypes = payTypes;
     }
 
     public BankInfoService getBankInfoService() {

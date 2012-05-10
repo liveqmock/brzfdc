@@ -9,6 +9,7 @@ package fdc.gateway.cbus.domain.base;
  */
 public abstract class AbstractResMsg {
     protected MsgHeader header = new MsgHeader();
+    public String rtnMsg = "";
 
     public void assembleFields(byte[] buffer) throws IllegalAccessException {
         byte[] headBytes = new byte[59];
@@ -19,13 +20,14 @@ public abstract class AbstractResMsg {
         if ("99".equals(header.getRtnCode())) {
             bodyBytes = new byte[100];
             System.arraycopy(buffer, 59, bodyBytes, 0, bodyBytes.length);
-            throw new RuntimeException("与核心交易失败。" + new String(bodyBytes));
+//           throw new RuntimeException("与核心交易失败。" + new String(bodyBytes));
+            rtnMsg = new String(bodyBytes);
         } else {
             bodyBytes = new byte[bodyLength];
             System.arraycopy(buffer, 59, bodyBytes, 0, bodyBytes.length);
+            assembleBodyFields(bodyBytes);
         }
 
-        assembleBodyFields(bodyBytes);
     }
 
     public abstract void assembleBodyFields(byte[] bodyBuffer) throws IllegalAccessException;

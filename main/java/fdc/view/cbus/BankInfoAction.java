@@ -1,6 +1,7 @@
 package fdc.view.cbus;
 
 import fdc.service.BankInfoService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
@@ -43,10 +44,19 @@ public class BankInfoAction {
 
     public String onQuery() {
         try {
-            UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
-            HtmlSelectOneListbox selListBox = (HtmlSelectOneListbox) viewRoot.findComponent("selFrom:selListBox");
-            selListBox.setRendered(true);
+
+            if(StringUtils.isEmpty(code) && StringUtils.isEmpty(name)) {
+                MessageUtil.addWarn("请输入至少一项查询条件！");
+                return null;
+            }
             bankList = bankInfoService.qryBankInfoListByNoAndName(code, name);
+            if (!bankList.isEmpty()) {
+                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+                HtmlSelectOneListbox selListBox = (HtmlSelectOneListbox) viewRoot.findComponent("selFrom:selListBox");
+                selListBox.setRendered(true);
+            } else {
+                MessageUtil.addWarn("没有查询到开户行信息！");
+            }
         } catch (Exception e) {
             logger.error("查询银行代号系统无响应！", e.getMessage());
             MessageUtil.addWarn("查询银行代号系统无响应！" + e.getMessage());

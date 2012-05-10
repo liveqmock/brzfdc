@@ -11,6 +11,7 @@ import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPayoutExample;
 import fdc.repository.model.RsPlanCtrl;
 import fdc.service.expensesplan.ExpensesPlanService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,33 +100,85 @@ public class CbusPayoutService {
         accDetail.setStatusFlag(TradeStatus.SUCCESS.getCode());
         //-----------------------------------------------------
         // 设置账户余额 和可用余额
-        int rtnCnt = expensesPlanService.updatePlanCtrl(planCtrl)
-                + rsAccDetailService.insertAccDetail(accDetail)
-                + updateRsPayout(rsPayout);
-        // TODO 核心记账
-        // TODO 行内转账
+
         // 是否核心记账
         if ("cbus".equals(PropertyManager.getProperty("bank.act.flag"))) {
-            QDJG03Res res03 = cbusTxnService.qdjg03payAmtInBank(rsPayout.getRecAccount(), rsPayout.getPayAccount(),
-                    String.format("%.2f", rsPayout.getPlAmount()));
+            //  行内转账
+            if ("10".equals(rsPayout.getTransType())) {
+                try {
+                    QDJG03Res res03 = cbusTxnService.qdjg03payAmtInBank(rsPayout.getRecAccount(), rsPayout.getPayAccount(),
+                            String.format("%.2f", rsPayout.getPlAmount()), rsPayout.getPurpose());
 
-            if ("00".equals(res03.getHeader().getRtnCode())) {
-                return 1;
+                    if ("00".equals(res03.getHeader().getRtnCode())) {
+                        expensesPlanService.updatePlanCtrl(planCtrl);
+                        rsAccDetailService.insertAccDetail(accDetail);
+                        rsPayout.setBankSerial(res03.serialNo);
+                        updateRsPayout(rsPayout);
+                        return 1;
+                    } else if ("99".equals(res03.getHeader().getRtnCode())) {
+                        rsPayout.setStatusFlag(RefundStatus.ACCOUNT_FAILURE.getCode());
+                        rsPayout.setWorkResult(WorkResult.PASS.getCode());
+                        updateRsPayout(rsPayout);
+                        throw new RuntimeException("交易失败！" + res03.rtnMsg);
+                    } else {
+                        rsPayout.setStatusFlag(RefundStatus.ACCOUNT_FAILURE.getCode());
+                        rsPayout.setWorkResult(WorkResult.NOT_KNOWN.getCode());
+                        updateRsPayout(rsPayout);
+                        throw new RuntimeException("交易结果不明！" + res03.rtnMsg);
+                    }
+                } catch (Exception e) {
+                    rsPayout.setStatusFlag(RefundStatus.ACCOUNT_FAILURE.getCode());
+                    rsPayout.setWorkResult(WorkResult.NOT_KNOWN.getCode());
+                    updateRsPayout(rsPayout);
+                    throw new RuntimeException("交易结果不明！" + e.getMessage() == null ? "" : e.getMessage());
+                }
             }
-            // TODO 跨行转账
+            //  跨行转账
             /*
            String sndToBkNo, String rmtrNameFl, String rmtrAcctNo,
            String payeeNameFl, String payeeFlAcctNo, String rmtAmt, String rmtPurp
             */
-            QDJG04Res res04 = cbusTxnService.qdjg04payAmtBtwnBank(rsPayout.getRecBankCode(),
-                    rsPayout.getPayCompanyName(), rsPayout.getPayAccount(),
-                    rsPayout.getRecCompanyName(), rsPayout.getRecAccount(),
-                    String.format("%.2f", rsPayout.getPlAmount()), rsPayout.getPurpose());
-            if ("00".equals(res04.getHeader().getRtnCode())) {
-                return 1;
+            if ("20".equals(rsPayout.getTransType())) {
+                try {
+                    QDJG04Res res04 = cbusTxnService.qdjg04payAmtBtwnBank(rsPayout.getRecBankCode(),
+                            rsPayout.getPayCompanyName(), rsPayout.getPayAccount(),
+                            rsPayout.getRecCompanyName(), rsPayout.getRecAccount(),
+                            String.format("%.2f", rsPayout.getPlAmount()), rsPayout.getPurpose(),
+                            rsPayout.getVoucherType(), rsPayout.getDocNo(),
+                            StringUtils.isEmpty(rsPayout.getRemark()) ? rsPayout.getPurpose() : rsPayout.getRemark());
+                    if ("00".equals(res04.getHeader().getRtnCode())) {
+                        expensesPlanService.updatePlanCtrl(planCtrl);
+                        rsAccDetailService.insertAccDetail(accDetail);
+                        rsPayout.setBankSerial(res04.txnSerailNo);
+                        rsPayout.setWfInstanceId(res04.fmTrntAmtSqNo);
+                        updateRsPayout(rsPayout);
+                        return 1;
+                    } else if ("99".equals(res04.getHeader().getRtnCode())) {
+                        rsPayout.setStatusFlag(RefundStatus.ACCOUNT_FAILURE.getCode());
+                        rsPayout.setWorkResult(WorkResult.PASS.getCode());
+                        updateRsPayout(rsPayout);
+                        throw new RuntimeException("交易失败！" + res04.rtnMsg);
+                    } else {
+                        rsPayout.setStatusFlag(RefundStatus.ACCOUNT_FAILURE.getCode());
+                        rsPayout.setWorkResult(WorkResult.NOT_KNOWN.getCode());
+                        updateRsPayout(rsPayout);
+                        throw new RuntimeException("交易结果不明！" + res04.rtnMsg);
+                    }
+                } catch (Exception e) {
+                    rsPayout.setStatusFlag(RefundStatus.ACCOUNT_FAILURE.getCode());
+                    rsPayout.setWorkResult(WorkResult.NOT_KNOWN.getCode());
+                    updateRsPayout(rsPayout);
+                    throw new RuntimeException("交易结果不明！" + e.getMessage() == null ? "" : e.getMessage());
+                }
             }
+        } else {
+            expensesPlanService.updatePlanCtrl(planCtrl);
+            rsAccDetailService.insertAccDetail(accDetail);
+            updateRsPayout(rsPayout);
+            return 1;
         }
-        return rtnCnt;
+
+        return -1;
     }
 
     public List<RsPayout> selectRecordsByWorkResult(String workResultCode) {

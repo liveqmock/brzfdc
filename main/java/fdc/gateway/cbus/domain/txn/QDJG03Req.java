@@ -1,6 +1,7 @@
 package fdc.gateway.cbus.domain.txn;
 
 import fdc.gateway.cbus.domain.base.AbstractReqMsg;
+import fdc.gateway.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 
 public class QDJG03Req extends AbstractReqMsg {
@@ -10,18 +11,18 @@ public class QDJG03Req extends AbstractReqMsg {
     委托单位帐号	28	转入账号？
     金额	15
     备注 40
-     */
+    */
 
     public String payOutAccount;
     public String payInAccount;
     public String payAmt;
 
-//    public String remark;
+    public String remark;
 
     public String bodyToString() {
 
         return StringUtils.rightPad(payOutAccount, 28, ' ') + StringUtils.rightPad(payInAccount, 28, ' ')
-                + StringUtils.leftPad(payAmt, 15, ' ');
-//                + StringUtil.rightPad4ChineseToByteLength(remark, 40, " ");
+                + StringUtils.leftPad(payAmt, 15, ' ')
+                + StringUtil.rightPad4ChineseToByteLength(remark, 40, " ");
     }
 }

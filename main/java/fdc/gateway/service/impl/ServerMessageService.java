@@ -195,7 +195,7 @@ public class ServerMessageService implements IMessageService {
                     account.setAgrnum(t2001Req.param.AgrNum);
                     if (biDbService.updateAccount(account) != 1) {
                         t2001Res.head.RetCode = BiRtnCode.BI_RTN_CODE_FAILED.getCode();
-                        t2001Res.head.RetMsg = "≥∑œ˙ ß∞‹£¨«Î÷ÿ ‘°£";
+                        t2001Res.head.RetMsg = "≤Ÿ◊˜  ß∞‹£¨«Î÷ÿ ‘°£";
                     }
                 } else {
                     t2001Res.head.RetCode = BiRtnCode.BI_RTN_CODE_NO_ACCOUNT.getCode();

@@ -4,6 +4,7 @@ import fdc.common.constant.AccountStatus;
 import fdc.common.constant.LimitStatus;
 import fdc.repository.model.RsAccount;
 import fdc.service.account.AccountService;
+import fdc.service.company.CompanyService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
-import java.util.ArrayList;
+import javax.faces.model.SelectItem;
 import java.util.List;
 
 /**
@@ -30,16 +30,20 @@ public class AccountAction {
     private static final Logger logger = LoggerFactory.getLogger(AccountAction.class);
     @ManagedProperty(value = "#{accountService}")
     private AccountService accountService;
+    @ManagedProperty(value = "#{companyService}")
+    private CompanyService companyService;
     private RsAccount account;
     private List<RsAccount> accountList;
     private String confirmAccountNo;
     private AccountStatus accountStatus = AccountStatus.INIT;
     private LimitStatus limitStatus = LimitStatus.NOT_LIMIT;
+    private List<SelectItem> companyList;
 
     @PostConstruct
     public void init() {
         this.account = new RsAccount();
         querySelectedRecords();
+        companyList = companyService.selectItemsCompany(null);
     }
 
     private void querySelectedRecords() {
@@ -47,7 +51,7 @@ public class AccountAction {
     }
 
     private void querySelectedRecords(RsAccount act) {
-        accountList = accountService.selectedRecordsByCondition(act.getPresellNo(),act.getCompanyId(),act.getAccountCode(),
+        accountList = accountService.selectedRecordsByCondition(act.getPresellNo(), act.getCompanyId(), act.getAccountCode(),
                 act.getAccountName());
     }
 
@@ -59,14 +63,14 @@ public class AccountAction {
     // 增
     public String insertRecord() {
         try {
-            if(StringUtils.isEmpty(account.getCompanyId())) {
-              MessageUtil.addError("请选择房地产商！");
-              return null;
+            if (StringUtils.isEmpty(account.getCompanyId())) {
+                MessageUtil.addError("请选择房地产商！");
+                return null;
             }
 
-            if(!confirmAccountNo.equalsIgnoreCase(account.getAccountCode())) {
-              MessageUtil.addError("两次输入的监管账户号不一致！");
-              return null;
+            if (!confirmAccountNo.equalsIgnoreCase(account.getAccountCode())) {
+                MessageUtil.addError("两次输入的监管账户号不一致！");
+                return null;
             }
             // 初始帐户余额均为可用
             account.setBalanceUsable(account.getBalance());
@@ -79,6 +83,7 @@ public class AccountAction {
         MessageUtil.addInfo("新增数据完成。");
         querySelectedRecords();
         this.account = new RsAccount();
+        confirmAccountNo = "";
         return null;
     }
 
@@ -92,6 +97,22 @@ public class AccountAction {
 
     public AccountService getAccountService() {
         return accountService;
+    }
+
+    public List<SelectItem> getCompanyList() {
+        return companyList;
+    }
+
+    public void setCompanyList(List<SelectItem> companyList) {
+        this.companyList = companyList;
+    }
+
+    public CompanyService getCompanyService() {
+        return companyService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
     }
 
     public void setAccountService(AccountService accountService) {

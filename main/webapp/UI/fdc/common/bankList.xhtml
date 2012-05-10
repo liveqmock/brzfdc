@@ -28,6 +28,7 @@
     </ui:define>
     <ui:define name="content">
         <div class="entry" id="top">
+            <p:growl id="msgs" showDetail="false" life="2000"/>
             <h:form id="selFrom">
                 <p:fieldset legend="银行信息查询列表(双击选择)">
                     <h:panelGrid columns="5" cellpadding="2" style="width: 95%">
@@ -36,8 +37,16 @@
                         <h:outputLabel value="银行名称:" for="bankName" style="width: 40px;text-align: right;"/>
                         <p:inputText id="bankName" value="#{bankInfoAction.name}" size="40"/>
                         <p:commandButton action="#{bankInfoAction.onQuery}" value="查询"
-                                         ajax="true" style="margin-left:20px;" update="selListBox,selFrom"/>
+                                         ajax="true" style="margin-left:20px;" update="selListBox,selFrom,msgs"/>
                     </h:panelGrid>
+                    <p:ajaxStatus style="width:16px;height:16px;">
+                        <f:facet name="start">
+                            <h:graphicImage value="/images/ajaxloading.gif"/>
+                        </f:facet>
+                        <f:facet name="complete">
+                            <h:outputText value=""/>
+                        </f:facet>
+                    </p:ajaxStatus>
                     <h:selectOneListbox ondblclick="selectBank(this)" id="selListBox" style="width: 95%;">
                         <f:selectItem itemLabel="" itemValue=""/>
                         <f:selectItems value="#{bankInfoAction.bankList}"/>

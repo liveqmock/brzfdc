@@ -28,7 +28,7 @@ public class QDJG02Res extends AbstractResMsg {
 
     public String thisFirstKey;       //   本页第一笔资料的KEY 值	64	将该值送入下一笔请求的翻页控制信息，不足64 位右补空格，。
     public String thisLastKey;        //   本页最后一笔资料的KEY 值	64	 将该值送入下一笔请求的翻页控制信息，不足64 位右补空格
-    public String isLast;             //   1 表示没有下一页 0 或者null 表示有下一页
+    public String isLast = "1";             //   1 表示没有下一页 0 或者null 表示有下一页
 //    public String detailCnt;          //   明细笔数   7
     // 以下循环
 

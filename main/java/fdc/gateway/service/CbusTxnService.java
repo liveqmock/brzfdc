@@ -95,7 +95,7 @@ public class CbusTxnService {
     }
 
     // 行内转账
-    public QDJG03Res qdjg03payAmtInBank(String payOutAct, String payInAct, String payAmt) throws Exception {
+    public QDJG03Res qdjg03payAmtInBank(String payOutAct, String payInAct, String payAmt, String remark) throws Exception {
         QDJG03Req qdjg03Req = new QDJG03Req();
         MsgHeader header = qdjg03Req.getHeader();
         try {
@@ -108,6 +108,7 @@ public class CbusTxnService {
         qdjg03Req.payOutAccount = payOutAct;
         qdjg03Req.payInAccount = payInAct;
         qdjg03Req.payAmt = payAmt;
+        qdjg03Req.remark = remark;
 
         String reqStr = qdjg03Req.toString();
         byte[] rtnBytes = sendUntilRcv(reqStr);
@@ -118,16 +119,13 @@ public class CbusTxnService {
 
     // 电汇
     /*
-                收报行	SND-TO-BK-NO	C(12)
-                汇款人名称	RMTR-NAME-FL	C(64)
-                汇款人帐号	RMTR-ACCT-NO	C(32)
-                收款人名称	PAYEE-NAME-FL	C(64)
-                收款人帐号	PAYEE-FL-ACCT-NO	C(32)
-                汇款金额	RMT-AMT	N(13，2)
-                汇款用途	RMT-PURP	C(64)
+    凭证种类  4
+        凭证号码  16
+        备注   40
      */
     public QDJG04Res qdjg04payAmtBtwnBank(String sndToBkNo, String rmtrNameFl, String rmtrAcctNo,
-                                          String payeeNameFl, String payeeFlAcctNo, String rmtAmt, String rmtPurp)
+                                          String payeeNameFl, String payeeFlAcctNo, String rmtAmt,
+                                          String rmtPurp, String voucherType, String voucherNo, String remark)
             throws Exception {
         QDJG04Req qdjg04Req = new QDJG04Req();
         qdjg04Req.sndToBkNo = sndToBkNo;
@@ -137,6 +135,9 @@ public class CbusTxnService {
         qdjg04Req.payeeFlAcctNo = payeeFlAcctNo;
         qdjg04Req.rmtAmt = rmtAmt;
         qdjg04Req.rmtPurp = rmtPurp;
+        qdjg04Req.voucherType = voucherType;
+        qdjg04Req.voucherNo = voucherNo;
+        qdjg04Req.remark = remark;
 
         return qdjg04payAmtBtwnBankByReq(qdjg04Req);
     }
@@ -162,6 +163,7 @@ public class CbusTxnService {
 
     private byte[] sendUntilRcv(String strData) throws Exception {
         logger.info("【本地客户端】【请求核心】" + strData);
+        logger.info("【本地客户端】【请求核心报文长度】" + strData.getBytes().length);
         CbusSocketClient socketBlockClient = new CbusSocketClient(CBUS_SERVER_IP, CBUS_SERVER_PORT, CBUS_SERVER_TIMEOUT);
         byte[] rtnBytes = socketBlockClient.sendDataUntilRcv(strData.getBytes());
         logger.info("【本地客户端】【核心响应】" + new String(rtnBytes));
