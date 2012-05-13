@@ -2,6 +2,7 @@ package pub.platform.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import platform.auth.MD5Helper;
 import pub.platform.advance.utils.PropertyManager;
 import pub.platform.db.ConnectionManager;
 import pub.platform.db.DatabaseConnection;
@@ -144,8 +145,10 @@ public class OperatorManager implements Serializable {
 		ConnectionManager cm = ConnectionManager.getInstance();
 		DatabaseConnection dc = cm.get();
 		try {
-			String loginWhere = "where operid='" + operid
-					+ "' and operpasswd ='" + password + "'and operenabled='1'";
+/*			String loginWhere = "where operid='" + operid
+					+ "' and operpasswd ='" + password + "'and operenabled='1'";*/
+            String loginWhere = "where operid='" + operid
+                    + "' and operpasswd ='" + MD5Helper.getMD5String(password) + "'and operenabled='1'";
             this.operatorid = operid;
             operator = new PtOperBean();
             operator = (PtOperBean) operator.findFirstByWhere(loginWhere);
