@@ -47,6 +47,23 @@
                 document.getElementById("form:toBankName").value = rtn.bankName;
             }
         }
+
+        function selectTransType() {
+            var transType = document.getElementById("form:transType").value;
+            if (transType === '10') {
+                document.getElementById("form:toBankCode").disabled = true;
+                document.getElementById("form:toBankName").disabled = true;
+                document.getElementById("form:docNo").disabled = true;
+                document.getElementById("form:voucherType").disabled = true;
+            }
+            if (transType === '20') {
+                document.getElementById("form:toBankCode").disabled = false;
+                document.getElementById("form:toBankName").disabled = false;
+                document.getElementById("form:docNo").disabled = false;
+                document.getElementById("form:voucherType").disabled = false;
+            }
+
+        }
     </script>
 
 </ui:define>
@@ -101,7 +118,7 @@
                                                  style="width:260px;"/>
 
                                     <h:outputLabel value="转账方式:" for="transType"/>
-                                    <h:selectOneMenu id="transType" style="width:166px;"
+                                    <h:selectOneMenu id="transType" style="width:166px;" onchange="selectTransType()"
                                                      value="#{cbusPayoutAction.rsPayout.transType}">
                                         <f:selectItems value="#{cbusPayoutAction.payTypes}"/>
                                     </h:selectOneMenu>
@@ -171,11 +188,6 @@
                                     <p:inputText autocomplete="off" id="applyReason" style="width:540px;"
                                                  value="#{cbusPayoutAction.rsPayout.purpose}" required="true"
                                                  requiredMessage="必须输入付款用途！">
-                                    </p:inputText>
-                                    <h:outputLabel value="备注:" for="remark"
-                                                   style="margin-left: 37px;text-align: right;" size="30"/>
-                                    <p:inputText autocomplete="off" id="remark" style="width:540px;"
-                                                 value="#{cbusPayoutAction.rsPayout.remark}">
                                     </p:inputText>
                                 </h:panelGrid>
                             </h:panelGrid>

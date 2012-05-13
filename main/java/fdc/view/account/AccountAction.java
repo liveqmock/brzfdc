@@ -2,6 +2,8 @@ package fdc.view.account;
 
 import fdc.common.constant.AccountStatus;
 import fdc.common.constant.LimitStatus;
+import fdc.gateway.cbus.domain.txn.QDJG01Res;
+import fdc.gateway.service.CbusTxnService;
 import fdc.repository.model.RsAccount;
 import fdc.service.account.AccountService;
 import fdc.service.company.CompanyService;
@@ -15,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.model.SelectItem;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -32,6 +35,8 @@ public class AccountAction {
     private AccountService accountService;
     @ManagedProperty(value = "#{companyService}")
     private CompanyService companyService;
+    @ManagedProperty(value = "#{cbusTxnService}")
+    private CbusTxnService cbusTxnService;
     private RsAccount account;
     private List<RsAccount> accountList;
     private String confirmAccountNo;
@@ -44,6 +49,24 @@ public class AccountAction {
         this.account = new RsAccount();
         querySelectedRecords();
         companyList = companyService.selectItemsCompany(null);
+    }
+
+    public String qrybal() {
+        try {
+            QDJG01Res res = cbusTxnService.qdjg01QryActbal(account.getAccountCode());
+            if ("99".equals(res.getHeader().getRtnCode())) {
+                MessageUtil.addError("≤È—Ø”‡∂Ó ß∞‹." + res.rtnMsg);
+                return null;
+            } else {
+                account.setBalance(new BigDecimal(res.actbal));
+                account.setBalanceUsable(new BigDecimal(res.avabal));
+            }
+
+        } catch (Exception e) {
+            logger.error("≤È—Ø”‡∂Ó ß∞‹.", e);
+            MessageUtil.addError("≤È—Ø ß∞‹°£" + e.getMessage());
+        }
+        return null;
     }
 
     private void querySelectedRecords() {
@@ -93,6 +116,14 @@ public class AccountAction {
             accountList.clear();
         }
         return null;
+    }
+
+    public CbusTxnService getCbusTxnService() {
+        return cbusTxnService;
+    }
+
+    public void setCbusTxnService(CbusTxnService cbusTxnService) {
+        this.cbusTxnService = cbusTxnService;
     }
 
     public AccountService getAccountService() {

@@ -78,7 +78,24 @@
     </bean>
     <bean id="autoQryTxnsCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="autoQryTxnsJobDetailBean"/>
-       <!--  每隔一小时 8：30 到 17：30 -->
+        <!--  每隔一小时 8：30 到 17：30 -->
+        <!--<property name="cronExpression" value="0 30 8-17 * * ?"/>-->
         <property name="cronExpression" value="0 30 8-17 * * ?"/>
+    </bean>
+
+    <!-- 设置调度 -->
+    <bean id="myScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="autoSendLoanTxnsCronTriggerBean"/>
+                <ref bean="autoQryTxnsCronTriggerBean"/>
+            </list>
+        </property>
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.threadPool.threadCount">1</prop>
+                <prop key="org.quartz.scheduler.instanceId">AUTO</prop>
+            </props>
+        </property>
     </bean>
 </beans>

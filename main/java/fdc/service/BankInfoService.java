@@ -29,8 +29,9 @@ public class BankInfoService {
         if (!name.contains(" ")) {
             example.createCriteria().andCodeLike("%" + code + "%").andFullNameLike("%" + name + "%");
         } else {
+            CbsBankInfoExample.Criteria conditions = example.createCriteria().andCodeLike("%" + code + "%");
             for (String s : name.split(" ")) {
-                example.createCriteria().andCodeLike("%" + code + "%").andFullNameLike("%" + s + "%");
+                conditions.andFullNameLike("%" + s + "%");
             }
         }
         int cnt = cbsBankInfoMapper.countByExample(example);

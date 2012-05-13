@@ -118,7 +118,7 @@ public class CbusFdcActtxnService {
                     cbsAccTxn.setRemark(txnRecord.remark);
                     cbsAccTxn.setTxnDate(txnRecord.txnDate);
                     cbsAccTxn.setTxnTime(txnRecord.txnTime);
-                    // TODO 判断该笔交易是否是贷款项
+                    //  判断该笔交易是否是按揭贷款项
                     if (!StringUtils.isEmpty(txnRecord.remark) && txnRecord.remark.contains("按揭贷款")) {
                         cbsAccTxn.setSendFlag("0");
                     } else {

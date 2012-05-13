@@ -14,7 +14,6 @@ import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.advance.utils.PropertyManager;
 import pub.platform.security.OperatorManager;
@@ -60,7 +59,6 @@ public class CbusPayoutService {
         }
     }
 
-    @Transactional
     public int updateRsPayoutToExec(RsPayout rsPayout) throws Exception {
 
         OperatorManager om = SystemService.getOperatorManager();
@@ -106,7 +104,7 @@ public class CbusPayoutService {
             //  ÐÐÄÚ×ªÕË
             if ("10".equals(rsPayout.getTransType())) {
                 try {
-                    QDJG03Res res03 = cbusTxnService.qdjg03payAmtInBank(rsPayout.getRecAccount(), rsPayout.getPayAccount(),
+                    QDJG03Res res03 = cbusTxnService.qdjg03payAmtInBank(rsPayout.getPayAccount(), rsPayout.getRecAccount(),
                             String.format("%.2f", rsPayout.getPlAmount()), rsPayout.getPurpose());
 
                     if ("00".equals(res03.getHeader().getRtnCode())) {

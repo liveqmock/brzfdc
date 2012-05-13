@@ -37,6 +37,14 @@ public class CbusTxnService {
         QDJG01Req qdjg01Req = new QDJG01Req();
         MsgHeader header = qdjg01Req.getHeader();
         header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1")));
+        String operId = null;
+        try {
+            OperatorManager om = PlatformService.getOperatorManager();
+            operId = om.getOperatorId();
+        } catch (Exception e) {
+            operId = "810201011002";
+        }
+        header.setOperId(operId);
         qdjg01Req.accountNo = acccountNo;
         String reqStr = qdjg01Req.toString();
         byte[] rtnBytes = sendUntilRcv(reqStr);
@@ -135,8 +143,8 @@ public class CbusTxnService {
         qdjg04Req.payeeFlAcctNo = payeeFlAcctNo;
         qdjg04Req.rmtAmt = rmtAmt;
         qdjg04Req.rmtPurp = rmtPurp;
-        qdjg04Req.voucherType = voucherType;
-        qdjg04Req.voucherNo = voucherNo;
+//        qdjg04Req.voucherType = voucherType;
+//        qdjg04Req.voucherNo = voucherNo;
         qdjg04Req.remark = remark;
 
         return qdjg04payAmtBtwnBankByReq(qdjg04Req);

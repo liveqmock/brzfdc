@@ -29,7 +29,6 @@
         }
     </style>
     <script type="text/javascript" language="javascript">
-//        window.onload() = function tell
         document.onkeydown = function TabReplace() {
             if (event.keyCode == 13) {
                 if (event.srcElement.tagName != 'BUTTON')
@@ -38,7 +37,6 @@
                     event.srcElement.click();
             }
         }
-
         function closeThisWindow(rtnflag) {
             if (rtnflag == "true") {
                 window.returnValue = "1";

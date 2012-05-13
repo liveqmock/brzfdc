@@ -66,6 +66,8 @@ public class CbusPayoutExecAction {
     private WorkResult workResult = WorkResult.CREATE;
     private RefundStatus statusFlag = RefundStatus.ACCOUNT_SUCCESS;
     private RsPlanCtrl planCtrl;
+    private boolean isRunning;
+    private String jscript;
 
     @PostConstruct
     public void init() {
@@ -91,19 +93,33 @@ public class CbusPayoutExecAction {
 
     public String onExecute() {
         try {
-//            int cnt = cbusPayoutService.updateRsPayoutToExec(rsPayout);
-            int cnt = 1;
+            if (isRunning) {
+                MessageUtil.addWarn("系统正在入账，请稍候，勿重复操作入账!");
+                return null;
+            }
+            RsPayout originPayout = payoutService.selectPayoutByPkid(rsPayout.getPkId());
+            if (!WorkResult.PASS.getCode().equals(originPayout.getWorkResult())) {
+                MessageUtil.addWarn("并发入账冲突，请勿重复操作入账!");
+                return null;
+            }
+            isRunning = true;
+            int cnt = cbusPayoutService.updateRsPayoutToExec(rsPayout);
+//            int cnt = 1;
+            UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+            CommandButton execBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+            execBtn.setDisabled(true);
+
             if (cnt == 1) {
                 MessageUtil.addInfo("入账完成!");
-                UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
                 CommandButton prtnBtn = (CommandButton) viewRoot.findComponent("form:directPrint");
                 prtnBtn.setDisabled(false);
-                CommandButton execBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
-                execBtn.setDisabled(true);
             }
         } catch (Exception e) {
             logger.error("入账异常." + e.getMessage());
             MessageUtil.addError("入账异常." + e.getMessage());
+            UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+            CommandButton execBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
+            execBtn.setDisabled(true);
             return null;
         }
         init();
@@ -302,6 +318,11 @@ public class CbusPayoutExecAction {
         return null;
     }
 
+    public String onFlush() {
+        init();
+        return null;
+    }
+
     public String onAllSend() {
         if (payOverList.isEmpty()) {
             MessageUtil.addWarn("可发送记录为空！");
@@ -468,5 +489,13 @@ public class CbusPayoutExecAction {
 
     public void setStatusFlag(RefundStatus statusFlag) {
         this.statusFlag = statusFlag;
+    }
+
+    public String getJscript() {
+        return jscript;
+    }
+
+    public void setJscript(String jscript) {
+        this.jscript = jscript;
     }
 }

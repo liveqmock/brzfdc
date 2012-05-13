@@ -35,7 +35,7 @@ public class CbusTest {
         CbusTxnService cbusTxnService = (CbusTxnService) context.getBean("cbusTxnService");
         // 查询交易明细
 //        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("374100201020000640", "20120427", "20120427");
-        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("810200101421001610", "20120508", "20120509");
+        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("810200101421001610", "20120507", "20120511");
 //        List<QDJG02Res> res02List = cbusTxnService.qdjg02qryActtxnsByParams("374100201020000640", "20111001", "20120507");
         System.out.println("[报文包数]: " + res02List.size());
         int i = 1;

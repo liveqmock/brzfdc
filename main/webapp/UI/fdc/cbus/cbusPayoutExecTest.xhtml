@@ -15,12 +15,13 @@
         }
         function doPopupExecWindow(obj) {
             var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
-            popupwindow = window.open("cbusPayoutExecOneDetl.xhtml?action=act&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
-            popupwindow.focus;
-//            var rtn = dialog("cbusPayoutExecOneDetl.xhtml?pkid=" + pkid + "&amp;action=act", null, sfeature);
-//            if (rtn == "1") {
-
-//            }
+//            popupwindow = window.open("cbusPayoutExecOneDetlTest.xhtml?action=act&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+//            popupwindow.focus;
+            var rtn = dialog("cbusPayoutExecOneDetlTest.xhtml?action=act&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
+            if (rtn == "1") {
+//                document.getElementById("tabview:form:refuseFlag").value = "1";
+                document.getElementById("tabview:form1:qrybtn").click();
+            }
         }
     </script>
     <style type="text/css">
@@ -54,7 +55,7 @@
     <div>
         <p:growl life="1000" id="msgs" showDetail="false"/>
         <h:form id="form1">
-
+            <p:commandButton id="qrybtn" rendered="false" action="#{cbusPayoutExecAction.onFlush}" update="tabview"/>
             <p:dataTable id="pdt1" style="width:100%;"
                          dynamic="true"
                          value="#{cbusPayoutExecAction.passPayoutList}" var="record"

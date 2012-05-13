@@ -78,8 +78,8 @@ public class CbusPayoutAction {
             initTabList();
         }
         payTypes = new ArrayList<SelectItem>();
-        payTypes.add(new SelectItem("10", "行内转账"));
         payTypes.add(new SelectItem("20", "他行电汇"));
+        payTypes.add(new SelectItem("10", "行内转账"));
         voucherTypes = toolsService.getEnuSelectItemList("VOUCHER_TYPE", false, false);
     }
 
