@@ -68,7 +68,7 @@
                 <p:column style="display:none;" headerText="pkid">
                     <h:outputText value="#{record.pkId}"/>
                 </p:column>
-                <p:column headerText="凭证号" style="text-align:center" filterBy="#{record.docNo}">
+                <p:column headerText="凭证号" style="text-align:center" >
                     <h:outputText value="#{record.docNo}"/>
                 </p:column>
 
@@ -88,17 +88,21 @@
                     <h:outputText value="#{record.recAccount}"/>
                 </p:column>
 
-                <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                <p:column headerText="申请金额" style="text-align:center">
                     <h:outputText value="#{record.plAmount}" style="float:right">
-                        <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                        <f:convertNumber pattern="#,###,##0.00"/>
                     </h:outputText>
+                </p:column>
+
+                <p:column headerText="审核日期" style="text-align:center;">
+                    <h:outputText value="#{record.auditDate}"/>
                 </p:column>
 
                 <p:column headerText="状态标志" style="text-align:left">
                     <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.statusFlag).title}"/>
                 </p:column>
 
-                <p:column headerText="操作" style="text-align:center;width:80px;">
+                <p:column headerText="操作" style="text-align:center;width:100px;">
                     <p:commandLink value="详细" style="color:blue" update="popupwindow"
                                    onclick="doPopupWindow(this);"/>
                     <p:commandLink value="入账" style="color:blue;margin-left:12px;" update="popupwindow"
@@ -109,73 +113,6 @@
         </h:form>
     </div>
 </p:tab>
-
-<p:tab title="入账结果不明记录清单">
-    <div>
-        <p:growl life="1000" id="msgs8" showDetail="false"/>
-        <h:form id="form8">
-            <p:ajaxStatus style="height:18px;text-align:center">
-                <f:facet name="start">
-                    <h:graphicImage value="/images/ajaxloadingbar.gif"/>
-                </f:facet>
-                <f:facet name="complete">
-                    <h:outputText value=""/>
-                </f:facet>
-            </p:ajaxStatus>
-            <p:dataTable id="pdt8" style="width:100%;"
-                         dynamic="true"
-                         value="#{cbusPayoutExecAction.payFailList}" var="record"
-                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         paginator="true" rows="15" paginatorPosition="bottom"
-                         rowsPerPageTemplate="100,50,30,15,5"
-                         emptyMessage="数据记录为空...">
-                <f:facet name="header">
-                    实际用款入账未发送记录
-                </f:facet>
-                <p:column style="display:none;" headerText="pkid">
-                    <h:outputText value="#{record.pkId}"/>
-                </p:column>
-
-                <p:column headerText="凭证号" style="text-align:center" filterBy="#{record.docNo}">
-                    <h:outputText value="#{record.docNo}"/>
-                </p:column>
-
-                <p:column headerText="付款开发商" style="text-align:center" filterBy="#{record.payCompanyName}">
-                    <h:outputText value="#{record.payCompanyName}"/>
-                </p:column>
-
-                <p:column headerText="付款监管账号" style="text-align:center" filterBy="#{record.payAccount}">
-                    <h:outputText value="#{record.payAccount}"/>
-                </p:column>
-
-                <p:column headerText="收款方户名" style="text-align:left" filterBy="#{record.recCompanyName}">
-                    <h:outputText value="#{record.recCompanyName}"/>
-                </p:column>
-
-                <p:column headerText="收款方账号" style="text-align:center" filterBy="#{record.recAccount}">
-                    <h:outputText value="#{record.recAccount}"/>
-                </p:column>
-
-                <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
-                    <h:outputText value="#{record.plAmount}" style="float:right">
-                        <f:convertNumber pattern="#,###,###,###,##0.00"/>
-                    </h:outputText>
-                </p:column>
-
-                <p:column headerText="状态标志" style="text-align:right">
-                    <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.workResult).title}"/>
-                </p:column>
-
-                <p:column headerText="操作" style="text-align:center">
-                    <p:commandLink value="详细" style="color:blue" update="popupwindow"
-                                   onclick="doPopupWindow(this);"/>
-                </p:column>
-
-            </p:dataTable>
-        </h:form>
-    </div>
-</p:tab>
-
 
 <p:tab title="待发送记录清单">
     <div>
@@ -210,7 +147,7 @@
                 </p:column>
                 <p:column selectionMode="multiple"/>
 
-                <p:column headerText="凭证号" style="text-align:center" filterBy="#{record.docNo}">
+                <p:column headerText="凭证号" style="text-align:center" >
                     <h:outputText value="#{record.docNo}"/>
                 </p:column>
 
@@ -230,10 +167,14 @@
                     <h:outputText value="#{record.recAccount}"/>
                 </p:column>
 
-                <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                <p:column headerText="申请金额" style="text-align:center">
                     <h:outputText value="#{record.plAmount}" style="float:right">
                         <f:convertNumber pattern="#,###,###,###,##0.00"/>
                     </h:outputText>
+                </p:column>
+
+                <p:column headerText="审核日期" style="text-align:center;">
+                    <h:outputText value="#{record.auditDate}"/>
                 </p:column>
 
                 <p:column headerText="状态标志" style="text-align:right">
@@ -267,7 +208,7 @@
                 <p:column style="display:none;" headerText="pkid">
                     <h:outputText value="#{record.pkId}"/>
                 </p:column>
-                <p:column headerText="凭证号" style="text-align:center" filterBy="#{record.docNo}">
+                <p:column headerText="凭证号" style="text-align:center" >
                     <h:outputText value="#{record.docNo}"/>
                 </p:column>
 
@@ -287,10 +228,14 @@
                     <h:outputText value="#{record.recAccount}"/>
                 </p:column>
 
-                <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                <p:column headerText="申请金额" style="text-align:center">
                     <h:outputText value="#{record.plAmount}" style="float:right">
                         <f:convertNumber pattern="#,###,###,###,##0.00"/>
                     </h:outputText>
+                </p:column>
+
+                <p:column headerText="审核日期" style="text-align:right;">
+                    <h:outputText value="#{record.auditDate}"/>
                 </p:column>
 
                 <p:column headerText="状态标志" style="text-align:right">
@@ -306,6 +251,75 @@
         </h:form>
     </div>
 </p:tab>
+<p:tab title="入账结果不明记录清单">
+    <div>
+        <p:growl life="1000" id="msgs8" showDetail="false"/>
+        <h:form id="form8">
+            <p:ajaxStatus style="height:18px;text-align:center">
+                <f:facet name="start">
+                    <h:graphicImage value="/images/ajaxloadingbar.gif"/>
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value=""/>
+                </f:facet>
+            </p:ajaxStatus>
+            <p:dataTable id="pdt8" style="width:100%;"
+                         dynamic="true"
+                         value="#{cbusPayoutExecAction.payFailList}" var="record"
+                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         paginator="true" rows="15" paginatorPosition="bottom"
+                         rowsPerPageTemplate="100,50,30,15,5"
+                         emptyMessage="数据记录为空...">
+                <f:facet name="header">
+                    实际用款入账未发送记录
+                </f:facet>
+                <p:column style="display:none;" headerText="pkid">
+                    <h:outputText value="#{record.pkId}"/>
+                </p:column>
+
+                <p:column headerText="凭证号" style="text-align:center" >
+                    <h:outputText value="#{record.docNo}"/>
+                </p:column>
+
+                <p:column headerText="付款开发商" style="text-align:center" filterBy="#{record.payCompanyName}">
+                    <h:outputText value="#{record.payCompanyName}"/>
+                </p:column>
+
+                <p:column headerText="付款监管账号" style="text-align:center" filterBy="#{record.payAccount}">
+                    <h:outputText value="#{record.payAccount}"/>
+                </p:column>
+
+                <p:column headerText="收款方户名" style="text-align:left" filterBy="#{record.recCompanyName}">
+                    <h:outputText value="#{record.recCompanyName}"/>
+                </p:column>
+
+                <p:column headerText="收款方账号" style="text-align:center" filterBy="#{record.recAccount}">
+                    <h:outputText value="#{record.recAccount}"/>
+                </p:column>
+
+                <p:column headerText="申请金额" style="text-align:center" >
+                    <h:outputText value="#{record.plAmount}" style="float:right">
+                        <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="审核日期" style="text-align:center;">
+                    <h:outputText value="#{record.auditDate}"/>
+                </p:column>
+
+                <p:column headerText="状态标志" style="text-align:right">
+                    <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.workResult).title}"/>
+                </p:column>
+
+                <p:column headerText="操作" style="text-align:center">
+                    <p:commandLink value="详细" style="color:blue" update="popupwindow"
+                                   onclick="doPopupWindow(this);"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </div>
+</p:tab>
+
 </p:tabView>
 </div>
 </ui:define>

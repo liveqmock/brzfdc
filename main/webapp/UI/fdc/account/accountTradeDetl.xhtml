@@ -44,13 +44,15 @@
 <ui:define name="content">
 <div style="margin:5px;" id="top">
 <h:form id="qryForm">
+<p:growl life="2000" id="msgs" showDetail="false"/>
 <p:panel id="query" header="监管账号交易明细">
     <h:panelGrid columns="2" cellspacing="3" style="width:100%">
         <h:panelGrid columns="4" cellspacing="3" style="width:80%" columnClasses="col-95,col-5,col-95,col-5">
             <h:outputLabel value="账户名称："/>
             <h:inputText value="#{accountTradeDetlAction.acctname}" style="width:146px;"/>
-            <h:outputLabel value="账户号："/>
-            <h:inputText value="#{accountTradeDetlAction.acctno}" style="width:146px;"/>
+            <h:outputLabel value="*账户号："/>
+            <h:inputText value="#{accountTradeDetlAction.acctno}" required="true" requiredMessage="账号不能为空！"
+                         style="width:146px;"/>
             <h:outputLabel value="起始日期："/>
             <p:calendar pattern="yyyy-MM-dd" id="begindate" readonly="true" mode="popup"
                         locale="zh_CN"
@@ -63,7 +65,7 @@
         <h:panelGrid style="width:20%">
             <p:commandButton style="margin-left:15px;width:90px" ajax="false"
                              action="#{accountTradeDetlAction.onBtnQueryClick}" id="btnQuery"
-                             value="查询">
+                             value="查询" update="msgs">
             </p:commandButton>
             <p:commandButton ajax="false" id="resetBtn" value="Excel导出"
                              style="width:90px;margin-left:15px">

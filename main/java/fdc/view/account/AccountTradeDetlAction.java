@@ -8,19 +8,19 @@ import fdc.service.account.AccountDetlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import platform.common.utils.MessageUtil;
-import platform.service.SystemService;
 import platform.service.ToolsService;
-import pub.platform.utils.BusinessDate;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,8 +57,8 @@ public class AccountTradeDetlAction {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         beginDate = cal.getTime();
         endDate = new Date();
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno
-                , sdf10.format(beginDate), sdf10.format(endDate));
+//        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno
+//                , sdf10.format(beginDate), sdf10.format(endDate));
         List<String> statusfalgs = new ArrayList<String>();
         statusfalgs.add(0, TradeStatus.CANCEL.getCode());
         statusfalgs.add(1, TradeStatus.BACK.getCode());

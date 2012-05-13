@@ -38,7 +38,7 @@
                 }
             }
 
-             function doPopupWindow(obj) {
+            function doPopupWindow(obj) {
                 var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
                 popupwindow = window.open("cbusPayoutQryDetl.xhtml?action=query&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
                 popupwindow.focus;
@@ -115,7 +115,8 @@
                                              style="margin-left:15px;width:90px"
                                              update="input,pdt,msgs">
                             </p:commandButton>
-                            <p:commandButton ajax="true" id="resetBtn" value="重置" type="reset" action="#{payoutQryAction.onPrint}"
+                            <p:commandButton ajax="true" id="resetBtn" value="重置" type="reset"
+                                             action="#{payoutQryAction.onPrint}"
                                              style="width:90px;margin-left:15px" update="input,msgs"/>
                         </h:panelGrid>
                     </h:panelGrid>
@@ -145,7 +146,7 @@
                         <h:outputText value="#{record.docNo}"/>
                     </p:column>
 
-                    <p:column headerText="付款开发商" style="text-align:center" >
+                    <p:column headerText="付款开发商" style="text-align:center">
                         <h:outputText value="#{record.payCompanyName}"/>
                     </p:column>
 
@@ -153,18 +154,22 @@
                         <h:outputText value="#{record.payAccount}"/>
                     </p:column>
 
-                    <p:column headerText="收款方户名" style="text-align:left" >
+                    <p:column headerText="收款方户名" style="text-align:left">
                         <h:outputText value="#{record.recCompanyName}"/>
                     </p:column>
 
-                    <p:column headerText="收款方账号" style="text-align:center" >
+                    <p:column headerText="收款方账号" style="text-align:center">
                         <h:outputText value="#{record.recAccount}"/>
                     </p:column>
 
-                    <p:column headerText="申请金额" style="text-align:center" >
+                    <p:column headerText="申请金额" style="text-align:center">
                         <h:outputText value="#{record.plAmount}" style="float:right">
                             <f:convertNumber pattern="#,###,###,###,##0.00"/>
                         </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="入账日期" style="text-align:center">
+                        <h:outputText value="#{record.tradeDate}"/>
                     </p:column>
 
                     <p:column headerText="状态标志" style="text-align:center">

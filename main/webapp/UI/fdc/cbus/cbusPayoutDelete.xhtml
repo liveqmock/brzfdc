@@ -92,6 +92,12 @@
                                     </h:outputText>
                                 </p:column>
 
+                                <p:column headerText="录入日期" style="text-align:center">
+                                    <h:outputText value="#{record.createdDate}">
+                                        <f:convertDateTime pattern="yyyyMMdd HH:mm:ss" timeZone="GMT+08:00"/>
+                                    </h:outputText>
+                                </p:column>
+
                                 <p:column headerText="状态标志" style="text-align:center">
                                     <h:outputText
                                             value="#{payoutAction.workResult.valueOfAlias(record.workResult).title}"/>
