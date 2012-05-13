@@ -103,20 +103,29 @@ public class CbusPayoutExecAction {
                 return null;
             }
             isRunning = true;
-            int cnt = cbusPayoutService.updateRsPayoutToExec(rsPayout);
-//            int cnt = 1;
+            // TODO
+//            int cnt = cbusPayoutService.updateRsPayoutToExec(rsPayout);
+            int cnt = 1;
             UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
             CommandButton execBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
             execBtn.setDisabled(true);
 
             if (cnt == 1) {
                 MessageUtil.addInfo("入账完成!");
+                int sentResult = 1;
+                // TODO
+//                sentResult = clientBiService.sendRsPayoutMsg(rsPayout);
+                if (sentResult != 1) {
+                    throw new RuntimeException("发送失败");
+                }
+                MessageUtil.addInfo("发送完成！");
                 CommandButton prtnBtn = (CommandButton) viewRoot.findComponent("form:directPrint");
                 prtnBtn.setDisabled(false);
+
             }
         } catch (Exception e) {
-            logger.error("入账异常." + e.getMessage());
-            MessageUtil.addError("入账异常." + e.getMessage());
+            logger.error("入账异常.", e);
+            MessageUtil.addError("入账异常." + (e.getMessage() == null ? "" : e.getMessage()));
             UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
             CommandButton execBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
             execBtn.setDisabled(true);

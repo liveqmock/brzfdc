@@ -73,16 +73,16 @@
                             <p:inputText id="accountName" value="#{accountAction.account.accountName}"
                                          style="width:192px;"/>
                         </h:panelGrid>
-                        <h:panelGrid style="width:20%" columns="2" cellspacing="3">
-                            <p:commandButton style="margin-left:15px;width:90px" ajax="false"
+                        <h:panelGrid style="width:20%" columns="1" cellspacing="3">
+                            <p:commandButton style="margin-left:15px;width:90px" ajax="false" update="msgs"
                                              action="#{accountAction.onBtnQueryClick}" id="btnQuery" value="查询">
                             </p:commandButton>
-                            <p:commandButton ajax="false" id="resetBtn" value="Excel导出"
+                            <!--<p:commandButton ajax="false" id="resetBtn" value="Excel导出"
                                              style="width:90px;margin-left:15px">
                                 <fbi:DataExporter target="pdt" type="xls" titleName="账户信息" fileName="company_account"
                                                   excludeColumns="0,1,11"
                                                   excludeColumnsWidth="15,15,15,15,15,14,14,12,12"/>
-                            </p:commandButton>
+                            </p:commandButton>-->
                         </h:panelGrid>
                     </h:panelGrid>
                 </p:panel>
