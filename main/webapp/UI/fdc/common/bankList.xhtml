@@ -32,9 +32,9 @@
             <h:form id="selFrom">
                 <p:fieldset legend="银行信息查询列表(双击选择)">
                     <h:panelGrid columns="5" cellpadding="2" style="width: 95%">
-                        <h:outputLabel value="银行代号:" for="bankCode" style="width: 40px;text-align: right;"/>
+                        <h:outputLabel value="银行代号:" for="bankCode" style="width: 80px;text-align: right;"/>
                         <p:inputText id="bankCode" value="#{bankInfoAction.code}"/>
-                        <h:outputLabel value="银行名称:" for="bankName" style="width: 40px;text-align: right;"/>
+                        <h:outputLabel value="银行名称:" for="bankName" style="width: 80px;text-align: right;"/>
                         <p:inputText id="bankName" value="#{bankInfoAction.name}" size="40"/>
                         <p:commandButton action="#{bankInfoAction.onQuery}" value="查询"
                                          ajax="true" style="margin-left:20px;" update="selListBox,selFrom,msgs"/>
