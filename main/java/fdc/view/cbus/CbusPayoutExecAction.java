@@ -60,6 +60,7 @@ public class CbusPayoutExecAction {
     private List<RsPayout> payOverList;
     private List<RsPayout> payFailList;
     private List<RsPayout> sendOverList;
+    private List<RsPayout> printVchList;
     private RsPayout selectedRecord;
     private RsPayout[] selectedRecords;
     private RsPayout[] toSendRecords;
@@ -77,6 +78,7 @@ public class CbusPayoutExecAction {
         payFailList = cbusPayoutService.selectRecordsByWorkResult(WorkResult.NOT_KNOWN.getCode());
 
         sendOverList = cbusPayoutService.selectRecordsByWorkResult(WorkResult.SENT.getCode());
+        printVchList = cbusPayoutService.qryPrintVchrPayouts();
 
         FacesContext context = FacesContext.getCurrentInstance();
         String pkid = (String) context.getExternalContext().getRequestParameterMap().get("pkid");
@@ -88,13 +90,70 @@ public class CbusPayoutExecAction {
             UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
             CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:directPrint");
             saveBtn.setDisabled(true);
+        } else if (!StringUtils.isEmpty(pkid) && "print".equalsIgnoreCase(action)) {
+            rsPayout = payoutService.selectPayoutByPkid(pkid);
+            planCtrl = expensesPlanService.selectPlanCtrlByPlanNo(rsPayout.getBusinessNo());
+            UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+            CommandButton saveBtn = (CommandButton) viewRoot.findComponent("form:directPrint");
+            saveBtn.setDisabled(false);
         }
+    }
+
+    public String onSingleExecute() {
+
+        if (selectedRecords == null || selectedRecords.length == 0) {
+            MessageUtil.addWarn("请选择一笔记录！");
+        } else if (selectedRecords.length > 1) {
+            MessageUtil.addWarn("只能选择一笔记录进行入账！");
+
+        } else {
+            try {
+                if (isRunning) {
+                    MessageUtil.addWarn("系统已进行入账，请稍候，勿重复操作入账!");
+                    return null;
+                }
+                isRunning = true;
+                for (RsPayout record : selectedRecords) {
+                    RsPayout originPayout = payoutService.selectPayoutByPkid(record.getPkId());
+                    if (!WorkResult.PASS.getCode().equals(originPayout.getWorkResult())) {
+                        MessageUtil.addWarn("并发入账冲突，请勿重复操作入账!");
+                        return null;
+                    }
+                    int cnt = 1;
+                    cnt = cbusPayoutService.updateRsPayoutToExec(record);
+                    if (cnt != 1) {
+                        throw new RuntimeException("【记录更新失败】付款监管账号：" + record.getPayAccount());
+                    }
+                    MessageUtil.addInfo("入账完成!");
+                    int sentResult = 1;
+                    try {
+                        sentResult = clientBiService.sendRsPayoutMsg(record);
+                    } catch (Exception e) {
+                        logger.error("发送失败." + e.getMessage());
+                        MessageUtil.addError("发送失败." + e.getMessage());
+                        return null;
+                    }
+                    if (sentResult != 1) {
+                        MessageUtil.addError("发送失败!");
+                    } else {
+                        MessageUtil.addInfo("发送完成！");
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("操作失败." + e.getMessage());
+                MessageUtil.addError("操作失败." + e.getMessage());
+                return null;
+            }
+
+            init();
+        }
+        return null;
     }
 
     public String onExecute() {
         try {
             if (isRunning) {
-                MessageUtil.addWarn("系统正在入账，请稍候，勿重复操作入账!");
+                MessageUtil.addWarn("系统已进行入账，请稍候，勿重复操作入账!");
                 return null;
             }
             RsPayout originPayout = payoutService.selectPayoutByPkid(rsPayout.getPkId());
@@ -104,8 +163,8 @@ public class CbusPayoutExecAction {
             }
             isRunning = true;
             // TODO
-//            int cnt = cbusPayoutService.updateRsPayoutToExec(rsPayout);
-            int cnt = 1;
+            int cnt = cbusPayoutService.updateRsPayoutToExec(rsPayout);
+//            int cnt = 1;
             UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
             CommandButton execBtn = (CommandButton) viewRoot.findComponent("form:saveBtn");
             execBtn.setDisabled(true);
@@ -114,7 +173,7 @@ public class CbusPayoutExecAction {
                 MessageUtil.addInfo("入账完成!");
                 int sentResult = 1;
                 // TODO
-//                sentResult = clientBiService.sendRsPayoutMsg(rsPayout);
+                sentResult = clientBiService.sendRsPayoutMsg(rsPayout);
                 if (sentResult != 1) {
                     throw new RuntimeException("发送失败");
                 }
@@ -139,7 +198,7 @@ public class CbusPayoutExecAction {
         try {
             FacesContext ctx = FacesContext.getCurrentInstance();
             HttpServletResponse response = (HttpServletResponse) ctx.getExternalContext().getResponse();
-            Document document = new Document(PageSize.A3, 36, 36, 36, 90);
+            Document document = new Document(PageSize.A4, 16, 16, 36, 90);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PdfWriter writer = PdfWriter.getInstance(document, bos);
             writer.setPageEvent(new PdfPageEventHelper());
@@ -160,24 +219,25 @@ public class CbusPayoutExecAction {
             ctx.responseComplete();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("凭证打印异常.", e);
+            MessageUtil.addError("凭证打印异常." + (e.getMessage() == null ? "" : e.getMessage()));
         }
 
     }
 
     //
     private PdfPTable transToPdfTable() throws IOException, DocumentException {
-        PdfPTable table = new PdfPTable(new float[]{800f});// 建立一个pdf表格
+        PdfPTable table = new PdfPTable(new float[]{900f});// 建立一个pdf表格
         OperatorManager om = PlatformService.getOperatorManager();
 
         table.setSpacingBefore(130f);// 设置表格上面空白宽度
-        table.setTotalWidth(535);// 设置表格的宽度
+        table.setTotalWidth(835);// 设置表格的宽度
         table.setLockedWidth(false);// 设置表格的宽度固定
-        table.setSpacingAfter(200f);
+        table.setSpacingAfter(120f);
         table.getDefaultCell().setBorder(0);//设置表格默认为无边框
         BaseFont bfChinese = BaseFont.createFont("c:\\windows\\fonts\\simsun.ttc,1", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         Font headFont1 = new Font(bfChinese, 14, Font.BOLD);// 设置字体大小
-        Font headFont2 = new Font(bfChinese, 12, Font.NORMAL);// 设置字体大小
+        Font headFont2 = new Font(bfChinese, 10, Font.NORMAL);// 设置字体大小
         // 电汇凭证
         if ("20".equals(rsPayout.getTransType())) {
             PdfPCell cell = new PdfPCell(new Paragraph("汇划业务凭证", headFont1));
@@ -186,14 +246,24 @@ public class CbusPayoutExecAction {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);// 设置内容水平居中显示
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            int[] rowWidths = new int[]{30, 48, 30};
+
+            String bankSerial = "";
+            if (StringUtils.isEmpty(rsPayout.getBankSerial())) {
+                bankSerial = " ";
+            } else if (rsPayout.getBankSerial().length() >= 12) {
+                bankSerial = rsPayout.getBankSerial().substring(12);
+            } else {
+                bankSerial = rsPayout.getBankSerial();
+            }
+
+            int[] rowWidths = new int[]{25, 34, 25};
             String[][] rows = new String[][]{
                     new String[]{"机构代号：" + om.getOperator().getDeptid(),
                             "记账时间：" + new SimpleDateFormat("yyyy/MM/dd hh:MM:ss").format(new Date()),
-                            "流水号：" + (StringUtils.isEmpty(rsPayout.getBankSerial()) ? " " : rsPayout.getBankSerial().substring(12))},
-                    new String[]{"录入员代号：" + rsPayout.getApplyUserId().substring(9),
-                            "复核员代码：" + rsPayout.getAuditUserId().substring(9),
-                            "主管代号：" + rsPayout.getApplyUserId().substring(9)},
+                            "流水号：" + bankSerial},
+                    new String[]{"录入员代号：" + (StringUtils.isEmpty(rsPayout.getApplyUserId()) ? " " : rsPayout.getApplyUserId().substring(9)),
+                            "复核员代码：" + (StringUtils.isEmpty(rsPayout.getAuditUserId()) ? " " : rsPayout.getAuditUserId().substring(9)),
+                            "主管代号：" + (StringUtils.isEmpty(rsPayout.getApplyUserId()) ? " " : rsPayout.getApplyUserId().substring(9))},
                     new String[]{" ", " ", " "},
                     new String[]{"币别代码：人民币",
                             "凭证号：" + rsPayout.getDocNo(),
@@ -213,12 +283,14 @@ public class CbusPayoutExecAction {
                 table.addCell(cell);
             }
 
-            cell = new PdfPCell(new Paragraph("付款人账号：" + rsPayout.getPayAccount() + "          付款人名称："
+            cell = new PdfPCell(new Paragraph(StringUtil.rightPad4ChineseToByteLength("付款人账号：" + rsPayout.getPayAccount()
+                    , 40, " ") + "付款人名称："
                     + rsPayout.getPayCompanyName(), headFont2));
             cell.setBorder(0);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph("收款人账号：" + rsPayout.getRecAccount() + "           收款人名称："
+            cell = new PdfPCell(new Paragraph(StringUtil.rightPad4ChineseToByteLength("收款人账号：" + rsPayout.getRecAccount()
+                    , 40, " ") + "收款人名称："
                     + rsPayout.getRecCompanyName(), headFont2));
             cell.setBorder(0);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -234,11 +306,19 @@ public class CbusPayoutExecAction {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);// 设置内容水平居中显示
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            int[] rowWidths = new int[]{30, 48, 30};
+            int[] rowWidths = new int[]{25, 34, 25};
+            String bankSerial = "";
+            if (StringUtils.isEmpty(rsPayout.getBankSerial())) {
+                bankSerial = " ";
+            } else if (rsPayout.getBankSerial().length() >= 12) {
+                bankSerial = rsPayout.getBankSerial().substring(12);
+            } else {
+                bankSerial = rsPayout.getBankSerial();
+            }
             String[][] rows = new String[][]{
                     new String[]{"机构代号：" + om.getOperator().getDeptid(),
                             "记账时间：" + new SimpleDateFormat("yyyy/MM/dd hh:MM:ss").format(new Date()),
-                            "交易流水号：" + (StringUtils.isEmpty(rsPayout.getBankSerial()) ? " " : rsPayout.getBankSerial().substring(12))},
+                            "交易流水号：" + bankSerial},
                     new String[]{"柜员代号：" + rsPayout.getApplyUserId().substring(9),
                             "主管代号：" + rsPayout.getAuditUserId().substring(9),
                             "币别：人民币"},
@@ -254,7 +334,7 @@ public class CbusPayoutExecAction {
             String[] singleRows = new String[]{"付款人账号：" + rsPayout.getPayAccount(), "付款人户名：" + rsPayout.getPayCompanyName(),
                     "收款人账号：" + rsPayout.getRecAccount(), "收款人户名：" + rsPayout.getRecCompanyName(),
                     "交易金额：" + StringUtils.rightPad(String.format("%.2f", rsPayout.getApAmount()), 40, " ") + "交易类别：转账",
-                    "存款种类：" + StringUtil.rightPad4ChineseToByteLength("建筑业企业活期存款", 40, " ") + "存单存折印刷号：",
+                    "存款种类：" + StringUtil.rightPad4ChineseToByteLength(" ", 40, " ") + "存单存折印刷号：",
                     "凭证号码："
             };
             for (String snglRow : singleRows) {
@@ -281,55 +361,6 @@ public class CbusPayoutExecAction {
         }
 
         return str;
-    }
-
-
-    public String onAllExecute() {
-        if (passPayoutList.isEmpty()) {
-            MessageUtil.addWarn("可入账记录为空！");
-        } else {
-            try {
-                for (RsPayout record : passPayoutList) {
-                    if (cbusPayoutService.updateRsPayoutToExec(record) == -1) {
-                        throw new RuntimeException("【记录更新失败】付款监管账号：" + record.getPayAccount());
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("操作失败." + e.getMessage());
-                MessageUtil.addError("操作失败." + e.getMessage());
-                return null;
-            }
-            MessageUtil.addInfo("入账完成!");
-            init();
-        }
-        return null;
-    }
-
-    public String onMultiExecute() {
-        if (selectedRecords == null || selectedRecords.length == 0) {
-            MessageUtil.addWarn("请至少选择一笔记录！");
-        } else {
-            try {
-                for (RsPayout record : selectedRecords) {
-                    if (cbusPayoutService.updateRsPayoutToExec(record) == -1) {
-                        throw new RuntimeException("【记录更新失败】付款监管账号：" + record.getPayAccount());
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("操作失败." + e.getMessage());
-                MessageUtil.addError("操作失败." + e.getMessage());
-                return null;
-            }
-            MessageUtil.addInfo("入账完成!");
-
-            init();
-        }
-        return null;
-    }
-
-    public String onFlush() {
-        init();
-        return null;
     }
 
     public String onAllSend() {
@@ -378,7 +409,64 @@ public class CbusPayoutExecAction {
         return null;
     }
 
+    public String onReCheck() {
+        if (selectedRecords == null || selectedRecords.length == 0) {
+            MessageUtil.addWarn("请至少选择一笔记录！");
+        } else {
+            try {
+                for (RsPayout record : selectedRecords) {
+                    record.setWorkResult(WorkResult.RE_CHECK.getCode());
+                    payoutService.updateRsPayout(record);
+                }
+                MessageUtil.addInfo("状态修改完成！");
+            } catch (Exception e) {
+                logger.error("操作失败." + e.getMessage());
+                MessageUtil.addError("操作失败." + e.getMessage());
+                return null;
+            }
+            init();
+        }
+        return null;
+    }
+
+    public String onAlreadyExec() {
+        if (selectedRecords == null || selectedRecords.length == 0) {
+            MessageUtil.addWarn("请至少选择一笔记录！");
+        } else {
+            try {
+                for (RsPayout record : selectedRecords) {
+                    payoutService.updateRsPayoutToExec(record);
+                    clientBiService.sendRsPayoutMsg(record);
+                }
+                MessageUtil.addInfo("入账完成！");
+                MessageUtil.addInfo("发送完成！");
+            } catch (Exception e) {
+                logger.error("操作失败." + e.getMessage());
+                MessageUtil.addError("操作失败." + e.getMessage());
+                return null;
+            }
+            init();
+        }
+        return null;
+    }
+
     //=========================================
+
+    public List<RsPayout> getPrintVchList() {
+        return printVchList;
+    }
+
+    public void setPrintVchList(List<RsPayout> printVchList) {
+        this.printVchList = printVchList;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
 
     public List<RsPayout> getPayFailList() {
         return payFailList;

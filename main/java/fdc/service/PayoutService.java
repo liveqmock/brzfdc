@@ -1,6 +1,5 @@
 package fdc.service;
 
-import com.sun.xml.internal.fastinfoset.algorithm.BooleanEncodingAlgorithm;
 import fdc.common.constant.RefundStatus;
 import fdc.common.constant.WorkResult;
 import fdc.repository.dao.RsPayoutMapper;
@@ -8,7 +7,6 @@ import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsPayout;
 import fdc.repository.model.RsPayoutExample;
-import fdc.repository.model.RsPlanCtrl;
 import fdc.service.expensesplan.ExpensesPlanService;
 import fdc.view.payout.ParamPlan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -122,6 +119,15 @@ public class PayoutService {
     public List<RsPayout> selectRecordsByWorkResult(String workResultCode) {
         RsPayoutExample example = new RsPayoutExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(workResultCode);
+        return rsPayoutMapper.selectByExample(example);
+    }
+
+    public List<RsPayout> qryCheckPayouts() {
+        RsPayoutExample example = new RsPayoutExample();
+        example.createCriteria().andDeletedFlagEqualTo("0")
+                .andWorkResultEqualTo(WorkResult.CREATE.getCode());
+        example.or(example.createCriteria().andDeletedFlagEqualTo("0")
+                .andWorkResultEqualTo(WorkResult.RE_CHECK.getCode()));
         return rsPayoutMapper.selectByExample(example);
     }
 

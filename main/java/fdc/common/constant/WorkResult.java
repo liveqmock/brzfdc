@@ -10,11 +10,12 @@ import java.util.Hashtable;
  * To change this template use File | Settings | File Templates.
  */
 public enum WorkResult implements EnumApp {
-    NOTPASS("0", "不通过"),
-    PASS("1", "通过"),
-    COMMIT("2", "入账"),
+    NOTPASS("0", "退回"),
+    PASS("1", "已复核"),
+    COMMIT("2", "已入账"),
+    RE_CHECK("6", "二次复核"),
     NOT_KNOWN("5", "结果不明"),
-    CREATE("3", "新建"),
+    CREATE("3", "联机记账"),
     SENT("4", "已发送");
 
     private String code = null;

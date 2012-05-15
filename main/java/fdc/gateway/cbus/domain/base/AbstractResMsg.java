@@ -17,7 +17,7 @@ public abstract class AbstractResMsg {
         header.assembleFields(headBytes);
         int bodyLength = Integer.parseInt(header.getDataLength());
         byte[] bodyBytes;
-        if ("99".equals(header.getRtnCode())) {
+        if (!"00".equals(header.getRtnCode())) {
             bodyBytes = new byte[100];
             System.arraycopy(buffer, 59, bodyBytes, 0, bodyBytes.length);
 //           throw new RuntimeException("与核心交易失败。" + new String(bodyBytes));

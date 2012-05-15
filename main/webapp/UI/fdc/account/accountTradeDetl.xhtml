@@ -65,7 +65,7 @@
         <h:panelGrid style="width:20%">
             <p:commandButton style="margin-left:15px;width:90px" ajax="true"
                              action="#{accountTradeDetlAction.onBtnQueryClick}" id="btnQuery"
-                             value="查询" update="msgs">
+                             value="查询" update="msgs,pdt">
             </p:commandButton>
             <!--<p:commandButton ajax="false" id="resetBtn" value="Excel导出"
                              style="width:90px;margin-left:15px">
@@ -84,7 +84,7 @@
         <h:outputText value=""/>
     </f:facet>
 </p:ajaxStatus>
-<p:dataTable id="pdt1" dynamic="true" selectionMode="single"
+<p:dataTable id="pdt" dynamic="true" selectionMode="single"
              value="#{accountTradeDetlAction.rsAccDetails}" var="record"
              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
              paginator="true" rows="15" paginatorPosition="bottom"
@@ -172,111 +172,6 @@
                 value="#{flagStatusForMap.actDetlChangeFlagMap[record.changeFlag]}"></h:outputText>
     </p:column>
 </p:dataTable>
-
-<div style="display:none;">
-    <p:dataTable id="pdt" style="width:2000px;"
-                 dynamic="true" selectionMode="single"
-                 value="#{accountTradeDetlAction.rsAccDetails}" var="record"
-                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                 paginator="true" rows="15" paginatorPosition="bottom"
-                 rowsPerPageTemplate="100,50,30,15,5"
-                 emptyMessage="数据记录为空...">
-
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="监管账户"/>
-            </f:facet>
-            <h:outputText value="#{record.accountName}"/>
-        </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="监管账号"/>
-            </f:facet>
-            <h:outputText value="#{record.accountCode}"></h:outputText>
-        </p:column>
-
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="对方账号"/>
-            </f:facet>
-            <h:outputText value="#{record.toAccountCode}"></h:outputText>
-        </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="对方账户户名"/>
-            </f:facet>
-            <h:outputText value="#{record.toAccountName}"></h:outputText>
-        </p:column>
-        <p:column style="text-align:center;">
-            <f:facet name="header">
-                <h:outputText value="收支标志"/>
-            </f:facet>
-            <h:outputText value="#{flagStatusForMap.inoutFlagMap[record.inoutFlag]}"></h:outputText>
-        </p:column>
-        <p:column style="text-align:center;">
-            <f:facet name="header">
-                <h:outputText value="交易时间"/>
-            </f:facet>
-            <h:outputText value="#{record.tradeDate}">
-            </h:outputText>
-        </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="交易金额"/>
-            </f:facet>
-            <h:outputText style="float:right;" value="#{record.tradeAmt}">
-                <f:convertNumber pattern="###,##0.00"/>
-            </h:outputText>
-        </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="交易后余额"/>
-            </f:facet>
-            <h:outputText style="float:right;" value="#{record.balance}">
-                <f:convertNumber pattern="###,##0.00"/>
-            </h:outputText>
-        </p:column>
-        <p:column style="text-align:center;">
-            <f:facet name="header">
-                <h:outputText value="交易类型"/>
-            </f:facet>
-            <h:outputText value="#{flagStatusForMap.tradeTypeMap[record.tradeType]}"></h:outputText>
-        </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="购房合同号"/>
-            </f:facet>
-            <h:outputText value="#{record.contractNo}"></h:outputText>
-        </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="计划控制编号"/>
-            </f:facet>
-            <h:outputText value="#{record.planCtrlNo}"></h:outputText>
-        </p:column>
-        <p:column style="text-align:center;">
-            <f:facet name="header">
-                <h:outputText value="状态标志"/>
-            </f:facet>
-            <h:outputText
-                    value="#{flagStatusForMap.actDetlStatusFlagMap[record.statusFlag]}"></h:outputText>
-        </p:column>
-        <p:column style="text-align:center;">
-            <f:facet name="header">
-                <h:outputText value="日终对账标志"/>
-            </f:facet>
-            <h:outputText
-                    value="#{flagStatusForMap.actDetlDcheckFlagMap[record.dcheckFlag]}"></h:outputText>
-        </p:column>
-        <p:column style="text-align:center;">
-            <f:facet name="header">
-                <h:outputText value="变更标志"/>
-            </f:facet>
-            <h:outputText
-                    value="#{flagStatusForMap.actDetlChangeFlagMap[record.changeFlag]}"></h:outputText>
-        </p:column>
-    </p:dataTable>
-</div>
 </h:form>
 </div>
 </ui:define>

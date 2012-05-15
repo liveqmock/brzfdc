@@ -29,6 +29,7 @@
         }
     </style>
     <script type="text/javascript" language="javascript">
+//        window.onload() = function tell
         document.onkeydown = function TabReplace() {
             if (event.keyCode == 13) {
                 if (event.srcElement.tagName != 'BUTTON')
@@ -37,6 +38,7 @@
                     event.srcElement.click();
             }
         }
+
         function closeThisWindow(rtnflag) {
             if (rtnflag == "true") {
                 window.returnValue = "1";
@@ -181,7 +183,7 @@
                             <f:facet name="start">
                                 <h:graphicImage value="/images/ajaxloadingbar.gif"/>
                                 <br/>
-                                <h:outputLabel value="系统正在入账，请稍候..." style="color: #fcd147;"/>
+                                <h:outputLabel value="系统正在生成凭证，请稍候..." style="color: #fcd147;"/>
                             </f:facet>
                             <f:facet name="complete">
                                 <h:outputText value=""/>
@@ -189,15 +191,11 @@
                         </p:ajaxStatus>
                     </h:panelGroup>
                     <br/>
-                    <h:panelGrid style="width: 20%" columns="2">
-                        <p:commandButton id="saveBtn" ajax="true" value="确认入账"
-                                         action="#{cbusPayoutExecAction.onExecute}"
-                                         style="margin-left:235px;width:90px"
-                                         update="input,pdt,msgs">
-                        </p:commandButton>
+                    <h:panelGrid style="width: 20%" columns="1">
                         <p:commandButton id="directPrint" ajax="false" value="打印凭证"
                                          actionListener="#{cbusPayoutExecAction.onPrintVoucher}"
-                                         style="margin-left:10px;width:90px;"/>
+                                         style="margin-left:290px;width:90px;"
+                                />
                     </h:panelGrid>
 
                 </h:panelGrid>

@@ -17,10 +17,6 @@
             var pkid = obj.parentNode.parentNode.childNodes[0].innerHTML;
             popupwindow = window.open("cbusPayoutExecOneDetl.xhtml?action=act&amp;pkid=" + pkid, "popupwindow", "height=600,width=800,left=200,top=100,toolbar=no,menubar=no,scrollbars=yes,location=no");
             popupwindow.focus;
-//            var rtn = dialog("cbusPayoutExecOneDetl.xhtml?pkid=" + pkid + "&amp;action=act", null, sfeature);
-//            if (rtn == "1") {
-
-//            }
         }
     </script>
     <style type="text/css">
@@ -99,7 +95,7 @@
                 </p:column>
 
                 <p:column headerText="状态标志" style="text-align:left">
-                    <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.statusFlag).title}"/>
+                    <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.workResult).title}"/>
                 </p:column>
 
                 <p:column headerText="操作" style="text-align:center;width:100px;">
@@ -239,7 +235,7 @@
                 </p:column>
 
                 <p:column headerText="状态标志" style="text-align:right">
-                    <h:outputText value="#{payoutAction.workResult.valueOfAlias(record.workResult).title}"/>
+                    <h:outputText value="#{cbusPayoutExecAction.workResult.valueOfAlias(record.workResult).title}"/>
                 </p:column>
 
                 <p:column headerText="操作" style="text-align:center">

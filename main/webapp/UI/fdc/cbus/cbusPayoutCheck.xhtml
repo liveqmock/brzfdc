@@ -92,14 +92,16 @@
                     <h:outputText value="#{record.recAccount}"/>
                 </p:column>
 
-                <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                <p:column headerText="申请金额" style="text-align:center">
                     <h:outputText value="#{record.plAmount}" style="float:right">
                         <f:convertNumber pattern="#,###,###,###,##0.00"/>
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="交易日期" style="text-align:center">
-                    <h:outputText value="#{record.tradeDate}"/>
+                <p:column headerText="记账日期" style="text-align:center">
+                    <h:outputText value="#{record.createdDate}">
+                        <f:convertDateTime pattern="yyyyMMdd HH:mm:ss" timeZone="GMT+08:00"/>
+                    </h:outputText>
                 </p:column>
 
                 <p:column headerText="状态标志" style="text-align:left">
@@ -166,14 +168,16 @@
                     <h:outputText value="#{record.recAccount}"/>
                 </p:column>
 
-                <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                <p:column headerText="申请金额" style="text-align:center">
                     <h:outputText value="#{record.plAmount}" style="float:right">
                         <f:convertNumber pattern="#,###,###,###,##0.00"/>
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="录入日期" style="text-align:center">
-                    <h:outputText value="#{record.createdDate}"/>
+                <p:column headerText="记账日期" style="text-align:center">
+                    <h:outputText value="#{record.createdDate}">
+                        <f:convertDateTime pattern="yyyyMMdd HH:mm:ss" timeZone="GMT+08:00"/>
+                    </h:outputText>
                 </p:column>
 
                 <p:column headerText="状态标志" style="text-align:left">
@@ -241,9 +245,15 @@
                     <h:outputText value="#{record.recAccount}"/>
                 </p:column>
 
-                <p:column headerText="申请金额" style="text-align:center" filterBy="#{record.plAmount}">
+                <p:column headerText="申请金额" style="text-align:center">
                     <h:outputText value="#{record.plAmount}" style="float:right">
                         <f:convertNumber pattern="#,###,###,###,##0.00"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="记账日期" style="text-align:center">
+                    <h:outputText value="#{record.createdDate}">
+                        <f:convertDateTime pattern="yyyyMMdd HH:mm:ss" timeZone="GMT+08:00"/>
                     </h:outputText>
                 </p:column>
 

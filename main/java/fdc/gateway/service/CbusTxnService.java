@@ -38,12 +38,13 @@ public class CbusTxnService {
         MsgHeader header = qdjg01Req.getHeader();
         header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1")));
         String operId = null;
-        try {
+        /*try {
             OperatorManager om = PlatformService.getOperatorManager();
             operId = om.getOperatorId();
-        } catch (Exception e) {
-            operId = "810201011002";
-        }
+        } catch (Exception e) {*/
+        // TODO
+        operId = PropertyManager.getProperty("brzfdc.wrd.default.operid");
+        // }
         header.setOperId(operId);
         qdjg01Req.accountNo = acccountNo;
         String reqStr = qdjg01Req.toString();
@@ -53,6 +54,23 @@ public class CbusTxnService {
         return qdjg01Res;
     }
 
+    // 虚柜员 余额查询 FOR 系统自动更新账户余额
+/*
+    public QDJG05Res qdjg05QryActbal(String acccountNo) throws Exception {
+        QDJG05Req qdjg05Req = new QDJG05Req();
+        MsgHeader header = qdjg05Req.getHeader();
+        header.setOperId(PropertyManager.getProperty("brzfdc.sys.default.operid"));
+        header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1")));
+        qdjg05Req.accountNo = acccountNo;
+        String reqStr = qdjg05Req.toString();
+        byte[] rtnBytes = sendUntilRcv(reqStr);
+        QDJG05Res qdjg05Res = new QDJG05Res();
+        qdjg05Res.assembleFields(rtnBytes);
+        return qdjg05Res;
+    }
+*/
+
+
     public List<QDJG02Res> qdjg02qryActtxnsByParams(String accountNo, String startDate, String endDate)
             throws Exception {
         QDJG02Req qdjg02Req = new QDJG02Req();
@@ -61,12 +79,12 @@ public class CbusTxnService {
         qdjg02Req.endDate = endDate;
 
         String operId = null;
-        try {
+        /*try {
             OperatorManager om = PlatformService.getOperatorManager();
             operId = om.getOperatorId();
-        } catch (Exception e) {
-            operId = "810201011002";
-        }
+        } catch (Exception e) {*/
+        operId = PropertyManager.getProperty("brzfdc.wrd.default.operid");
+        //}
         qdjg02Req.getHeader().setOperId(operId);
         return qdjg02qryAllActtxnsByReq(qdjg02Req);
     }
@@ -110,7 +128,7 @@ public class CbusTxnService {
             OperatorManager om = PlatformService.getOperatorManager();
             header.setOperId(om.getOperatorId());
         } catch (Exception e) {
-            header.setOperId("810201011002");
+            header.setOperId(PropertyManager.getProperty("brzfdc.wrd.default.operid"));
         }
         header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1"))); //  生成交易流水号
         qdjg03Req.payOutAccount = payOutAct;
@@ -128,8 +146,8 @@ public class CbusTxnService {
     // 电汇
     /*
     凭证种类  4
-        凭证号码  16
-        备注   40
+    凭证号码  16
+    暂时无上述两字段
      */
     public QDJG04Res qdjg04payAmtBtwnBank(String sndToBkNo, String rmtrNameFl, String rmtrAcctNo,
                                           String payeeNameFl, String payeeFlAcctNo, String rmtAmt,
@@ -157,7 +175,7 @@ public class CbusTxnService {
             OperatorManager om = PlatformService.getOperatorManager();
             header.setOperId(om.getOperatorId());
         } catch (Exception e) {
-            header.setOperId("810201011002");
+            header.setOperId(PropertyManager.getProperty("brzfdc.wrd.default.operid"));
         }
         header.setSerialNo(String.valueOf(rsSysctlService.generateTxnSeq("1"))); //  生成交易流水号
         String reqStr = qdjg04Req.toString();

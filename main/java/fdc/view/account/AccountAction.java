@@ -54,7 +54,7 @@ public class AccountAction {
     public String qrybal() {
         try {
             QDJG01Res res = cbusTxnService.qdjg01QryActbal(account.getAccountCode());
-            if ("99".equals(res.getHeader().getRtnCode())) {
+            if (!"00".equals(res.getHeader().getRtnCode())) {
                 MessageUtil.addError("≤È—Ø”‡∂Ó ß∞‹." + res.rtnMsg);
                 return null;
             } else {

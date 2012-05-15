@@ -21,9 +21,10 @@ public class CbusTest {
         try {
 //            test04();
             // 374100201020000640  4-27
-//            test02();
+            test02();
 //            test03();
-            test01("810200101421001610");
+//            test01("810200101421001610");
+//            test05("810200101421001610");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,10 +51,16 @@ public class CbusTest {
         cbusTxnService.qdjg01QryActbal(account);
     }
 
+   /* public static void test05(String account) throws Exception {
+            ApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml"});
+            CbusTxnService cbusTxnService = (CbusTxnService) context.getBean("cbusTxnService");
+            cbusTxnService.qdjg05QryActbal(account);
+        }*/
+
     public static void test03() throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml"});
         CbusTxnService cbusTxnService = (CbusTxnService) context.getBean("cbusTxnService");
-        QDJG03Res res = cbusTxnService.qdjg03payAmtInBank("810200101421001610", "810200101421001548", "1.0", "行内转账2");
+        QDJG03Res res = cbusTxnService.qdjg03payAmtInBank("810200101421001610", "810200101421001548", "2.0", "行内转账5-14");
         System.out.println(res.getHeader().getRtnCode() + res.rtnMsg);
     }
 

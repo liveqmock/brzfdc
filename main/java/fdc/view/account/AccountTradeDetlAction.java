@@ -94,8 +94,17 @@ public class AccountTradeDetlAction {
     }
 
     public void onBtnQueryClick() {
+        try {
         rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno,
                 sdf10.format(beginDate), sdf10.format(endDate));
+        if(rsAccDetails.isEmpty()) {
+            MessageUtil.addWarn("没有查询到明细记录！");
+        }
+        }catch (Exception e) {
+            logger.error("查询失败。" + e.getMessage());
+            MessageUtil.addError("查询失败。" + e.getMessage());
+
+        }
     }
 
     public String getAcctname() {

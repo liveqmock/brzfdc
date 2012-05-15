@@ -1,7 +1,9 @@
 package fdc.service.account;
 
 import fdc.common.constant.InOutFlag;
+import fdc.common.constant.SendLogResult;
 import fdc.common.constant.TradeType;
+import fdc.gateway.cbus.domain.txn.QDJG01Res;
 import fdc.gateway.cbus.domain.txn.QDJG02Res;
 import fdc.gateway.domain.CommonRes;
 import fdc.gateway.domain.T000.T0007Req;
@@ -19,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -54,14 +53,22 @@ public class CbusFdcActtxnService {
         Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
         cal.add(Calendar.DAY_OF_MONTH, -1);//取当前日期的前一天.
 
-        String yesterday = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
-
+        String yesterday = new SimpleDateFormat("yyyyMMdd").format(cal.getTime());
+        List<CbsAccTxn> accTxnList = new ArrayList<CbsAccTxn>();
         try {
             qrySaveActtxnsCbusByDate(yesterday, yesterday);
-            List<CbsAccTxn> accTxnList = qryCbsAccTotalTxnsByDateAndFlag(yesterday);
+            accTxnList = qryCbsAccTotalTxnsByDateAndFlag(yesterday);
+        } catch (Exception e) {
+            logger.error("自动获取当日贷款交易明细异常。", e);
+            insertNewSendLog("QDJG02", "CBUS查询交易明细", yesterday, SendLogResult.QRYED_ERR.getCode());
+            return -1;
+        }
+        try {
             sendAccTotalLoanTxns(yesterday, accTxnList);
         } catch (Exception e) {
-            logger.error("自动发送当日贷款交易汇总异常。", e);
+            logger.error("自动发送当日账户按揭贷款汇总异常。", e);
+            insertNewSendLog("0007", "发送按揭贷款交易金额汇总", yesterday, SendLogResult.SEND_ERR.getCode());
+            return -1;
         }
         return 0;
     }
@@ -82,12 +89,19 @@ public class CbusFdcActtxnService {
 
     public boolean isSentActtxns(String endDate) {
         RsSendLogExample example = new RsSendLogExample();
-        example.createCriteria().andTxnDateEqualTo(endDate).andTxnResultEqualTo("2");
+        example.createCriteria().andTxnDateEqualTo(endDate).andTxnResultEqualTo(SendLogResult.SEND_OVER.getCode());
         return rsSendLogMapper.countByExample(example) > 0;
     }
 
-    public int qrySaveTodayCbusTxns() throws Exception {
+    public int qrySaveTodayCbusTxnsAndBals() throws Exception {
         String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        List<RsAccount> accountList = accountService.qryAllMonitRecords();
+        for (RsAccount account : accountList) {
+            QDJG01Res res01 = cbusTxnService.qdjg01QryActbal(account.getAccountCode());
+            account.setBalance(new BigDecimal(res01.actbal));
+            account.setBalanceUsable(new BigDecimal(res01.avabal));
+            accountService.updateRecord(account);
+        }
         return qrySaveActtxnsCbusByDate(date, date);
     }
 
@@ -130,7 +144,7 @@ public class CbusFdcActtxnService {
                 }
             }
         }
-        insertNewSendLog("QDJG02", "CBUS查询交易明细", endDate, "1");
+        insertNewSendLog("QDJG02", "CBUS查询交易明细", endDate, SendLogResult.QRYED.getCode());
         return cnt;
     }
 
@@ -179,7 +193,7 @@ public class CbusFdcActtxnService {
             return -1;
         } else {
             commonMapper.updateCbsActtxnsSent(txnDate);
-            return insertNewSendLog("0007", "发送按揭贷款交易金额汇总", txnDate, "2");
+            return insertNewSendLog("0007", "发送按揭贷款交易金额汇总", txnDate, SendLogResult.SEND_OVER.getCode());
         }
     }
 

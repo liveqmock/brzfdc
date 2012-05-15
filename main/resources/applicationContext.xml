@@ -73,7 +73,7 @@
     <bean id="autoQryTxnsJobDetailBean"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="cbusFdcActtxnService"/>
-        <property name="targetMethod" value="qrySaveTodayCbusTxns"/>
+        <property name="targetMethod" value="qrySaveTodayCbusTxnsAndBals"/>
         <property name="concurrent" value="false"/>
     </bean>
     <bean id="autoQryTxnsCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">

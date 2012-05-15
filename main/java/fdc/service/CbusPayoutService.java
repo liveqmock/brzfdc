@@ -20,6 +20,7 @@ import pub.platform.security.OperatorManager;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -182,6 +183,17 @@ public class CbusPayoutService {
     public List<RsPayout> selectRecordsByWorkResult(String workResultCode) {
         RsPayoutExample example = new RsPayoutExample();
         example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultEqualTo(workResultCode);
+        example.setOrderByClause(" CREATED_DATE DESC ");
+        return rsPayoutMapper.selectByExample(example);
+    }
+
+    public List<RsPayout> qryPrintVchrPayouts() {
+        RsPayoutExample example = new RsPayoutExample();
+        List<String> printWRnums = new ArrayList<String>();
+        printWRnums.add(WorkResult.COMMIT.getCode());
+        printWRnums.add(WorkResult.SENT.getCode());
+        example.createCriteria().andDeletedFlagEqualTo("0").andWorkResultIn(printWRnums);
+        example.setOrderByClause(" CREATED_DATE desc ");
         return rsPayoutMapper.selectByExample(example);
     }
 }

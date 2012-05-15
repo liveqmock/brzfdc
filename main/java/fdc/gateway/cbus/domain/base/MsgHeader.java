@@ -1,6 +1,7 @@
 package fdc.gateway.cbus.domain.base;
 
 import org.apache.commons.lang.StringUtils;
+import pub.platform.advance.utils.PropertyManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class MsgHeader extends AbstractFrameMsg {
     private String msgType = "0200";    // 消息类型	4
     private String txnCode;    // 交易码	    6
     private String bankId = "810201011";     // 网点编号	9
-    private String operId = "810201011002";     // 操作员编号	12	员工号
+    private String operId = PropertyManager.getProperty("brzfdc.wrd.default.operid");     // 操作员编号	12	员工号
     private String serialNo;   //  操作员流水号	6	当天唯一
     private String txnDate = new SimpleDateFormat("yyyyMMdd").format(new Date());    // 交易日期	8
     private String txnTime = new SimpleDateFormat("HHmmss").format(new Date());    // 交易时间	6

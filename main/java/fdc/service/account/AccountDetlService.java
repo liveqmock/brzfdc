@@ -5,10 +5,7 @@ import fdc.repository.dao.common.CommonMapper;
 import fdc.repository.model.RsAccDetail;
 import fdc.repository.model.RsAccDetailExample;
 import fdc.repository.model.RsAccount;
-import fdc.repository.model.RsAccountExample;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import platform.service.SystemService;
@@ -38,7 +35,7 @@ public class AccountDetlService {
         example.clear();
         RsAccDetailExample.Criteria criteria = example.createCriteria();
         if (acctname !=null && !StringUtils.isEmpty(acctname.trim())) {
-            criteria.andAccountNameLike(acctname + "%");
+            criteria.andAccountNameLike("%" + acctname + "%");
         }
         if (acctno != null && !StringUtils.isEmpty(acctno.trim())) {
             criteria.andAccountCodeEqualTo(acctno);

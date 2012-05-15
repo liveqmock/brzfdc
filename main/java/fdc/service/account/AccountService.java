@@ -149,8 +149,13 @@ public class AccountService {
      */
     public int updateRecord(RsAccount account) {
         if (isModifiable(account)) {
-            OperatorManager om = SystemService.getOperatorManager();
-            account.setLastUpdBy(om.getOperatorId());
+            try {
+                OperatorManager om = SystemService.getOperatorManager();
+                account.setLastUpdBy(om.getOperatorId());
+            } catch (Exception e) {
+                // TODO ƒ¨»œ”√ªß
+                account.setLastUpdBy("");
+            }
             account.setLastUpdDate(new Date());
             account.setModificationNum(account.getModificationNum() + 1);
             return accountMapper.updateByPrimaryKeySelective(account);

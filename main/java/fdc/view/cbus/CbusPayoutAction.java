@@ -111,7 +111,8 @@ public class CbusPayoutAction {
     }
 
     public void initTabList() {
-        chkPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.CREATE.getCode());
+       // 2012-5-14 chkPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.CREATE.getCode());
+        chkPayoutList = payoutService.qryCheckPayouts();
         editPayoutList = payoutService.selectEditRecords();
         passPayoutList = payoutService.selectRecordsByWorkResult(WorkResult.PASS.getCode());
         refusePayoutList = payoutService.selectRecordsByWorkResult(WorkResult.NOTPASS.getCode());
