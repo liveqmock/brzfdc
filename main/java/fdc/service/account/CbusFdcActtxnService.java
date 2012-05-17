@@ -55,16 +55,24 @@ public class CbusFdcActtxnService {
 
         String yesterday = new SimpleDateFormat("yyyyMMdd").format(cal.getTime());
         List<CbsAccTxn> accTxnList = new ArrayList<CbsAccTxn>();
+        boolean isSent = isSentActtxns(yesterday);
+
         try {
-            qrySaveActtxnsCbusByDate(yesterday, yesterday);
-            accTxnList = qryCbsAccTotalTxnsByDateAndFlag(yesterday);
+            if (!isSent) {
+                qrySaveActtxnsCbusByDate(yesterday, yesterday);
+                accTxnList = qryCbsAccTotalTxnsByDateAndFlag(yesterday);
+            }
         } catch (Exception e) {
             logger.error("自动获取当日贷款交易明细异常。", e);
             insertNewSendLog("QDJG02", "CBUS查询交易明细", yesterday, SendLogResult.QRYED_ERR.getCode());
             return -1;
         }
         try {
-            sendAccTotalLoanTxns(yesterday, accTxnList);
+            if (!isSent) {
+                if (!accTxnList.isEmpty()) {
+                    sendAccTotalLoanTxns(yesterday, accTxnList);
+                }
+            }
         } catch (Exception e) {
             logger.error("自动发送当日账户按揭贷款汇总异常。", e);
             insertNewSendLog("0007", "发送按揭贷款交易金额汇总", yesterday, SendLogResult.SEND_ERR.getCode());
@@ -144,7 +152,9 @@ public class CbusFdcActtxnService {
                 }
             }
         }
-        insertNewSendLog("QDJG02", "CBUS查询交易明细", endDate, SendLogResult.QRYED.getCode());
+        if (accountList.size() > 0) {
+            insertNewSendLog("QDJG02", "CBUS查询交易明细", endDate, SendLogResult.QRYED.getCode());
+        }
         return cnt;
     }
 

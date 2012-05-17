@@ -161,6 +161,8 @@ public class PayoutService {
                 .andWorkResultEqualTo(WorkResult.CREATE.getCode());
         example.or(example.createCriteria().andDeletedFlagEqualTo("0")
                 .andWorkResultEqualTo(WorkResult.NOTPASS.getCode()));
+        example.or(example.createCriteria().andDeletedFlagEqualTo("0")
+                        .andWorkResultEqualTo(WorkResult.RE_CHECK.getCode()));
         return rsPayoutMapper.selectByExample(example);
     }
 }
