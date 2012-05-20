@@ -153,8 +153,8 @@ public class AccountService {
                 OperatorManager om = SystemService.getOperatorManager();
                 account.setLastUpdBy(om.getOperatorId());
             } catch (Exception e) {
-                // TODO 默认用户
-                account.setLastUpdBy("");
+                // 默认用户
+//                account.setLastUpdBy("");
             }
             account.setLastUpdDate(new Date());
             account.setModificationNum(account.getModificationNum() + 1);
