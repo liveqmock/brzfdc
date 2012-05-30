@@ -81,6 +81,10 @@ public class CbusFdcActtxnService {
         return 0;
     }
 
+    public int updateCbsActtxnsUnSent(String date) {
+        return commonMapper.updateCbsActtxnsUnSent(date);
+    }
+
     public int deleteTxnsByDate(String startDate, String endDate) {
         CbsAccTxnExample example = new CbsAccTxnExample();
         example.createCriteria().andTxnDateBetween(startDate, endDate);
@@ -118,42 +122,48 @@ public class CbusFdcActtxnService {
         deleteTxnsByDate(startDate, endDate);
         List<RsAccount> accountList = accountService.qryAllMonitRecords();
         int cnt = 0;
-        for (RsAccount account : accountList) {
-            List<QDJG02Res> resList = cbusTxnService.qdjg02qryActtxnsByParams(account.getAccountCode(), startDate, endDate);
-            for (QDJG02Res res : resList) {
-                for (QDJG02Res.TxnRecord txnRecord : res.recordList) {
-                    CbsAccTxn cbsAccTxn = new CbsAccTxn();
-                    cbsAccTxn.setPkid(UUID.randomUUID().toString());
-                    cbsAccTxn.setAccountNo(account.getAccountCode());
-                    cbsAccTxn.setAccountName(account.getAccountName());
-                    cbsAccTxn.setBankId(res.getHeader().getBankId());
-                    cbsAccTxn.setOperId(res.getHeader().getOperId());
-                    cbsAccTxn.setSerialNo(res.getHeader().getSerialNo());
-                    cbsAccTxn.setQryDate(res.getHeader().getTxnDate());
-                    cbsAccTxn.setQryTime(res.getHeader().getTxnTime());
-                    cbsAccTxn.setSeqNo(txnRecord.seqNo);
-                    cbsAccTxn.setDebitAmt(txnRecord.debitAmt);
-                    cbsAccTxn.setCreditAmt(txnRecord.creditAmt);
-                    cbsAccTxn.setTxnType(txnRecord.txnType);
-                    cbsAccTxn.setTxnSerialNo(txnRecord.txnSerialNo);
-                    cbsAccTxn.setSummaryCode(txnRecord.summaryCode);
-                    cbsAccTxn.setRemark(txnRecord.remark);
-                    cbsAccTxn.setTxnDate(txnRecord.txnDate);
-                    cbsAccTxn.setTxnTime(txnRecord.txnTime);
-                    //  判断该笔交易是否是按揭贷款项
-                    if (!StringUtils.isEmpty(txnRecord.remark) && txnRecord.remark.contains("按揭贷款")) {
-                        cbsAccTxn.setSendFlag("0");
-                    } else {
-                        cbsAccTxn.setSendFlag(null);
-                    }
-                    if (cbsAccTxnMapper.insert(cbsAccTxn) == 1) {
-                        cnt++;
+        try {
+            for (RsAccount account : accountList) {
+                List<QDJG02Res> resList = cbusTxnService.qdjg02qryActtxnsByParams(account.getAccountCode(), startDate, endDate);
+                for (QDJG02Res res : resList) {
+                    for (QDJG02Res.TxnRecord txnRecord : res.recordList) {
+                        CbsAccTxn cbsAccTxn = new CbsAccTxn();
+                        cbsAccTxn.setPkid(UUID.randomUUID().toString());
+                        cbsAccTxn.setAccountNo(account.getAccountCode());
+                        cbsAccTxn.setAccountName(account.getAccountName());
+                        cbsAccTxn.setBankId(res.getHeader().getBankId());
+                        cbsAccTxn.setOperId(res.getHeader().getOperId());
+                        cbsAccTxn.setSerialNo(res.getHeader().getSerialNo());
+                        cbsAccTxn.setQryDate(res.getHeader().getTxnDate());
+                        cbsAccTxn.setQryTime(res.getHeader().getTxnTime());
+                        cbsAccTxn.setSeqNo(txnRecord.seqNo);
+                        cbsAccTxn.setDebitAmt(txnRecord.debitAmt);
+                        cbsAccTxn.setCreditAmt(txnRecord.creditAmt);
+                        cbsAccTxn.setTxnType(txnRecord.txnType);
+                        cbsAccTxn.setTxnSerialNo(txnRecord.txnSerialNo);
+                        cbsAccTxn.setSummaryCode(txnRecord.summaryCode);
+                        cbsAccTxn.setRemark(txnRecord.remark);
+                        cbsAccTxn.setTxnDate(txnRecord.txnDate);
+                        cbsAccTxn.setTxnTime(txnRecord.txnTime);
+                        //  判断该笔交易是否是按揭贷款项
+                        if (!StringUtils.isEmpty(txnRecord.remark) && txnRecord.remark.contains("按揭贷款")) {
+                            cbsAccTxn.setSendFlag("0");
+                        } else {
+                            cbsAccTxn.setSendFlag(null);
+                        }
+                        if (cbsAccTxnMapper.insert(cbsAccTxn) == 1) {
+                            cnt++;
+                        }
                     }
                 }
             }
-        }
-        if (accountList.size() > 0) {
-            insertNewSendLog("QDJG02", "CBUS查询交易明细", endDate, SendLogResult.QRYED.getCode());
+            if (accountList.size() > 0) {
+                insertNewSendLog("QDJG02", "CBUS查询交易明细", endDate, SendLogResult.QRYED.getCode());
+            }
+        } catch (Exception e) {
+            logger.error("查询交易明细异常。", e);
+            insertNewSendLog("QDJG02", "CBUS查询交易明细", endDate, SendLogResult.QRYED_ERR.getCode());
+            return -1;
         }
         return cnt;
     }

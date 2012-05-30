@@ -2,7 +2,9 @@ package fdc.view.account;
 
 import fdc.common.constant.TradeStatus;
 import fdc.common.constant.TradeType;
+import fdc.repository.model.CbsAccTxn;
 import fdc.repository.model.RsAccDetail;
+import fdc.service.CbusActTxnService;
 import fdc.service.RsAccDetailService;
 import fdc.service.account.AccountDetlService;
 import org.slf4j.Logger;
@@ -47,7 +49,14 @@ public class AccountTradeDetlAction {
     private RsAccDetail rsAccDetail;
     private List<RsAccDetail> rsAccDetailsInit;
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat sdf8 = new SimpleDateFormat("yyyyMMdd");
     private List<SelectItem> actDetlStatusOptions;
+
+    @ManagedProperty(value = "#{cbusActTxnService}")
+    private CbusActTxnService cbusActTxnService;
+    private List<CbsAccTxn> cbsAccTxnList;
+    private String strStartDate;
+    private String strEndDate;
 
     @PostConstruct
     public void init() {
@@ -57,6 +66,8 @@ public class AccountTradeDetlAction {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         beginDate = cal.getTime();
         endDate = new Date();
+        strStartDate = sdf8.format(beginDate);
+        strEndDate = sdf8.format(endDate);
 //        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno
 //                , sdf10.format(beginDate), sdf10.format(endDate));
         List<String> statusfalgs = new ArrayList<String>();
@@ -84,27 +95,75 @@ public class AccountTradeDetlAction {
         String pkid = context.getExternalContext().getRequestParameterMap().get("pkid").toString();
         RsAccDetail record = accDetailService.selectAccDetailByPkid(pkid);
         record.setDeletedFlag("1");
-        if(accDetailService.updateAccDetail(record) == 1) {
-            MessageUtil.addInfo("账户"+record.getAccountCode() +"利息已删除！");
+        if (accDetailService.updateAccDetail(record) == 1) {
+            MessageUtil.addInfo("账户" + record.getAccountCode() + "利息已删除！");
             init();
-        }else {
-            MessageUtil.addError("账户"+record.getAccountCode() +"利息删除失败！");
+        } else {
+            MessageUtil.addError("账户" + record.getAccountCode() + "利息删除失败！");
         }
         return null;
     }
 
     public void onBtnQueryClick() {
         try {
-        rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno,
-                sdf10.format(beginDate), sdf10.format(endDate));
-        if(rsAccDetails.isEmpty()) {
-            MessageUtil.addWarn("没有查询到明细记录！");
-        }
-        }catch (Exception e) {
+            rsAccDetails = accountDetlService.selectedRecordsByTradeDate(acctname, acctno,
+                    sdf10.format(beginDate), sdf10.format(endDate));
+            if (rsAccDetails.isEmpty()) {
+                MessageUtil.addWarn("没有查询到明细记录！");
+            }
+        } catch (Exception e) {
             logger.error("查询失败。" + e.getMessage());
             MessageUtil.addError("查询失败。" + e.getMessage());
 
         }
+    }
+
+    public void onQueryCbs() {
+        try {
+            cbsAccTxnList = cbusActTxnService.qryCbsAccTxns(acctname, acctno,
+                    strStartDate, strEndDate);
+            if (cbsAccTxnList.isEmpty()) {
+                MessageUtil.addWarn("没有查询到明细记录！");
+            }
+        } catch (Exception e) {
+            logger.error("查询失败。" + e.getMessage());
+            MessageUtil.addError("查询失败。" + e.getMessage());
+        }
+    }
+
+    // -----------------------------------------------
+
+
+    public String getStrEndDate() {
+        return strEndDate;
+    }
+
+    public void setStrEndDate(String strEndDate) {
+        this.strEndDate = strEndDate;
+    }
+
+    public String getStrStartDate() {
+        return strStartDate;
+    }
+
+    public void setStrStartDate(String strStartDate) {
+        this.strStartDate = strStartDate;
+    }
+
+    public List<CbsAccTxn> getCbsAccTxnList() {
+        return cbsAccTxnList;
+    }
+
+    public void setCbsAccTxnList(List<CbsAccTxn> cbsAccTxnList) {
+        this.cbsAccTxnList = cbsAccTxnList;
+    }
+
+    public CbusActTxnService getCbusActTxnService() {
+        return cbusActTxnService;
+    }
+
+    public void setCbusActTxnService(CbusActTxnService cbusActTxnService) {
+        this.cbusActTxnService = cbusActTxnService;
     }
 
     public String getAcctname() {

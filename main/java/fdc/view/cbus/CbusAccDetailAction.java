@@ -25,6 +25,7 @@ public class CbusAccDetailAction {
     @ManagedProperty(value = "#{cbusFdcActtxnService}")
     private CbusFdcActtxnService cbusFdcActtxnService;
     private SendFlag sendFlag = SendFlag.UN_SEND;
+    private String isSent;
 
     @PostConstruct
     public void init() {
@@ -36,7 +37,9 @@ public class CbusAccDetailAction {
             endDate = startDate;
             if (cbusFdcActtxnService.isSentActtxns(endDate)) {
                 MessageUtil.addWarn(endDate + "贷款汇总数据已发送完成！");
-                return null;
+                //return null;
+            }else {
+                MessageUtil.addWarn(endDate + "贷款汇总数据未发送！");
             }
 
             boolean isQryed = cbusFdcActtxnService.isQryedActtxns(endDate);
@@ -44,6 +47,7 @@ public class CbusAccDetailAction {
                 cbusFdcActtxnService.qrySaveActtxnsCbusByDate(startDate, endDate);
             }
             MessageUtil.addInfo(endDate + "交易明细数据已从核心系统获取完成。");
+
             cbsAccTxnList = cbusFdcActtxnService.qryCbsAccTotalTxnsByDateAndFlag(endDate);
             if (cbsAccTxnList.isEmpty()) {
                 MessageUtil.addWarn(endDate + "贷款明细数据为空！");
@@ -62,10 +66,12 @@ public class CbusAccDetailAction {
                 return null;
             }
             endDate = startDate;
-            if (cbusFdcActtxnService.isSentActtxns(endDate)) {
+           /* if (cbusFdcActtxnService.isSentActtxns(endDate)) {
                 MessageUtil.addWarn(endDate + "贷款汇总数据已发送完成！");
                 return null;
-            }
+            }*/
+            cbusFdcActtxnService.updateCbsActtxnsUnSent(endDate);
+
             cbsAccTxnList = cbusFdcActtxnService.qryCbsAccTotalTxnsByDateAndFlag(endDate);
             if (cbsAccTxnList == null || cbsAccTxnList.isEmpty()) {
                 MessageUtil.addWarn("没有待发送数据！");
@@ -84,6 +90,14 @@ public class CbusAccDetailAction {
 
     //=======================================
 
+
+    public String getSent() {
+        return isSent;
+    }
+
+    public void setSent(String sent) {
+        isSent = sent;
+    }
 
     public SendFlag getSendFlag() {
         return sendFlag;

@@ -80,4 +80,7 @@ public interface CommonMapper {
 
     @Update("update CBS_ACC_TXN t set t.send_flag = '1' where t.txn_date = #{date} and t.send_flag = '0'")
     public int updateCbsActtxnsSent(@Param("date") String date);
+
+    @Update("update CBS_ACC_TXN t set t.send_flag = '0' where t.txn_date = #{date} and t.send_flag = '1'")
+    public int updateCbsActtxnsUnSent(@Param("date") String date);
 }

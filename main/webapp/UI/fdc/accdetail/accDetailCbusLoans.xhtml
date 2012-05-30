@@ -13,6 +13,7 @@
                         event.keyCode = 9;
                 }
             }
+
         </script>
         <style type="text/css">
             .input-col-m {
@@ -42,7 +43,7 @@
         <div style="margin:5px;">
             <p:tabView style="font-weight:normal;font-style:normal" dynamic="true" cache="false">
                 <p:tab title="贷款记录清单">
-                    <p:growl id="msgs" showDetail="false"/>
+                    <p:messages id="msgs" showDetail="false"/>
                     <h:form id="form">
                         <p:panel style="margin-top:10px">
                             <h:panelGrid columns="2" cellspacing="5" columnClasses="col-95,col-5">
@@ -93,10 +94,7 @@
                                 <h:outputText
                                         value="#{record.txnDate}"/>
                             </p:column>
-                            <p:column headerText="发送标志" style="text-align:center">
-                                <h:outputText
-                                        value="#{cbusAccDetailAction.sendFlag.valueOfAlias(record.sendFlag).title}"/>
-                            </p:column>
+
                             <p:column headerText="交易类型" style="text-align:center">
                                 <h:outputText
                                         value="按揭贷款"/>
