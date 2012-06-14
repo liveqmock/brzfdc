@@ -14,6 +14,7 @@ import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.advance.utils.PropertyManager;
 import pub.platform.security.OperatorManager;
@@ -33,6 +34,8 @@ import java.util.List;
  */
 @Service
 public class CbusPayoutService {
+
+
     @Autowired
     private RsPayoutMapper rsPayoutMapper;
     @Autowired
@@ -46,6 +49,7 @@ public class CbusPayoutService {
 
     private SimpleDateFormat sdf10 = new SimpleDateFormat("yyyy-MM-dd");
 
+    @Transactional
     public int updateRsPayout(RsPayout rsPayout) {
         RsPayout originRecord = rsPayoutMapper.selectByPrimaryKey(rsPayout.getPkId());
         if (!originRecord.getModificationNum().equals(rsPayout.getModificationNum())) {
@@ -60,6 +64,7 @@ public class CbusPayoutService {
         }
     }
 
+    @Transactional
     public int updateRsPayoutToExec(RsPayout rsPayout) throws Exception {
 
         OperatorManager om = SystemService.getOperatorManager();

@@ -30,6 +30,8 @@ public class ExpensesPlanService {
     public int updatePlanCtrl(RsPlanCtrl planCtrl) {
         RsPlanCtrl originRecord = selectPlanCtrlByPkid(planCtrl.getPkId());
         if (!originRecord.getModificationNum().equals(planCtrl.getModificationNum())) {
+            logger.info("【ExpensesPlanService.updatePlanCtrl】新记录版本号：" + planCtrl.getModificationNum() );
+            logger.info("【ExpensesPlanService.updatePlanCtrl】原记录版本号：" + originRecord.getModificationNum() );
             throw new RuntimeException("记录并发更新冲突，请重试！");
         } else {
             OperatorManager om = SystemService.getOperatorManager();
