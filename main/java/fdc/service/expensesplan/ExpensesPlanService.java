@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import platform.service.SystemService;
 import pub.platform.security.OperatorManager;
 
@@ -27,6 +28,7 @@ public class ExpensesPlanService {
     @Autowired
     private RsPlanCtrlMapper rsPlanCtrlMapper;
 
+    @Transactional
     public int updatePlanCtrl(RsPlanCtrl planCtrl) {
         RsPlanCtrl originRecord = selectPlanCtrlByPkid(planCtrl.getPkId());
         if (!originRecord.getModificationNum().equals(planCtrl.getModificationNum())) {
