@@ -24,6 +24,7 @@ public class CbusActTxnService {
         CbsAccTxnExample example = new CbsAccTxnExample();
         example.createCriteria().andAccountNameLike("%" + accName + "%").andAccountNoLike("%" + accNo + "%")
                 .andTxnDateBetween(startDate, endDate);
+        example.setOrderByClause(" txn_date desc,txn_time desc ");
         return cbsAccTxnMapper.selectByExample(example);
     }
 }

@@ -12,6 +12,8 @@ import fdc.repository.model.RsPayoutExample;
 import fdc.repository.model.RsPlanCtrl;
 import fdc.service.expensesplan.ExpensesPlanService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,7 @@ import java.util.List;
 @Service
 public class CbusPayoutService {
 
+    private static Logger logger = LoggerFactory.getLogger(CbusPayoutService.class);
 
     @Autowired
     private RsPayoutMapper rsPayoutMapper;
@@ -53,6 +56,8 @@ public class CbusPayoutService {
     public int updateRsPayout(RsPayout rsPayout) {
         RsPayout originRecord = rsPayoutMapper.selectByPrimaryKey(rsPayout.getPkId());
         if (!originRecord.getModificationNum().equals(rsPayout.getModificationNum())) {
+            logger.info("记录更新版本号：" + rsPayout.getModificationNum());
+            logger.info("记录原版本号：" + originRecord.getModificationNum());
             throw new RuntimeException("记录并发更新冲突，请重试！");
         } else {
             OperatorManager om = SystemService.getOperatorManager();
